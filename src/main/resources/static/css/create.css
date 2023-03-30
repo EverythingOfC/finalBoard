@@ -1,0 +1,35 @@
+@charset "UTF-8";
+.boardCreate{
+	width:1200px;
+	margin-top:1vw;
+	text-align:center;
+}
+form{
+	line-height:13px;
+}
+form tr td span{
+	text-align:center;
+	font-size:12px;
+}
+form *{
+	box-sizing:border-box;
+	text-align:left;
+	font-size:15px;
+}
+form input, textarea{
+	padding: 5px 6px;
+}
+form input[type="button"]{
+	padding: 5px 15px;
+}
+
+td,th{
+	text-align:left;
+	padding:0px;
+}
+#count{
+  background:rgba(255,0,0,0.9);
+  border-radius: 0.5em;
+  padding: 0.5em 0.9em;
+  margin-left:1vw;
+}

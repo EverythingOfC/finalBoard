@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>게시판 홈페이지</title>
+<style>
+
+	form{
+		width:1200px;
+		margin: 1vw auto;
+	}
+	select, input[type="submit"], input[type="button"]{
+		width:70px;
+		padding:3px 6px;
+	}
+	td, th{
+		padding: 10px;
+	}
+</style>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+	<script type="text/javascript" th:src="@{/js/deleteCheck.js}" ></script>
+</head>
+<body>
+
+<div class="title">
+	<h2><a href="/board/createForm">This is Writing<sub style="font-size:0.6em;"> (password check) </sub></a></h2>
+	<h2>비밀번호 확인</h2>
+</div>	
+
+	<form name="check" th:action="@{/board/change}" method="post">
+		<input type="hidden" name="no" th:value="${no}">
+		<input type="hidden" name="listPage" th:value="${listPage}">
+		<input type="hidden" id="result" name="result" th:value="${result}">
+		<table>
+			<tr>
+				<th><label for="password">비밀번호: </label></th>
+				<td><input style="text-align: left; padding-left:4px;"type="password" name="password" id="password" required 
+					size="20" autofocus></td>
+			</tr>
+			<tr>
+			<td colspan="2"><input type="button" value="확인" onclick="Board();">
+			<input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}'|" >
+			<input type="button" value="목록" th:onclick="|location.href='@{/board/list(listPage=${listPage},no=${no})}'|" ></td>
+			</tr>
+		</table>
+		</form>
+		<span th:if="${correct==false}">
+		<script>
+			alert("비밀번호가 일치하지 않습니다.");
+			document.getElementById("password").focus();
+		</script>
+		</span>
+</body>
+</html>

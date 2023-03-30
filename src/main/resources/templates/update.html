@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>게시판 홈페이지</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/update.css}">
+
+<script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
+<script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+	
+<script th:inline="javascript">
+
+$(function() { // 글자 수 제한
+
+	$("#content").on("keyup",function(e){
+		
+		var content = $(this).val();
+		 $(this).height(( 15 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
+	      $('#count').html(content.length + '/375');
+	      if (content.length > 375) {
+				$(this).val(content.substring(0, 375));
+				$('#count').html("375 / 375");
+			}
+	  	
+		});
+	$("#content").keyup();
+	
+		$("#content").on("input",function(e){
+			
+			var content = $(this).val();
+			 $(this).height(( 15 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
+		      $('#count').html(content.length + '/375');
+		      if (content.length > 375) {
+					$(this).val(content.substring(0, 375));
+					$('#count').html("375 / 375");
+				}
+		  	
+			});
+		$("#content").input();
+		
+	});
+
+	function dCheck() {
+
+		if (confirm('삭제하시겠습니까?')) {
+			const page = "[[${listPage}]]";
+			const no = "[[${boardView.no}]]";
+
+			location.href = '/board/delete?listPage=' + page + '&no=' + no;
+		}
+	}
+</script>
+</head>
+<body>
+
+
+	<div class="title">
+		<!--  제목  -->
+		<h2><a th:href="@{/board/updateForm(no=${boardView.no},listPage=${listPage})}">This is Writing<sub style="font-size:0.6em;"> (update) </sub></a></h2>
+		<h2>게시글 수정</h2>
+	</div>
+
+	<div class="boardUpdate">
+		<!--  게시글 수정  -->
+		<form th:action="@{/board/update}" method="post" name="update">
+			<input type="hidden" name="no" th:value="${boardView.no}"> <input
+				type="hidden" name="countS" th:value="${boardView.countS}">
+			<table>
+				<tr>
+					<th><label for="author">작성자</label></th>
+					<td><input type="text" name="author" id="author" autofocus placeholder="이름 (최대 10자)"
+						maxlength="11" th:value="${boardView.author}" size="49" required
+						oninput="check(this,11);"></td>
+				</tr>
+				<tr>
+					<th><label for="password">비밀번호</label></th>
+					<td><input type="text" name="password" id="password" 
+						maxlength="21" size="49" th:value="${boardView.password}" required
+						placeholder="비밀번호 (최대 20자)"
+						oninput="check(this,21);"></td>
+				</tr>
+				<tr>
+					<th><label for="title">제목</label></th>
+					<td><input type="text" name="title" id="title" size="49" placeholder="글 제목 (최대 40자)"
+						maxlength="41" th:value="${boardView.title}" required
+						oninput="check(this,41);"></td>
+				</tr>
+				<tr>
+					<th><label for="content">내용</label></th>
+
+					<td><textarea name="content" id="content"  cols="50" placeholder="글 내용 (최대 375자)"
+							maxlength="376" oninput="check(this,376);"
+							th:text="${boardView.content}" required >
+					</textarea> <span id="count"></span></td>
+				</tr>
+
+				<tr>
+					<th><label for="writeDate"> 게시일 </label></th>
+					<td><input type="text" id="writeDate" name="writeDate"
+						size="49"
+						th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH시 m분 s초')}"
+						readonly disabled></td>
+				</tr>
+
+			</table>
+			<input type="button" value="수정" onclick="updateBoard();"><input
+				type="button" value="삭제" onclick="dCheck();"><input
+				type="reset" value="초기화"><input type="button" value="뒤로"
+				onclick="history.go(-1);"><input type="button" value="목록"
+				th:onclick="|location.href='@{/board/list/(listPage=${listPage})}'|">
+		</form>
+	</div><br><br><br>
+	
+	<div class="footer"><br/>
+			<p>
+			회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp; 인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p><br>
+			<div class="callCopy">
+			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
+			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
+			<p>Copyright ⓒ This is Writing</p><br>
+		</div>
+	</div>
+</body>
+</html>

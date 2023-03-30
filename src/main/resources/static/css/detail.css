@@ -1,0 +1,23 @@
+@charset "UTF-8";
+.boardDetail{
+	width:1200px;
+	margin-top:0.5vw;
+}
+form{
+	line-height:45px;
+}
+form *{
+	box-sizing:border-box;
+	text-align:left;
+	font-size:14px;
+}
+form input, label{
+	margin-left:15px;
+	padding:4px;
+}
+form input[type="button"]{
+	padding: 5px 15px;
+}
+td,th{
+	text-align:left;
+}
