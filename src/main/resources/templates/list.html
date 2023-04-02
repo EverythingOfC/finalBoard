@@ -9,6 +9,16 @@
 
 </head>
 <body>
+<span th:if="${#strings.equals(result, 'update')}">
+	<script>
+		alert("수정되었습니다.");
+	</script>
+</span>
+<span th:if="${#strings.equals(result, 'delete')}">
+	<script>
+		alert("삭제되었습니다.");
+	</script>
+</span>
 <span th:if="${pro}">	<!--  금지어구에 포함된다면  -->
 	<script>
 		alert("비속어, 선정적인 단어 금지입니다.");
@@ -17,11 +27,8 @@
 
 	<div class="title">
 		<!--  제목  -->
-		<a href="/">This is Writing<sub style="font-size:0.6em;"> (list) </sub></a>
-		<ul>
-			<li><a href="/">전체</a></li><li><a href="/">언어</a></li><li><a href="/">경제</a></li><li><a href="/">교육</a></li><li><a href="/">수학</a></li><li><a href="/">과학</a></li><li><a href="/">컴퓨터</a></li><li><a href="/">예술</a></li>
-		</ul>
-		
+	<h2><a href="/">This is Writing<sub style="font-size:0.6em;"> (list) </sub></a></h2>
+
 	</div>
 	<div class="clear"></div>
 	<div class="search">		<!--  검색 창 -->
@@ -71,8 +78,8 @@
 			<!-- 총 건수, 정렬 관련 -->
 			<p style="display: inline-block;">
 				총 <span style="color: red; font-size: 1.1em;" th:text="${list.totalElements}"></span>건
-				<span th:if="${list.totalPages == 1}" th:text="|[0 / 0 쪽]|"></span> <span
-					th:unless="${list.totalPages == 1}" th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>
+				<span th:if="${list.totalPages == 0}" th:text="|[0 / 0 쪽]|"></span> <span
+					th:unless="${list.totalPages == 0}" th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>
 			</p>
 
 		
@@ -176,7 +183,7 @@
 				th:if="${page >= list.number-3 and page <= list.number+5}"
 				class="page-item">
 				<!-- 현재 페이지인 경우 활성화 --> <!-- 전체 페이지 수가 0이 아닐때만 표시 --> <a style="padding:5px 11px;"
-				th:if="${totalP} != 0" th:text="${page}"
+				th:if="${list.totalPages} != 0" th:text="${page}"
 				th:classappend="${page == (list.number+1)} ? 'active'"
 				th:href="@{|?listPage=${page}&detail=${detail}&search=${search}
 				&view=${view}&or=${or}&or2=${or2}|}"></a>

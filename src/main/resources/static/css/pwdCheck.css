@@ -1,0 +1,17 @@
+@charset "UTF-8";
+form {
+	width: 1200px;
+	margin: 1vw auto;
+}
+
+select,
+input[type="submit"],
+input[type="button"] {
+	width: 70px;
+	padding: 3px 6px;
+}
+
+td,
+th {
+	padding: 10px;
+}

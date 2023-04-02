@@ -34,11 +34,11 @@ public class BoardController {
 			@RequestParam(value = "listPage", defaultValue = "1") int page,
 			@RequestParam(value = "detail", defaultValue = "title") String detail,
 			@RequestParam(value = "search", defaultValue = "") String search, HttpServletResponse response,
-			@RequestParam(value = "pro",defaultValue="false") boolean pro) {
+			@RequestParam(value = "result",defaultValue="")String result
+			) {
 
 		if (!this.boardService.badWordFilter(search)) { // 정상적인 단어가 아니면
-			model.addAttribute("pro",true);	// 금지어 속성을 저장
-			search = "";
+			return "redirect:/board/list?listPage="+page;
 		}
 		
 		if(or.equals("countS") || or.equals("writeDate"))	// 조회수와 최신순일때는 내림차순
@@ -67,7 +67,8 @@ public class BoardController {
 		model.addAttribute("view",view);	  	 // 검색조건
 		model.addAttribute("or",or);		   	 // 인기, 최신, 제목, 작성자
 		model.addAttribute("or2",or2);		   	 // 오름차순, 내림차순
-
+		model.addAttribute("result",result);	 // 수정, 삭제후의 결과값 저장(기본값은 "")
+		
 		return "list";
 	}
 
@@ -150,7 +151,7 @@ public class BoardController {
 
 		this.boardService.update(boardDto);
 
-		return "redirect:/board/list?or=writeDate";	 // 수정 후 제일 최신 페이지로	
+		return "redirect:/board/list?or=writeDate&result=update";	 // 수정 후 제일 최신 페이지로	
 	}
 
 	@GetMapping("/board/delete") // 삭제
@@ -158,6 +159,7 @@ public class BoardController {
 
 		this.boardService.delete(no);
 
-		return "redirect:/board/list?listPage=" + page;	// 삭제된 게시물이 있는 페이지 번호를 넘겨줌.
+		
+		return "redirect:/board/list?listPage=" + page +"&result=delete";	// 삭제된 게시물이 있는 페이지 번호를 넘겨줌.
 	}
 }

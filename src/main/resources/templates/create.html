@@ -17,7 +17,7 @@
 			$("#content").on("input",function(e){
 				
 				var content = $(this).val();
-				 $(this).height(( 5 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
+				 $(this).height(( 2 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
 			      $('#count').html(content.length + '/375');
 			      if (content.length > 375) {
 						alert("최대 375자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");

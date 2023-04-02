@@ -2,18 +2,9 @@
 body{
 	font-size:12px;
 }
-.title li a{
-	font-size:15px;
-	margin-right:0;
-}
-.title ul{
-	text-align:left;
-	float:right;
-}
-.title li{
-	padding:5px 0;
-	width:120px;
-	background-color:#d9dde0;
+
+.title a {
+	
 }
 .search{
 	width:650px;

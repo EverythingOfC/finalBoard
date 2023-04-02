@@ -26,7 +26,7 @@ li{
 	width:100%;
 }
 .title h2{
-	font-size:25px;
+	font-size:30px;
 	text-align:left;
 	margin-left:28.5px;
 }
@@ -36,6 +36,7 @@ li{
 .title a{
 	font-size:30px;
 	margin-right:200px;
+	text-align:left;
 }
 .footer{
 	width:100%;
@@ -50,4 +51,20 @@ li{
 	width:40%;
 	text-align:left;
 	font-size:10px;
+}
+body{
+ -ms-overflow-style: none;
+ }
+ 
+::-webkit-scrollbar {
+  display: none;
+}
+
+/*특정 부분 스크롤바 없애기*/
+
+#content{
+   -ms-overflow-style: none;
+}
+.box::-webkit-scrollbar{
+  display:none;
 }
