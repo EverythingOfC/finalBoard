@@ -9,66 +9,56 @@
 
 </head>
 <body>
-<span th:if="${#strings.equals(result, 'update')}">
-	<script>
-		alert("수정되었습니다.");
-	</script>
-</span>
-<span th:if="${#strings.equals(result, 'delete')}">
-	<script>
+
+	<span th:if="${#strings.equals(result, 'delete')}"> <script>
 		alert("삭제되었습니다.");
+		location.href="/";	// 삭제 후 최신순으로 
 	</script>
-</span>
-<span th:if="${pro}">	<!--  금지어구에 포함된다면  -->
-	<script>
+	</span>
+	<span th:if="${pro}"> <!--  금지어구에 포함된다면  --> <script>
 		alert("비속어, 선정적인 단어 금지입니다.");
 	</script>
-</span>
+	</span>
 
 	<div class="title">
 		<!--  제목  -->
-	<h2><a href="/">This is Writing<sub style="font-size:0.6em;"> (list) </sub></a></h2>
+		<h2>
+			<a href="/">This is Writing<sub style="font-size: 0.6em;">
+					(list) </sub></a>
+		</h2>
 
 	</div>
 	<div class="clear"></div>
-	<div class="search">		<!--  검색 창 -->
+	<div class="search">
+		<!--  검색 창 -->
 		<form id="seek" name="seek" th:action="@{/board/list}" method="get">
-		
-			<select th:if="${view}==5" name="view"
+
+			<select th:if="${view}==10" name="view"
 				onchange="this.form.submit();">
-					<option value="5" selected>5개씩</option>
-					<option value="10">10개씩</option>
-					<option value="15">15개씩</option>
-					<option value="20">20개씩</option>
-			</select><select th:if="${view}==10" name="view"
-				onchange="this.form.submit();">
-					<option value="5">5개씩</option>
-					<option value="10" selected>10개씩</option>
-					<option value="15">15개씩</option>
-					<option value="20">20개씩</option>
+				<option value="10" selected>10개씩</option>
+				<option value="15">15개씩</option>
+				<option value="20">20개씩</option>
 			</select><select th:if="${view}==15" name="view"
 				onchange="this.form.submit();">
-					<option value="5">5개씩</option>
-					<option value="10">10개씩</option>
-					<option value="15" selected>15개씩</option>
-					<option value="20">20개씩</option>
+				<option value="10">10개씩</option>
+				<option value="15" selected>15개씩</option>
+				<option value="20">20개씩</option>
 			</select><select th:if="${view}==20" name="view"
 				onchange="this.form.submit();">
-					<option value="5">5개씩</option>
-					<option value="10">10개씩</option>
-					<option value="15">15개씩</option>
-					<option value="20" selected>20개씩</option>
-			</select><select
-				th:if="${#strings.equals(detail,'title')}" name="detail" onchange="this.form.submit();">
-					<option value="title" selected>제목</option>
-					<option value="author">작성자</option>
-			</select><select th:unless="${#strings.equals(detail,'title')}"
-				name="detail" onchange="this.form.submit();">
-					<option value="title">제목</option>
-					<option value="author" selected>작성자</option>
-			</select><input type="text" id="s" maxlength="20" name="search" size="40" th:value="${search}"
-				placeholder="20자 이내 (욕설, 선정적 단어 검색 금지)" autofocus/><input
-				type="submit" value="검색">
+				<option value="10">10개씩</option>
+				<option value="15">15개씩</option>
+				<option value="20" selected>20개씩</option>
+			</select><select th:if="${#strings.equals(detail,'title')}" name="detail"
+				onchange="this.form.submit();">
+				<option value="title" selected>제목</option>
+				<option value="author">작성자</option>
+			</select><select th:unless="${#strings.equals(detail,'title')}" name="detail"
+				onchange="this.form.submit();">
+				<option value="title">제목</option>
+				<option value="author" selected>작성자</option>
+			</select><input type="text" id="s" maxlength="20" name="search" size="40"
+				th:value="${search}" placeholder="20자 이내 (욕설, 선정적 단어 검색 금지)"
+				autofocus /><input type="submit" value="검색">
 		</form>
 	</div>
 	<div class="nav">
@@ -77,64 +67,35 @@
 		<div class="data">
 			<!-- 총 건수, 정렬 관련 -->
 			<p style="display: inline-block;">
-				총 <span style="color: red; font-size: 1.1em;" th:text="${list.totalElements}"></span>건
-				<span th:if="${list.totalPages == 0}" th:text="|[0 / 0 쪽]|"></span> <span
-					th:unless="${list.totalPages == 0}" th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>
+				총 <span style="color: red; font-size: 1.1em;"
+					th:text="${list.totalElements}"></span>건 <span
+					th:if="${list.totalPages == 0}" th:text="|[0 / 0 쪽]|"></span> <span
+					th:unless="${list.totalPages == 0}"
+					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>
 			</p>
 
-		
-			<select th:if="${#strings.equals(or,'countS')}" style= " margin-left: 4vw;" name="or"
-				onchange="document.seek.submit();" form="seek">
-				<option value="countS" selected>인기 순</option>
-				<option value="writeDate">최신 순</option>
-				<option value="title">제목 순</option>
-				<option value="author">작성자 순</option>
-			</select> 
-			<select th:if="${#strings.equals(or,'writeDate')}" style= " margin-left: 4vw;" name="or"
-				onchange="document.seek.submit();" form="seek">
-				<option value="countS">인기 순</option>
-				<option value="writeDate" selected>최신 순</option>
-				<option value="title">제목 순</option>
-				<option value="author">작성자 순</option>
-			</select>
-			<select th:if="${#strings.equals(or,'title')}" style= " margin-left: 4vw;" name="or"
-				onchange="document.seek.submit();" form="seek">
-				<option value="countS">인기 순</option>
-				<option value="writeDate">최신 순</option>
-				<option value="title" selected>제목 순</option>
-				<option value="author">작성자 순</option>
-			</select>
-			<select th:if="${#strings.equals(or,'author')}" style= " margin-left: 4vw;" name="or"
-				onchange="document.seek.submit();" form="seek">
-				<option value="countS">인기 순</option>
-				<option value="writeDate">최신 순</option>
-				<option value="title">제목 순</option>
-				<option value="author" selected>작성자 순</option>
-			</select>  
- 			
-			<span th:if="(${#strings.equals(or,'title')} or ${#strings.equals(or,'author')} ) and ${#strings.equals(or2,'asc')}"> 
-			<label style="margin-left: 1vw;" for="up">오름차순 </label> <input
-				style="margin-right: 0.3vw;" type="radio" id="up" name="or2" checked
-				value="asc" onchange="document.seek.submit();" form="seek">
-				 
-				<label for="down">내림차순 </label> <input type="radio" id="down" name="or2"
+			<span th:if="${#strings.equals(or,'desc')}"> <!--  원글 최신 순 -->
+				<label style="margin-left: 1vw;" for="up">최신 순</label> <input
+				style="margin-right: 0.2vw;" type="radio" id="up" name="or" checked
 				value="desc" onchange="document.seek.submit();" form="seek">
+
+				<label for="down">오래된 순</label> <input type="radio" id="down"
+				name="or" value="asc" onchange="document.seek.submit();" form="seek">
+			</span> <span th:if="${#strings.equals(or,'asc')}"> <!--  원글 오래된 순 -->
+				<label style="margin-left: 1vw;" for="up">최신 순</label> <input
+				style="margin-right: 0.2vw;" type="radio" id="up" name="or"
+				value="desc" onchange="document.seek.submit();" form="seek">
+
+				<label for="down">오래된 순</label> <input type="radio" id="down"
+				checked name="or" value="asc" onchange="document.seek.submit();"
+				form="seek">
 			</span>
-			
-			<span th:if="(${#strings.equals(or,'title')} or ${#strings.equals(or,'author')} ) and ${#strings.equals(or2,'desc')}"> 
-			<label style="margin-left: 1vw;" for="up">오름차순 </label> 
-	<input style="margin-right: 0.2vw;" type="radio" id="up" name="or2"
-				value="asc" onchange="document.seek.submit();" form="seek"> 
-				
-				<label for="down">내림차순 </label> 
-	<input type="radio" id="down" name="or2" value="desc" 
-	onchange="document.seek.submit();" form="seek" checked>
-			</span>
+
 		</div>
 
 		<div class="create">
 			<!--  게시글 등록  -->
-			<a th:href="@{/board/createForm}" th:text="|게시글 등록|"></a>
+			<a th:href="@{/board/createForm}">게시글 작성</a>
 		</div>
 
 		<div class="clear"></div>
@@ -146,20 +107,29 @@
 		<table>
 			<tr>
 				<th width="40px;">번호</th>
-				<th width="460px;">제목</th>
-				<th style="text-align: left;" width="120px;">작성자</th>
+				<th width="495px;">제목</th>
+				<th style="text-align: left;" width="125px;">작성자</th>
 				<th width="90px;">작성일</th>
-				<th width="50px;">조회수</th>
 			</tr>
 
 			<tr th:each="board, loop : ${list}">
-				<td th:text="${list.totalElements - loop.index} - ( ${list.number}* ${view} )"></td>
-				<td style="text-align: left;"><a
+
+				<td style="color: gray;"
+					th:text="${list.totalElements - loop.index} - ( ${list.number}* ${view} )"></td>
+				<td style="text-align: left;"><span
+					th:if="${board.grDepth > 1}"> <!--  답글부터 공백 추가 --> <span
+						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">
+							&emsp;</span> <img style="width: 20px; height: 15px;"
+						th:src="@{/image/reply.png}"> [RE]
+				</span> <a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
+					th:text="${board.title}"></a> <a
 					th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
-					th:text="${board.title}"></a></td>
-				<td style="text-align: left;"th:text="${board.author}"></td>
+					th:if="${board.cList.size() > 0}">(<span style="color: red;"
+						th:text="${board.cList.size()}"></span>)
+				</a> <!-- 댓글 클릭 시 이동 --></td>
+
+				<td style="text-align: left;" th:text="${board.author}"></td>
 				<td th:text="${#temporals.format(board.writeDate,'yyyy. M. d. ')}"></td>
-				<td th:text="${board.countS}"></td>
 			</tr>
 		</table>
 	</div>
@@ -167,57 +137,60 @@
 	<div class="page">
 		<ul>
 			<!-- 조건식이 참인 경우 class값을 class속성에 추가한다. -->
-			<li class="page-item"><a th:href="@{|?listPage=1&detail=${detail}&search=${search}
-			&view=${view}&or=${or}&or2=${or2}|}" th:if="${listPage>1}"
-				style="font-weight: bold;"><span style="letter-spacing: -6px;">◀</span>◀</a>
-				<span th:switch="${list.number - 9 >= 1}"> 
-				<!-- 이전 페이지가 첫 페이지보다 작아지면 이전 버튼을 표시하지 않음 -->
-				<a th:case="${true}"
+			<li class="page-item"><a
+				th:href="@{|?listPage=1&detail=${detail}&search=${search}
+			&view=${view}&or=${or}&or2=${or2}|}"
+				th:if="${listPage>1}" style="font-weight: bold;"><span
+					style="letter-spacing: -6px;">◀</span>◀</a> <span
+				th:switch="${list.number - 9 >= 1}"> <!-- 이전 페이지가 첫 페이지보다 작아지면 이전 버튼을 표시하지 않음 -->
+					<a th:case="${true}"
 					th:href="@{|?listPage=${(list.number)-9}&detail=${detail}&search=${search}
 					&view=${view}&or=${or}&or2=${or2}|}">
-						<!-- 이전으로 링크 이동 --> <span style="padding:3px;">◀</span>
+						<!-- 이전으로 링크 이동 --> <span style="padding: 3px;">◀</span>
 				</a>
 			</span></li>
 
 			<li th:each="page: ${#numbers.sequence(1, list.totalPages)}"
 				th:if="${page >= list.number-3 and page <= list.number+5}"
 				class="page-item">
-				<!-- 현재 페이지인 경우 활성화 --> <!-- 전체 페이지 수가 0이 아닐때만 표시 --> <a style="padding:5px 11px;"
-				th:if="${list.totalPages} != 0" th:text="${page}"
+				<!-- 현재 페이지인 경우 활성화 --> <!-- 전체 페이지 수가 0이 아닐때만 표시 --> <a
+				style="padding: 5px 11px;" th:if="${list.totalPages} != 0"
+				th:text="${page}"
 				th:classappend="${page == (list.number+1)} ? 'active'"
 				th:href="@{|?listPage=${page}&detail=${detail}&search=${search}
 				&view=${view}&or=${or}&or2=${or2}|}"></a>
 			</li>
 
-			<li class="page-item">
-				<span th:switch="${list.number + 11 <= list.totalPages}"> <!-- 다음 페이지가 전체 페이지를 넘어가면 다음 버튼을 표시하지 않음 --> 
-				<a style="margin-right: 0.3vw;" th:case="${true} "
+			<li class="page-item"><span
+				th:switch="${list.number + 11 <= list.totalPages}"> <!-- 다음 페이지가 전체 페이지를 넘어가면 다음 버튼을 표시하지 않음 -->
+					<a style="margin-right: 0.3vw;" th:case="${true} "
 					th:href="@{|?listPage=${(list.number)+11}&detail=${detail}&search=${search}
 					&view=${view}&or=${or}&or2=${or2}|}">
-						<!-- 다음 페이지로 링크 이동 --> <span style="padding:0.5px;">▶</span>
+						<!-- 다음 페이지로 링크 이동 --> <span style="padding: 0.5px;">▶</span>
 				</a>
 			</span> <a
 				th:href="@{|?listPage=${list.totalPages}&detail=${detail}&search=${search}
 				&view=${view}&or=${or}&or2=${or2}|}"
-				th:if="${listPage<list.totalPages}"
-				style="font-weight: bold;"><span style="letter-spacing: -6px;">▶</span>▶</a>
-				<!--  끝으로 -->
-			</li>
+				th:if="${listPage<list.totalPages}" style="font-weight: bold;"><span
+					style="letter-spacing: -6px;">▶</span>▶</a> <!--  끝으로 --></li>
 		</ul>
 
 	</div>
-	<div class="addition">
-	
-	</div>
-	<br><br>
-	<br><br><br><br>
-		<div class="footer"><br/>
-			<p>
-			회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp; 인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p><br>
-			<div class="callCopy">
+	<div class="addition"></div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="footer">
+		<br />
+		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
+			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
+		<br>
+		<div class="callCopy">
 			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
 			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
-			<p>Copyright ⓒ This is Writing</p><br>
+			<p>Copyright ⓒ This is Writing</p>
+			<br>
 		</div>
 	</div>
 </body>

@@ -1,23 +1,98 @@
 @charset "UTF-8";
-.boardDetail{
-	width:1200px;
-	margin-top:0.5vw;
+*{
+	text-align:left;	
 }
-form{
-	line-height:45px;
+.boardDetail, .comBlock{
+	width:600px;
+	margin-top:1vw;
+	background-color:#f8f9fc;
 }
-form *{
-	box-sizing:border-box;
-	text-align:left;
-	font-size:12px;
+.boardDetail form{
+	line-height:35px;
 }
-form input, textarea{
+
+form table input:not([type="button"]), table textarea{
 	margin-left:15px;
 	padding:4px;
 }
-form input[type="button"]{
-	padding: 5px 15px;
+form input[type="button"], form input[type="submit"]{
+	padding: 4px 15px;
 }
-td,th{
-	text-align:left;
+
+.comment, .cList{
+	width:600px;
 }
+
+.cTitle h2, .cTitle span{
+	font-size:16px;
+}
+.namePassword *, .textCreate *{
+	margin-top:5px;
+}
+.wordAndCreate, .textView input{
+	margin-top:2px;
+}
+.namePassword, .cTitle, .textCreate, .wordAndCreate, .profile, .textView{
+	margin-left:10px;	
+}
+.cTitle{
+	padding-top:5px;
+}
+.namePassword input,.textCreate textarea, .textView textarea{
+	padding:4px 3px;
+}
+.comment input[type='button'], .comment input[type='submit']{
+	padding:3px 13px;
+}
+.unit input[type='text'],.unit input[type='password']{
+	padding: 2px;
+}
+#count{
+  background:rgba(255,0,0,0.9);
+  padding: 0.4em 0.8em;
+}
+.footer p{
+	text-align:center;
+}
+input[type='button']{
+	cursor:pointer;
+}
+.cList{
+	width:600px;
+	background-color:#f8f9fc;	
+}
+.comBlock{
+	margin-bottom:1.5vw;
+	margin-top:1.5vw;
+}
+.textView{
+	margin-bottom:0.2vw;
+}
+.page *{
+	text-align:center;
+}
+.page{
+	width:950px;
+    margin-top:2vw;
+    font-size:10px;
+}
+.page p{
+    margin-top:0.2vw;
+}
+.active{
+    font-weight:bold;
+    color:white;
+    background:#727576;
+}
+
+.page-item a{
+	height:30px;
+	width:30px;
+	border:0.5px solid #727576;
+	padding:5px;
+	text-align:center;
+	background:d0d3d6;
+}
+
+
+

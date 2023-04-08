@@ -22,7 +22,7 @@
 			      if (content.length > 375) {
 						alert("최대 375자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");
 						$(this).val(content.substring(0, 375));
-						$('#count').html("375 / 375");
+						$('#count').html("375/375");
 					}
 				});
 			
@@ -34,15 +34,18 @@
 <body>
 	<div class="title">
 		<h2><a href="/board/createForm">This is Writing<sub style="font-size:0.6em;"> (create) </sub></a></h2>
-		<h2>게시글 등록</h2>
+		<h2 th:if="${no} == 0">게시글 작성</h2>
+		<h2 th:unless="${no} == 0">답글 작성</h2>
 	</div>
 
 	<div class="boardCreate">
 		<!--  게시글 등록  -->
 		<form th:action="@{/board/create}" method="post" id="join" name="create">
+			<input type="hidden" name="no" th:value="${no}">
+			<input type="hidden" name="listPage" th:value="${listPage}">
 			<table>
 				<tr>
-					<td><input type="text" name="author" id="author" size="20" required maxlength="11" autofocus
+					<td><input type="text" name="author" id="author" size="21" required maxlength="11" autofocus
 					placeholder="이름 (최대 10자)" oninput="check(this,11);">
 					<input type="password" name="password" id="password" size="23" oninput="check(this,21);"
 					placeholder="비밀번호 (최대 20자)" maxlength="21" required><br><br>
@@ -59,20 +62,25 @@
 					<td><input type="password" name="passwordC" id="passwordC" size="23" maxlength="20" required></td>
 				</tr>-->
 				<tr>
-					<td><br><br><input type="text" name="title" id="title" size="49" maxlength="41" required placeholder="글 제목 (최대 40자)"
+					<td><br><br>
+					<input type="text" name="title" id="title" size="68" maxlength="41" required placeholder="글 제목 (최대 40자)"
 					oninput="check(this,41);" >
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<textarea style="margin-top:17px;" maxlength="376" name="content" id="content" 
-							oninput="check(this,376);" cols="50" required placeholder="글 내용 (최대 375자)"
-							></textarea><span style="font-weight:bold;"id="count"></span>
+							oninput="check(this,376);" cols="69" required placeholder="글 내용 (최대 375자)"
+							></textarea><span style="font-weight:bold;"id="count">0/375</span>
 					</td>
 				</tr>
 			</table>
-			<input type="button" value="등록" onclick="joinBoard();"><!--  게시물 값 및 비밀번호 유효성 검사 -->
-			<input type="button" value="목록" onclick="history.go(-1);">
+			<input type="button" value="작성" onclick="joinBoard();"><!--  게시물 값 및 비밀번호 유효성 검사 -->
+			
+			<input th:if="${no} != 0" type="button" value="상세" onclick="history.go(-1);"><!--  답 글인 경우 -->
+			<input type="button" value="목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
+			
+			
 		</form>
 	</div><br><br><br>
 

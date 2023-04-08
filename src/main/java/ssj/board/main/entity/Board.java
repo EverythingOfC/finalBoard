@@ -1,25 +1,27 @@
 package ssj.board.main.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ssj.board.main.dto.BoardDto;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class Board {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	// 칼럼만의 독립적인 시퀀스
 	@Column(name="\"no\"")
@@ -40,20 +42,15 @@ public class Board {
 	@Column(columnDefinition = "DATETIME")  // 8바이트(날짜와 시간을 같이 나타냄)
 	private LocalDateTime writeDate;	// 작성일자
 	
-	@Column(columnDefinition = "MEDIUMINT")	// 부호 없으면 16777215까지 표시
-	private Integer countS;	// 조회 수
+	@OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "board")	// 연관관계의 주인을 외래키 필드로 함
+	private List<Comment> cList;		// 댓글 목록
 	
-	@Builder
-	public Board(Integer no, String author, String password, String title, String content,
-			LocalDateTime writeDate, Integer countS) {
-		this.no = no;
-		this.author = author;
-		this.password = password;
-		this.title = title;
-		this.content = content;
-		this.writeDate = writeDate;
-		this.countS = countS;
-	}
+	private Integer orNo;	// 원글의 그룹 번호
+	
+	private Integer grOr;	// (원글과 답글)그룹 순서
+	
+	private Integer grDepth;// 답글의 깊이
+	
 	
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
@@ -62,8 +59,26 @@ public class Board {
 						.title(title)
 						.content(content)
 						.writeDate(writeDate)
-						.countS(countS).build();
+						.cList(cList)
+						.orNo(orNo).grOr(grOr).grDepth(grDepth).build();
 		return boardDto;
+	}
+
+	
+	@Builder
+	public Board(Integer no, String author, String password, String title, String content, LocalDateTime writeDate,
+			List<Comment> cList, Integer orNo, Integer grOr, Integer grDepth) {
+		super();
+		this.no = no;
+		this.author = author;
+		this.password = password;
+		this.title = title;
+		this.content = content;
+		this.writeDate = writeDate;
+		this.cList = cList;
+		this.orNo = orNo;
+		this.grOr = grOr;
+		this.grDepth = grDepth;
 	}
 
 }

@@ -68,3 +68,11 @@ body{
 .box::-webkit-scrollbar{
   display:none;
 }
+.clear{
+	clear:both;
+}
+pre{
+	width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

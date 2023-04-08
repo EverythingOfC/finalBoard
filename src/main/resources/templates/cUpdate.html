@@ -16,18 +16,14 @@
 <script th:inline="javascript">
 	$(function() { // 글자 수 제한
 
-		$("#content").on(
-				"input",
-				function(e) {
+		$("#content").on("input",function(e) {
 
 					var content = $(this).val();
-					$(this).height(
-							(22.8 + (content.split('\n').length + 1) * 1.2)
-									+ 'em'); // 줄 높이 지정
-					$('#count').html(content.length + '/375');
-					if (content.length > 375) {
-						$(this).val(content.substring(0, 375));
-						$('#count').html("375/375");
+					$(this).height( (5 + (content.split('\n').length + 1) * 1.2)+ 'em'); // 줄 높이 지정
+					$('#count').html(content.length + '/150');
+					if (content.length > 150) {
+						$(this).val(content.substring(0, 150));
+						$('#count').html("150/150");
 					}
 
 				});
@@ -38,10 +34,12 @@
 	function dCheck() {
 
 		if (confirm('삭제하시겠습니까?')) {
+			alert('삭제되었습니다.');	
 			const page = "[[${listPage}]]";
-			const no = "[[${boardView.no}]]";
+			const no = "[[${no}]]";
+			const coNo = "[[${commentView.coNo}]]";
 
-			location.href = '/board/delete?no=' + no;
+			location.href = '/board/cDelete?coNo=' + coNo + '&no='+no +'&listPage='+page;
 		}
 	}
 </script>
@@ -52,68 +50,65 @@
 	<div class="title">
 		<!--  제목  -->
 		<h2>
-			<a
-				th:href="@{/board/updateForm(no=${boardView.no},listPage=${listPage})}">This
+			<a href="#">This
 				is Writing<sub style="font-size: 0.6em;"> (update) </sub>
 			</a>
 		</h2>
-		<h2 th:if="${boardView.grDepth} == 1">게시글 수정</h2>
-		<h2 th:unless="${boardView.grDepth} == 1">답글 수정</h2>
+		<h2>댓글 수정</h2>
 	</div>
 
 	<div class="boardUpdate">
 		<!--  게시글 수정  -->
-		<form th:action="@{/board/update}" method="post" name="update">
-			<input type="hidden" name="no" th:value="${boardView.no}"> <input
-				type="hidden" name="listPage" th:value="${listPage}">
+		<form th:action="@{/board/cUpdate}" method="post" name="update">
+			<input type="hidden" name="no" th:value="${no}"> 
+				<input type="hidden" name="coNo" th:value="${commentView.coNo}">
+				<input type="hidden" name="listPage" th:value="${listPage}">
+				
 			<table>
 				<tr>
 					<th><label for="author">작성자</label></th>
 					<td><input type="text" name="author" id="author" autofocus
 						placeholder="이름 (최대 10자)" maxlength="11"
-						th:value="${boardView.author}" size="26" required
+						th:value="${commentView.author}" size="30" required
 						oninput="check(this,11);"></td>
 				</tr>
 				<tr>
 					<th><label for="password">비밀번호</label></th>
 					<td><input type="text" name="password" id="password"
-						maxlength="21" size="26" th:value="${boardView.password}" required
+						maxlength="21" size="30" th:value="${commentView.password}" required
 						placeholder="비밀번호 (최대 20자)" oninput="check(this,21);"></td>
-				</tr>
-				<tr>
-					<th><label for="title">제목</label></th>
-					<td><input type="text" name="title" id="title" size="68"
-						placeholder="글 제목 (최대 40자)" maxlength="41"
-						th:value="${boardView.title}" required oninput="check(this,41);"></td>
 				</tr>
 				<tr>
 					<th><label for="content">내용</label></th>
 
-					<td><textarea name="content" id="content" rows="18" cols="69"
-							placeholder="글 내용 (최대 375자)" maxlength="376"
-							oninput="check(this,376);" th:text="${boardView.content}"
+					<td><textarea name="content" id="content" rows="10" cols="70"
+							placeholder="댓글을 입력해주세요. (최대 150자)" maxlength="151"
+							oninput="check(this,151);" th:text="${commentView.content}"
 							required>
-					</textarea> <span id="count">0/375</span></td>
+					</textarea><span id="count">0/150</span></td>
 				</tr>
 
 				<tr>
 					<th><label for="writeDate"> 게시일 </label></th>
 					<td><input type="text" id="writeDate" name="writeDate"
-						size="26"
-						th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH시 m분 s초')}"
+						size="30"
+						th:value="${#temporals.format(commentView.writeDate,'yyyy-MM-dd HH:mm:ss')}"
 						readonly disabled></td>
 				</tr>
 
 			</table>
-			  <input type="button" value="수정" onclick="updateBoard();">
+			<div style="text-align:center;" class="control">
+			  <input type="button" value="수정" onclick="cUpdateBoard();">
 			  <input type="button" value="삭제" onclick="dCheck();"> 
-			  <input type="button" value="목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
-			  <input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${boardView.no} )}'|"> 
+			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no} )}'|"> 
+			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
 			  <input type="reset" value="초기화">
+			  </div>
 		</form>
 	</div>
-	<br><br><br>
-	
+	<br>
+	<br>
+	<br>
 
 	<div class="footer">
 		<br />

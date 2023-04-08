@@ -21,11 +21,3 @@ function check(obj, max){
 	}
 	obj.focus();
 }
-
-
-function countC(obj){
-	var str = obj.value;	// 이벤트가 일어난 요소의 값
-	var str_length = str.length;
-	
-	document.getElementById("count").innerHTML = str_length;
-}

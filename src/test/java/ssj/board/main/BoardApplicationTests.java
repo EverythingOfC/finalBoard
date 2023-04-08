@@ -22,7 +22,6 @@ class BoardApplicationTests {
         	String password = "@ssj0"+i;
             String title = "meta" + i;
             String content = "바꿀 예정";
-            Integer countS = 1;
             LocalDateTime local = LocalDateTime.now();
             
             Board board = Board.builder().
@@ -30,7 +29,6 @@ class BoardApplicationTests {
             		password(password).
             		title(title).
             		content(content).
-            		countS(countS).
             		writeDate(local).build();
             		
             this.boardRepository.save(board);
