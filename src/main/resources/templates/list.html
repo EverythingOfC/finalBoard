@@ -9,24 +9,12 @@
 
 </head>
 <body>
-
-	<span th:if="${#strings.equals(result, 'delete')}"> <script>
-		alert("삭제되었습니다.");
-		location.href="/";	// 삭제 후 최신순으로 
-	</script>
-	</span>
-	<span th:if="${pro}"> <!--  금지어구에 포함된다면  --> <script>
-		alert("비속어, 선정적인 단어 금지입니다.");
-	</script>
-	</span>
-
 	<div class="title">
 		<!--  제목  -->
 		<h2>
 			<a href="/">This is Writing<sub style="font-size: 0.6em;">
 					(list) </sub></a>
 		</h2>
-
 	</div>
 	<div class="clear"></div>
 	<div class="search">
@@ -57,33 +45,41 @@
 				<option value="title">제목</option>
 				<option value="author" selected>작성자</option>
 			</select><input type="text" id="s" maxlength="20" name="search" size="40"
-				th:value="${search}" placeholder="20자 이내 (욕설, 선정적 단어 검색 금지)"
-				autofocus /><input type="submit" value="검색">
+				placeholder="20자 이내 (욕설, 선정적 단어 검색 금지)" th:value="${search}" /><input
+				type="submit" value="검색">
 		</form>
+<script>
+	var search = document.querySelector('#s'); // 검색 필드의 값을 받아오고
+	search.focus(); // 초점을 맞춤.
+	search.setSelectionRange(search.value.length, search.value.length); // 해당 범위의 길이까지 선택
+</script>
 	</div>
+
 	<div class="nav">
 		<!--  총 건수, 정렬, 게시글 등록 -->
 
 		<div class="data">
 			<!-- 총 건수, 정렬 관련 -->
 			<p style="display: inline-block;">
-				총 <span style="color: red; font-size: 1.1em;"
+				총 <span style="color: red; font-size: 1.2em;"
 					th:text="${list.totalElements}"></span>건 <span
 					th:if="${list.totalPages == 0}" th:text="|[0 / 0 쪽]|"></span> <span
 					th:unless="${list.totalPages == 0}"
-					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>
+					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>&nbsp;
+				삭제 <span style="color: skyblue; font-size: 1.2em;"
+					th:text="${dCount}"></span>건
 			</p>
 
-			<span th:if="${#strings.equals(or,'desc')}"> <!--  원글 최신 순 -->
-				<label style="margin-left: 1vw;" for="up">최신 순</label> <input
-				style="margin-right: 0.2vw;" type="radio" id="up" name="or" checked
+			<span class="order" th:if="${#strings.equals(or,'desc')}"> <!--  원글 최신 순 -->
+				<label style="margin-left: 1.5vw;" for="up">최신 순</label> <input
+				style="margin-right: 0.4vw;" type="radio" id="up" name="or" checked
 				value="desc" onchange="document.seek.submit();" form="seek">
 
 				<label for="down">오래된 순</label> <input type="radio" id="down"
 				name="or" value="asc" onchange="document.seek.submit();" form="seek">
-			</span> <span th:if="${#strings.equals(or,'asc')}"> <!--  원글 오래된 순 -->
-				<label style="margin-left: 1vw;" for="up">최신 순</label> <input
-				style="margin-right: 0.2vw;" type="radio" id="up" name="or"
+			</span> <span class="order" th:if="${#strings.equals(or,'asc')}"> <!--  원글 오래된 순 -->
+				<label style="margin-left: 1.5vw;" for="up">최신 순</label> <input
+				style="margin-right: 0.4vw;" type="radio" id="up" name="or"
 				value="desc" onchange="document.seek.submit();" form="seek">
 
 				<label for="down">오래된 순</label> <input type="radio" id="down"
@@ -91,11 +87,14 @@
 				form="seek">
 			</span>
 
+
+
 		</div>
 
 		<div class="create">
 			<!--  게시글 등록  -->
-			<a th:href="@{/board/createForm}">게시글 작성</a>
+			<a th:href="@{/downloadExcel}">게시글 다운로드</a>&emsp; <a th:href="@{/}">게시글 목록</a>&emsp; <a th:href="@{/board/createForm}">게시글
+				작성</a>
 		</div>
 
 		<div class="clear"></div>
@@ -107,26 +106,44 @@
 		<table>
 			<tr>
 				<th width="40px;">번호</th>
-				<th width="495px;">제목</th>
-				<th style="text-align: left;" width="125px;">작성자</th>
+				<th width="500px;">제목</th>
+				<th style="text-align: left;" width="120px;">작성자</th>
 				<th width="90px;">작성일</th>
 			</tr>
 
 			<tr th:each="board, loop : ${list}">
 
+
 				<td style="color: gray;"
 					th:text="${list.totalElements - loop.index} - ( ${list.number}* ${view} )"></td>
-				<td style="text-align: left;"><span
+
+				<td style="text-align: left;" th:if="${board.removeC != true}"><span
 					th:if="${board.grDepth > 1}"> <!--  답글부터 공백 추가 --> <span
-						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">
-							&emsp;</span> <img style="width: 20px; height: 15px;"
-						th:src="@{/image/reply.png}"> [RE]
+						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span>
+						<img style="width: 20px; height: 15px;"
+						th:src="@{/image/reply.png}"> [<a
+						th:href="@{/board/view(listPage=${listPage},no=${board.no})}">RE</a>]
 				</span> <a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 					th:text="${board.title}"></a> <a
 					th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 					th:if="${board.cList.size() > 0}">(<span style="color: red;"
 						th:text="${board.cList.size()}"></span>)
-				</a> <!-- 댓글 클릭 시 이동 --></td>
+				</a> <!-- 댓글 클릭 시 이동 -->
+					<span style="float: right;" th:if="${board.filePacks.size() > 0}">
+						<img style="width: 10px" th:src="@{/image/save.png}"><a
+						style="font-size: 0.7em; color: green;"
+						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
+						th:text="|(${board.filePacks.size()})|"></a>
+
+				</span></td>
+
+				<td style="color: skyblue; text-align: left;"
+					th:unless="${board.removeC != true}"><span
+					th:if="${board.grDepth > 1}"> <!--  답글부터 공백 추가 --> <span
+						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span>
+						<img style="width: 20px; height: 15px;"
+						th:src="@{/image/reply.png}"> [RE]
+				</span> 삭제된 게시글입니다.</td>
 
 				<td style="text-align: left;" th:text="${board.author}"></td>
 				<td th:text="${#temporals.format(board.writeDate,'yyyy. M. d. ')}"></td>

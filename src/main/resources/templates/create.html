@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/css/create.css}">
 	<script type="text/javascript" th:src="@{/js/boardCheck.js}" ></script>
 	<script type="text/javascript" th:src="@{/js/inputConstraint.js}" ></script>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		
@@ -17,7 +18,7 @@
 			$("#content").on("input",function(e){
 				
 				var content = $(this).val();
-				 $(this).height(( 2 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
+				 $(this).height(( 7 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
 			      $('#count').html(content.length + '/375');
 			      if (content.length > 375) {
 						alert("최대 375자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");
@@ -28,10 +29,12 @@
 			
 		$("#content").input();
 	});
+
 	</script>
 </head>
 
 <body>
+
 	<div class="title">
 		<h2><a href="/board/createForm">This is Writing<sub style="font-size:0.6em;"> (create) </sub></a></h2>
 		<h2 th:if="${no} == 0">게시글 작성</h2>
@@ -40,7 +43,7 @@
 
 	<div class="boardCreate">
 		<!--  게시글 등록  -->
-		<form th:action="@{/board/create}" method="post" id="join" name="create">
+		<form th:action="@{/board/create}" enctype="multipart/form-data" method="post" name="create"> <!--  각 파트별로 분리하여 파일의 개별 정보를 얻게 된다. -->
 			<input type="hidden" name="no" th:value="${no}">
 			<input type="hidden" name="listPage" th:value="${listPage}">
 			<table>
@@ -70,9 +73,14 @@
 				<tr>
 					<td>
 						<textarea style="margin-top:17px;" maxlength="376" name="content" id="content" 
-							oninput="check(this,376);" cols="69" required placeholder="글 내용 (최대 375자)"
+							oninput="check(this,376);" cols="69" rows="7" required placeholder="글 내용 (최대 375자)"
 							></textarea><span style="font-weight:bold;"id="count">0/375</span>
 					</td>
+				</tr>
+				<tr>
+					<td><input type="file" name="files" id="files" multiple onchange="checkSize(this);"><!-- 업로드 가능한 용량 체크 -->
+					<span style="color:blue;">&emsp;&emsp;☞&nbsp; 최대 30MB까지 업로드 가능합니다.</span>	<!--  다중 파일을 업로드 -->
+					</td> 
 				</tr>
 			</table>
 			<input type="button" value="작성" onclick="joinBoard();"><!--  게시물 값 및 비밀번호 유효성 검사 -->

@@ -46,32 +46,6 @@ public class CommentController {
 		return "redirect:/board/view?listPage=" + page + "&no=" + no + "#comment0";
 	}
 
-	@GetMapping("/board/cPwdCheck") // 수정 or 삭제를 위한 비밀번호 입력 폼 public String
-	public String pwdCheck(Model model,Integer coNo, 
-			Integer no, int listPage, String result,
-			@RequestParam(value = "correct", defaultValue = "true") boolean correct
-			) { // 비밀번호
-
-		model.addAttribute("coNo", coNo);
-		model.addAttribute("no", no);
-		model.addAttribute("listPage", listPage);
-		model.addAttribute("result", result);
-		model.addAttribute("correct", correct);
-
-		return "cPwdCheck";
-	}
-	
-	@PostMapping("/board/cChange") // 비밀번호가 일치하면, 해당 게시글을 수정 or 삭제
-	public String change(Model model, @RequestParam(value = "password") String password,
-			@RequestParam(value = "coNo")Integer coNo,
-			@RequestParam(value = "no") Integer no, @RequestParam(value = "result") String result,
-			@RequestParam(value = "listPage") int page) {
-
-		boolean change = this.commentService.pwdCheck(password, coNo);
-		
-		return change ? this.commentService.changeS(result, no,coNo, page) : ("redirect:/board/cPwdCheck?no="+no+"&coNo="+coNo + "&listPage=" + page + "&correct=false&result="+result);
-		// 일치하면 수정 or 삭제, 일치하지 않으면 목록으로
-	}
 	@GetMapping("/board/cUpdateForm") // 수정 폼
 	public String updateForm(Model model, @RequestParam(value = "no") Integer no,
 			@RequestParam(value = "coNo")Integer coNo,
@@ -79,9 +53,9 @@ public class CommentController {
 
 		CommentDto commentDto = this.commentService.commentView(coNo);
 
-		model.addAttribute("commentView", commentDto); // 속성을 고대로 가지고 감
-		model.addAttribute("listPage", page); // 속성을 고대로 가지고 감
-		model.addAttribute("no", no); 
+		model.addAttribute("commentView", commentDto); // 댓글 view
+		model.addAttribute("listPage", page); // 게시글 리스트 페이지
+		model.addAttribute("no", no); 	// 게시글 번호
 
 		return "cUpdate";
 	}
@@ -110,7 +84,7 @@ public class CommentController {
 
 		this.commentService.delete(coNo);
 		
-		return "redirect:/board/view?listPage="+page+"&no="+no +"&or=desc&result=delete";
+		return "redirect:/board/view?listPage="+page+"&no="+no +"&or=desc#comment0";
 	}
 	
 }

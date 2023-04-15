@@ -22,6 +22,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+	implementation 'commons-io:commons-io:2.6'	// 바이트 배열을 파일로 씀
+	implementation 'commons-fileupload:commons-fileupload:1.4'	// 파일 업로드
+	implementation 'org.apache.commons:commons-compress:1.21'	// 압축해서 다운로드
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.apache.poi:poi:5.0.0'
+    implementation 'org.apache.poi:poi-ooxml:5.0.0'	// xlsx로 저장
+	
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

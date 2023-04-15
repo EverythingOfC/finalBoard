@@ -1,148 +1,258 @@
 <!DOCTYPE html>
-<html xmlns:th = "http://www.thymeleaf.org" lang = "ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-<meta charset = "UTF-8">
+<meta charset="UTF-8">
 <title>게시판 홈페이지</title>
 <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/css/detail.css}">
-<script type="text/javascript" th:src="@{/js/boardCheck.js}" ></script>
-<script type="text/javascript" th:src="@{/js/inputConstraint.js}" ></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script>
-		
-	$(function(){	// 글자 수 제한
-		$("#cContent").on("input",function(e){
-				var content = $(this).val();
-				 $(this).height(( 2 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
-			      $('#count').html(content.length + '/150');
-			      if (content.length > 150) {
-						alert("최대 150자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");
-						$(this).val(content.substring(0, 150));
-						$('#count').html("150/150");
-					}
-				});
+<script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
+<script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script th:inline="javascript">
+	$(function() { // 글자 수 제한
+		$("#cContent")
+				.on(
+						"input",
+						function(e) {
+							var content = $(this).val();
+							$(this)
+									.height(
+											(2 + (content.split('\n').length + 1) * 1.2)
+													+ 'em'); // 줄 높이 지정
+							$('#count').html(content.length + '/150');
+							if (content.length > 150) {
+								alert("최대 150자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");
+								$(this).val(content.substring(0, 150));
+								$('#count').html("150/150");
+							}
+						});
 		$("#cContent").input();
 	});
-	
-	
-	</script>
+
+	function pwCheck(obj) {
+
+		const no = "[[${no}]]";
+		const page = "[[${listPage}]]";
+		const passwd = document.getElementById('pass').value; // 비밀번호 값
+
+		while (true) {
+			const inp = prompt('비밀번호 확인');
+
+			if (inp == passwd) { // 일치하면
+				if (obj == 'update')
+					location.href = '/board/updateForm?no=' + no + '&listPage='
+							+ page; // 수정폼으로 이동
+				else {
+					if (confirm('삭제하시겠습니까?')) {
+						alert('삭제되었습니다.');
+						location.href = '/board/delete?no=' + no;
+					}
+				}
+				break;
+			} else if (inp == null) { // 사용자가 취소를 눌렀을 때
+				break;
+			} else {
+				alert("비밀번호가 일치하지 않습니다.");
+			}
+		}
+
+	}
+
+	function pwCheckC(obj) { // 댓글 수정 삭제
+
+		const no = "[[${no}]]";
+		const coNo = document.getElementById('coNo').value;	// 댓글 번호 값
+		const page = "[[${listPage}]]";
+
+		const passwd = document.getElementById('cPass').value; // 비밀번호 값
+
+		while (true) {
+			const inp = prompt('비밀번호 확인.');
+
+			if (inp === passwd) { // 일치하면
+				if (obj == 'updateC'){					
+					location.href = '/board/cUpdateForm?no=' + no
+							+ '&listPage=' + page + "&coNo=" + coNo;
+				}
+				else {
+					if (confirm('삭제하시겠습니까?')) {
+						alert('삭제되었습니다.');
+						location.href = '/board/cDelete?no=' + no + '&coNo='
+								+ coNo + '&listPage=' + page; // 삭제 후 view로
+					}
+				}
+				break;
+			} else if (inp == null) { // 사용자가 취소를 눌렀을 때
+				break;
+			} else {
+				alert("비밀번호가 일치하지 않습니다.");
+			}
+		}
+	}
+</script>
 </head>
 <body>
-	<span th:if="${#strings.equals(result, 'delete')}"> <script th:inline="javascript">
-			alert("삭제되었습니다.");
-			const page = "[[${listPage}]]";
-			const no = "[[${no}]]";
-			location.href = '/board/view?no=' + no + '&listPage=' + page + "#comment0";
-	</script>
-	</span>
 	<div class="title">
 		<!--  제목  -->
-		<h2><a th:href="@{/board/view(listPage=${listPage},no=${boardView.no})}">This is Writing<sub style="font-size:0.6em;"> (detail) </sub></a></h2>
+		<h2>
+			<a th:href="@{/board/view(listPage=${listPage},no=${boardView.no})}">This
+				is Writing<sub style="font-size: 0.6em;"> (detail) </sub>
+			</a>
+		</h2>
 		<h2 th:if="${boardView.grDepth} == 1">게시글 상세</h2>
 		<h2 th:unless="${boardView.grDepth} == 1">답글 상세</h2>
 	</div>
 
 	<div class="boardDetail">
 		<!--  게시글 상세  -->
-		<form name="detail" th:action="@{/board/pwdCheck}" method="post" >
+		<form name="detail">
+			<input type="hidden" id="pass" th:value="${boardView.password}">
 			<table>
 				<tr>
 					<th><label for="author">작성자</label></th>
 					<td><input type="text" name="author" id="author" disabled
-					th:value="${boardView.author}" readonly size="26"></td>
+						th:value="${boardView.author}" readonly size="26"></td>
 				</tr>
 				<tr>
 					<th><label for="password">비밀번호</label></th>
-					<td><input type="password" name="password" id="password" size="26"
-					readonly disabled
-					></td>
+					<td><input type="password" name="password" id="password"
+						size="26" readonly disabled></td>
 				</tr>
 				<tr>
-
 					<th><label for="title">제목</label></th>
-					<td><input style="box-sizing:border-box;"type="text" name="title" id="title" size="68"
-					th:value="${boardView.title}" readonly disabled
-					></td> 
+					<td><input style="box-sizing: border-box;" type="text"
+						name="title" id="title" size="68" th:value="${boardView.title}"
+						readonly disabled></td>
 				</tr>
 				<tr>
 					<th><label for="content">내용</label></th>
-					
-					<td>	
-						<textarea rows="18" style="margin-top:12px;" maxlength="376" name="content" id="content" 
-							readonly disabled cols="69" th:text="${boardView.content}"></textarea>
-					</td>
+					<td><textarea rows="18" style="margin-top: 12px;"
+							maxlength="376" name="content" id="content" readonly disabled
+							cols="69" th:text="${boardView.content}"></textarea></td>
 				</tr>
 				<tr>
-				<th><label for="writeDate"> 게시일 </label></th>
-				<td><input type="text" id = "writeDate" name="writeDate" size="26" disabled
-				th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH:mm:ss')}" readonly>
-			<input type="button" value="수정" th:onclick ="|location.href='@{/board/pwdCheck(no=${boardView.no},listPage=${listPage},result=update)}'|">
-			<input type="button" value="삭제" th:onclick ="|location.href='@{/board/pwdCheck(no=${boardView.no},listPage=${listPage},result=delete)}'|">
-			<input type="button" value="목록" th:onclick="|location.href='@{/board/list(no=${boardView.no},listPage=${listPage})}'|">
-			<input style="margin-left:10px;"class="answer" type="button" value="답글 작성" th:onclick ="|location.href='@{/board/createForm(no=${boardView.no})}'|"></td>
+					<th><label for="writeDate"> 게시일 </label></th>
+					<td><input type="text" id="writeDate" name="writeDate"
+						size="26" disabled
+						th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH:mm:ss')}"
+						readonly> <input type="button" value="수정"
+						onclick="pwCheck('update');"> <input type="button"
+						value="삭제" onclick="pwCheck('delete');"> <input
+						type="button" value="게시글 목록"
+						th:onclick="|location.href='@{/board/list(no=${boardView.no},listPage=${listPage})}'|">
+						<input style="margin-left: 10px;" class="answer" type="button"
+						value="답글 작성"
+						th:onclick="|location.href='@{/board/createForm(no=${boardView.no})}'|"></td>
 				</tr>
-			</table>	
+				<tr style="line-height: 20px;"
+					th:each="boardFile, loop: ${boardView.filePacks}">
+					<th th:text="|파일 ${loop.index+1}|"></th>
+					<td style="margin-left: 16px; display: inline-block;"><a
+						th:href="@{/download(fileName=${boardFile.savedName})}"
+						th:text="|${boardFile.originalName}|"></a><a
+						th:href="@{/download(fileName=${boardFile.savedName})}"><sub
+							style="font-size: 0.8em; color: blue;">[다운로드]</sub></a></td>
+				</tr>
+			</table>
 		</form>
+		<a id="comment0"></a>
+		<!--  삭제하거나 추가, 정렬 버튼 누르면 지정한 위치로 이동-->
 	</div>
-	
+
 	<div class="comment">
-		
+
 		<div class="comBlock">
-		<h2 class="cTitle"><span style="color:red;" th:text="${list.totalElements}"></span>개의 댓글
-		<span style="float:right; margin-right:8px;">댓글 작성란</span>
-		</h2>
-		
-		<form name="create" th:action="@{/board/commentCreate}" method="post" >
-			<input type="hidden" name="no" th:value="${no}">
-			<input type="hidden" name="listPage" th:value="${listPage}">
-		
-			<div class="namePassword">
-					<input style="text-align:left;" type="text" name="author" size="18" id="cAuthor"
-					maxlength="11" oninput="check(this,11);" placeholder="이름 (최대 10자)">
-					<input style="text-align:left;" type="password" name="password" size="18" maxlength="21" 
-						id="cPassword" oninput="check(this,21)" placeholder="비밀번호 (최대 20자)">
-			</div>
-			
-			<div class="textCreate">
-				<textarea maxlength="151" name="content" id="cContent" oninput="check(this,151)"
-					placeholder="댓글을 입력해주세요. (최대 150자)" cols="87" rows="3"></textarea>
-			</div>
-			<div class="wordAndCreate">
-				<span style="display:inline-block; width:39px; "id="count">0/150</span>
-				<input style="margin-left:469px;" type="button" value="작성" onclick="cJoinBoard();">
-				<div class="clear"></div>
-			</div>
-		</form>
-		<br/>
-	</div>
-		<div class="cList" th:each="comment, loop : ${list}">
-		<a id="comment0"></a> <!--  삭제하거나 추가하면 지정한 위치로 이동-->
-		<a th:id="|comment${comment.coNo}|"></a> <!--  수정하면 지정한 위치로 이동 -->
-			<div class="profile">
-				<img width="40" th:src="@{/image/person.png}">&nbsp; <span style="font-weight:bold;" th:text="${comment.author}"></span>
-				&emsp;<span style="color:#999;" th:text="${#temporals.format(comment.writeDate,' yyyy-MM-dd &nbsp; HH:mm:ss')}"></span>
-			</div>
-			<div class="textView">
-				<pre style="margin:0.5vw 0;"th:text="${comment.content}"></pre>
-				<input type="button" value="수정" th:onclick ="|location.href='@{/board/cPwdCheck(coNo=${comment.coNo},no=${boardView.no},listPage=${listPage},result=update)}'|">
-				<input type="button" value="삭제" th:onclick ="|location.href='@{/board/cPwdCheck(coNo=${comment.coNo},no=${boardView.no},listPage=${listPage},result=delete)}'|">
-			</div><hr/>
+			<h2 class="cTitle">
+				<span style="color: red;" th:text="${list.totalElements}"></span>개의
+				댓글 <span style="float: right; margin-right: 8px;">댓글 작성란</span>
+			</h2>
+
+			<form name="create" th:action="@{/board/commentCreate}" method="post">
+				<input type="hidden" name="no" th:value="${no}"> <input
+					type="hidden" name="listPage" th:value="${listPage}">
+
+				<div class="namePassword">
+					<input style="text-align: left;" type="text" name="author"
+						size="18" id="cAuthor" maxlength="11" oninput="check(this,11);"
+						placeholder="이름 (최대 10자)"> <input
+						style="text-align: left;" type="password" name="password"
+						size="18" maxlength="21" id="cPassword" oninput="check(this,21)"
+						placeholder="비밀번호 (최대 20자)">
+				</div>
+				<div class="textCreate">
+					<textarea maxlength="151" name="content" id="cContent"
+						oninput="check(this,151)" placeholder="댓글을 입력해주세요. (최대 150자)"
+						cols="87" rows="3"></textarea>
+				</div>
+				<div class="wordAndCreate">
+					<span style="display: inline-block; width: 39px;" id="count">0/150</span>
+					<input style="margin-left: 469px;" type="button" value="작성"
+						onclick="cJoinBoard();">
+					<div class="clear"></div>
+				</div>
+			</form>
+			<br />
 		</div>
-		
+
+		<form style="margin-bottom: 10px;" name="dOrder"
+			th:action="@{/board/view#comment0}">
+			<input type="hidden" name="no" th:value="${no}"> <input
+				type="hidden" name="listPage" th:value="${listPage}"> <input
+				type="hidden" name="cPage" th:value="${cPage}"> <a
+				id="comment1"></a>
+			<!--  페이징 처리 시 앵커 이동 -->
+
+			<th:block th:if="${boardView.cList.size()>0}">
+				<span class="order" th:if="${#strings.equals(or,'desc')}"> <!--  원글 최신 순 -->
+					<label style="margin-left: 1vw;" for="up">최신 순</label> <input
+					style="margin-right: 0.2vw;" type="radio" id="up" name="or" checked
+					value="desc" onchange="document.dOrder.submit();"> <label
+					for="down">오래된 순</label> <input type="radio" id="down" name="or"
+					value="asc" onchange="document.dOrder.submit();">
+				</span>
+				<span class="order" th:if="${#strings.equals(or,'asc')}"> <!--  원글 오래된 순 -->
+					<label style="margin-left: 1vw;" for="up">최신 순</label> <input
+					style="margin-right: 0.2vw;" type="radio" id="up" name="or"
+					value="desc" onchange="document.dOrder.submit();"> <label
+					for="down">오래된 순</label> <input type="radio" id="down" checked
+					name="or" value="asc" onchange="document.dOrder.submit();">
+				</span>
+
+			</th:block>
+		</form>
+		<div class="cList" th:each="comment, loop : ${list}">
+			<a th:id="|comment${comment.coNo}|"></a>
+			<!--  수정하면 지정한 위치로 이동 -->
+			<div class="profile">
+				<img width="35" th:src="@{/image/person.png}">&nbsp; <span
+					style="display: inline-block; padding-bottom: 7px;"
+					th:text="${comment.author}"></span> <span
+					style="color: #999; float: right; margin-right: 10px;"
+					th:text="${#temporals.format(comment.writeDate,' yyyy-MM-dd &nbsp; HH:mm:ss')}"></span>
+			</div>
+
+			<div class="textView">
+				<input type="hidden" id="coNo" th:value="${comment.coNo}"> 
+				<input type="hidden" id="cPass" th:value="${comment.password}">
+				<pre th:text="${comment.content}"></pre>
+				<input type="button" value="수정" onclick="pwCheckC('updateC');">
+				<input type="button" value="삭제" onclick="pwCheckC('deleteC');">
+			</div>
+			<hr />
+		</div>
 	</div>
-	
+	<a id="comment2"></a>
 	<div class="page">
 		<ul>
 			<!-- 조건식이 참인 경우 class값을 class속성에 추가한다. -->
 			<li class="page-item"><a
-				th:href="@{|?no=${no}&cPage=1&listPage=${listPage}&or=${or}#comment0|}"
-				th:if="${cPage>1}" style="font-weight: bold;"><span
-					style="letter-spacing: -6px;">◀</span>◀</a> 
-					<span th:switch="${list.number - 5 >= 1}"> <!-- 이전 페이지가 첫 페이지보다 작아지면 이전 버튼을 표시하지 않음 -->
-					<a th:case="${true}"
-					th:href="@{|?no=${no}&listPage=${listPage}&cPage=${(list.number)-5}&or=${or}#comment0|}">
-						<!-- 이전으로 링크 이동 --> <span style="padding: 3px;">◀</span>
-				</a>
+				th:href="@{|?no=${no}&cPage=1&listPage=${listPage}&or=${or}#comment2|}"
+				th:if="${cPage>1}">◀◀</a> <span th:switch="${list.number - 5 >= 0}">
+					<!-- 이전 페이지가 첫 페이지보다 작아지면 이전 버튼을 표시하지 않음 --> <a th:case="${true}"
+					style="padding: 5px 8px;"
+					th:href="@{|?no=${no}&listPage=${listPage}&cPage=${cPage-5}&or=${or}#comment2|}">◀</a>
 			</span></li>
 
 			<li th:each="page: ${#numbers.sequence(1, list.totalPages)}"
@@ -152,32 +262,31 @@
 				style="padding: 5px 11px;" th:if="${list.totalPages} != 0"
 				th:text="${page}"
 				th:classappend="${page == (list.number+1)} ? 'active'"
-				th:href="@{|?no=${no}&listPage=${listPage}&cPage=${page}&or=${or}#comment0|}"></a>
+				th:href="@{|?no=${no}&listPage=${listPage}&cPage=${page}&or=${or}#comment2|}"></a>
 			</li>
 
 			<li class="page-item"><span
 				th:switch="${list.number + 6 <= list.totalPages}"> <!-- 다음 페이지가 전체 페이지를 넘어가면 다음 버튼을 표시하지 않음 -->
-					<a style="margin-right: 0.3vw;" th:case="${true} "
-					th:href="@{|?no=${no}&listPage=${listPage}&cPage=${(list.number)+6}&or=${or}#comment0|}">
-						<!-- 다음 페이지로 링크 이동 --> <span style="padding: 0.5px;">▶</span>
-				</a>
-			</span> <a
-				th:href="@{|?no=${no}&listPage=${listPage}&cPage=${list.totalPages}&or=${or}#comment0|}"
-				th:if="${cPage<list.totalPages}" style="font-weight: bold;"><span
-					style="letter-spacing: -6px;">▶</span>▶</a> <!--  끝으로 --></li>
+					<a th:case="${true} " style="padding: 5px 8px;"
+					th:href="@{|?no=${no}&listPage=${listPage}&cPage=${cPage+5}&or=${or}#comment2|}">▶</a>
+			</span><a
+				th:href="@{|?no=${no}&listPage=${listPage}&cPage=${list.totalPages}&or=${or}#comment2|}"
+				th:if="${cPage<list.totalPages}">▶▶</a></li>
 		</ul>
 
 	</div>
-	
-	
-	<br/><br/>
-	<div class="footer"><br/>
-			<p>
-			회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp; 인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p><br>
-			<div class="callCopy">
+	<br />
+	<br />
+	<div class="footer">
+		<br />
+		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
+			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
+		<br>
+		<div class="callCopy">
 			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
 			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
-			<p>Copyright ⓒ This is Writing</p><br>
+			<p>Copyright ⓒ This is Writing</p>
+			<br>
 		</div>
 	</div>
 </body>

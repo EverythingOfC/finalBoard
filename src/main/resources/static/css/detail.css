@@ -13,10 +13,11 @@
 
 form table input:not([type="button"]), table textarea{
 	margin-left:15px;
-	padding:4px;
+	padding:3px;
 }
 form input[type="button"], form input[type="submit"]{
 	padding: 4px 15px;
+	font-size:11px;
 }
 
 .comment, .cList{
@@ -42,7 +43,8 @@ form input[type="button"], form input[type="submit"]{
 	padding:4px 3px;
 }
 .comment input[type='button'], .comment input[type='submit']{
-	padding:3px 13px;
+	padding:1px 12px;
+	font-size:10px;
 }
 .unit input[type='text'],.unit input[type='password']{
 	padding: 2px;
@@ -73,7 +75,7 @@ input[type='button']{
 }
 .page{
 	width:950px;
-    margin-top:2vw;
+    margin-top:1.5vw;
     font-size:10px;
 }
 .page p{
@@ -92,6 +94,9 @@ input[type='button']{
 	padding:5px;
 	text-align:center;
 	background:d0d3d6;
+}
+.order label{
+	cursor:pointer;
 }
 
 
