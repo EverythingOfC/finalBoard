@@ -1,3 +1,5 @@
+
+
 function checkPw(pw) {
 
 	let number = pw.search(/[0-9]/g);	// 숫자검사
@@ -114,6 +116,7 @@ function joinBoard() {	// 게시글 생성
 	var pw = document.getElementById("password");
 	var title = document.getElementById("title");
 	var content = document.getElementById("content");
+	var fileList = document.getElementById("files");
 	var pwV = pw.value.trim();
 	// var pwC = document.getElementById("passwordC").value.trim();
 

@@ -11,11 +11,13 @@ form{
 	line-height:35px;
 }
 form table input, textarea{
-	padding:4px;
-	margin-left:10px;
+	padding:3px;
+	margin-left:15px;
 }
 input[type="reset"], input[type="button"], input[type="submit"]{
+	margin-top:15px;
 	padding: 4px 15px;
+	font-size:11px;
 }
 td, th{
 	text-align:left;
@@ -23,8 +25,7 @@ td, th{
 #count{
   background:rgba(255,0,0,0.9);
   border-radius: 0.5em;
-  padding: 0.2em 0.6em;
-  margin-left:0.5vw;
+  padding: 0.5em 0.9em;
 }
 .footer p{
 	text-align:center;

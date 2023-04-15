@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Builder;
@@ -40,6 +41,7 @@ public class Comment {	// 댓글
 	private LocalDateTime writeDate;	// 작성일자
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="board_id")
 	private Board board;	// 해당 게시글의 댓글
 
 	@Builder

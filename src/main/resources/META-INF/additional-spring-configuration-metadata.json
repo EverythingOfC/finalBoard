@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "part4.upload.path",
+  "type": "java.lang.String",
+  "description": "A description for 'part4.upload.path'"
+}]}

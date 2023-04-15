@@ -19,7 +19,7 @@
 		$("#content").on("input",function(e) {
 
 					var content = $(this).val();
-					$(this).height( (5 + (content.split('\n').length + 1) * 1.2)+ 'em'); // 줄 높이 지정
+					$(this).height( (2 + (content.split('\n').length + 1) * 1.2)+ 'em'); // 줄 높이 지정
 					$('#count').html(content.length + '/150');
 					if (content.length > 150) {
 						$(this).val(content.substring(0, 150));
@@ -81,11 +81,11 @@
 				<tr>
 					<th><label for="content">내용</label></th>
 
-					<td><textarea name="content" id="content" rows="10" cols="70"
+					<td><textarea name="content" id="content" rows="3" cols="65"
 							placeholder="댓글을 입력해주세요. (최대 150자)" maxlength="151"
 							oninput="check(this,151);" th:text="${commentView.content}"
 							required>
-					</textarea><span id="count">0/150</span></td>
+					</textarea> <span id="count">0/150</span></td>
 				</tr>
 
 				<tr>
@@ -100,9 +100,9 @@
 			<div style="text-align:center;" class="control">
 			  <input type="button" value="수정" onclick="cUpdateBoard();">
 			  <input type="button" value="삭제" onclick="dCheck();"> 
-			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no} )}'|"> 
-			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
 			  <input type="reset" value="초기화">
+			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}#comment0'|"> 
+			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
 			  </div>
 		</form>
 	</div>
