@@ -1,9 +1,11 @@
 package ssj.board.main.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +34,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	@Query("select count(b) from Board b where b.removeC = true")
 	int removeCount();		// 삭제된 게시글 개수
 	
+	List<Board> findAll(Sort sort);
+	
+	@Query("select count(*) from Board b where b.parentNo = :parentNo")	// 부모글의 달린 답글 수 카운트
+	int parentNoCount(@Param("parentNo")Integer parentNo);
 }

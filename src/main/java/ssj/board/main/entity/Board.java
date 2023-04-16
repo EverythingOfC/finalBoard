@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,8 @@ import ssj.board.main.dto.BoardDto;
 @Getter
 @Entity
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Board {
 	
 	
@@ -54,15 +57,17 @@ public class Board {
 	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY,cascade = CascadeType.ALL)	// 연관관계의 주인을 외래키 필드로 함
 	private List<Comment> cList;		// 댓글 목록
 	
+	@Builder.Default	// 초기화 표현식을 기본값으로 하기 위함
 	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FilePack> filePacks = new ArrayList<>(); 	
+    private List<FilePack> filePacks = new ArrayList<FilePack>(); 	
 	
 	private Integer parentNo;	// 부모 답글의 일련번호
+	
+	private Integer parentOr;	// 부모 답글의 순서
 	
 	private Integer childNo;	// 자신의 일련번호
 	
 	private Boolean removeC;	// 삭제 여부
-	
 	
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
@@ -75,33 +80,11 @@ public class Board {
 						.orNo(orNo).grOr(grOr).grDepth(grDepth)
 						.parentNo(parentNo)
 						.childNo(childNo)
+						.parentOr(parentOr)
 						.filePacks(filePacks)
 						.removeC(removeC)
 						.build();
 		return boardDto;
 	}
 
-	
-	@Builder
-	public Board(Integer no, String author, String password, String title, String content, LocalDateTime writeDate,
-			List<Comment> cList, Integer orNo, Integer grOr, Integer grDepth, List<FilePack> filePacks,
-			Integer parentNo, Integer childNo, Boolean removeC) {
-		super();
-		this.no = no;
-		this.author = author;
-		this.password = password;
-		this.title = title;
-		this.content = content;
-		this.writeDate = writeDate;
-		this.cList = cList;
-		this.orNo = orNo;
-		this.grOr = grOr;
-		this.grDepth = grDepth;
-		this.filePacks = filePacks;
-		this.parentNo = parentNo;
-		this.childNo = childNo;
-		this.removeC = removeC;
-	}
-	
-	
 }

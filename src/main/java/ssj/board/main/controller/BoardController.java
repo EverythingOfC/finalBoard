@@ -1,6 +1,5 @@
 package ssj.board.main.controller;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletResponse;
@@ -112,7 +111,7 @@ public class BoardController {
 		BoardDto check = this.boardService.boardView(no);	// 없으면 null, 있으면 원글
 		
 		BoardDto boardDto = BoardDto.builder().author(author).password(password).title(title).content(content)
-				.writeDate(LocalDateTime.now()).orNo(0).grOr(1).grDepth(1).build();		// 얻어온 값으로 초기화
+				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).build();		// 얻어온 값으로 초기화
 		
 		BoardDto result = this.boardService.create(boardDto);	// 게시글 내용을 먼저 저장
 		
@@ -131,7 +130,13 @@ public class BoardController {
 			){
 
 		BoardDto boardView = this.boardService.boardView(no);
+		Integer countSize = this.fileService.countSize(no);	// 해당 게시글의 파일 전체 크기
 
+		if(countSize==null)
+			model.addAttribute("countSize",0);
+		else
+			model.addAttribute("countSize",countSize);
+			
 		model.addAttribute("boardView", boardView);
 		model.addAttribute("listPage", page);
 		
@@ -142,15 +147,25 @@ public class BoardController {
 	public String update(@RequestParam(value = "no") Integer no,@RequestParam(value = "password") String password, 
 			@RequestParam(value = "title") String title,@RequestParam(value = "content") String content,
 			@RequestParam(value = "author") String author,@RequestParam(value = "listPage") int page,
-			@RequestParam(value = "files") MultipartFile[] files)throws Exception{
+			@RequestParam(value = "files") MultipartFile[] files,	// 수정할 파일
+			@RequestParam(value = "dFile") String dFile	// 삭제 클릭된 파일
+			)throws Exception{
 
-		BoardDto boardView = this.boardService.boardView(no);
-		boardView.boardUpdate(author, password, title, content, LocalDateTime.now());
-
-		BoardDto update = this.boardService.create(boardView);
+		if(dFile.trim().length()>0) {	// 삭제버튼이 클릭된 파일이 있으면
+			String[] dFiles = dFile.trim().split(" ");	// fId들을 불러옴.
+					
+			for(String d : dFiles) {				
+				this.fileService.deleteFile(Integer.parseInt(d));	// 해당 파일들을 삭제
+			}
+		}
 		
-		if(files.length > 0) {	// 넘어온 파일이 있다면
-			this.fileService.update(files,update);	// 파일업로드 처리
+		BoardDto boardView = this.boardService.boardView(no);	    // 파일이 삭제된 후, 해당 게시글을 다시 조회한다.
+		boardView.boardUpdate(author, password, title, content, LocalDateTime.now());	// 값을 업데이트 후
+
+		BoardDto update = this.boardService.create(boardView);	// 저장
+		
+		if(!files[0].isEmpty()) {	// 넘어온 파일이 있다면
+			this.fileService.upload(files,update);	// 파일 수정 처리
 		}
 
 		return "redirect:/board/list";	 // 수정 후 목록
@@ -166,37 +181,17 @@ public class BoardController {
 	
 
 	@GetMapping("/download")
-	public void fileDownload(@RequestParam(value="fileName")String fileName,HttpServletResponse response) throws Exception{
+	public void fileDownload(@RequestParam(value="savedPath")String savedPath,HttpServletResponse response) throws Exception{
 					
-		this.fileService.download(fileName,response);
+		this.fileService.download(savedPath,response);
 		
 	}
 	
-	@GetMapping("/deleteFile")	// 파일 삭제
-	public String fileDelete(@RequestParam(value="fId")Integer fId,
-			@RequestParam(value="savedPath")String savedPath,
-			@RequestParam(value="no")Integer no, Model model
-			) {
-		
-		File file = new File(savedPath);	// 업로드 경로 + 파일명
-		if(file.exists())	// 파일 존재하면
-			file.delete();	// 지정한 경로의 파일 삭제
-		
-		/*
-		 * BoardDto boardView = this.boardService.boardView(no); List<FilePack>
-		 * filePacks = boardView.getFilePacks();
-		 */
-		
-		
-		this.fileService.deleteFile(fId);	// 아이디로 파일 삭제
-		
-		return "redirect:/board/updateForm/?no="+no;	// 삭제 후 수정폼으로 다시 이동
-	}
 	
-	@GetMapping("/downloadExcel")
-	public void saveCsv(HttpServletResponse response)throws Exception{
+	@GetMapping("/board/downloadExcel")
+	public void saveCsv(String order,HttpServletResponse response)throws Exception{
 		
-		this.boardService.saveCsv(response);
+		this.boardService.saveCsv(response,order);
 	}
 	
 	

@@ -148,12 +148,12 @@
 				</tr>
 				<tr style="line-height: 20px;"
 					th:each="boardFile, loop: ${boardView.filePacks}">
-					<th th:text="|파일 ${loop.index+1}|"></th>
+					<th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">파일 목록</th>
 					<td style="margin-left: 16px; display: inline-block;"><a
-						th:href="@{/download(fileName=${boardFile.savedName})}"
+						th:href="@{/download(savedPath=${boardFile.savedPath})}"
 						th:text="|${boardFile.originalName}|"></a><a
-						th:href="@{/download(fileName=${boardFile.savedName})}"><sub
-							style="font-size: 0.8em; color: blue;">[다운로드]</sub></a></td>
+						th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub
+							style="font-size: 0.8em; color: blue;"> [다운로드]</sub></a></td>
 				</tr>
 			</table>
 		</form>

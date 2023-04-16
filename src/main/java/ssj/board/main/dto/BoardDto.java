@@ -3,6 +3,7 @@ package ssj.board.main.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import ssj.board.main.entity.FilePack;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BoardDto {
 
 	private Integer no; // 게시글 고유 번호
@@ -40,6 +43,8 @@ public class BoardDto {
 	
 	private Integer childNo;	// 자신의 일련번호
 	
+	private Integer parentOr;	// 부모 답글의 순서
+	
 	private Boolean removeC;	// 삭제 여부
 	
 	public Board toEntity() {
@@ -48,32 +53,13 @@ public class BoardDto {
 				.filePacks(filePacks)
 				.parentNo(parentNo)
 				.childNo(childNo)
+				.parentOr(parentOr)
 				.filePacks(filePacks)
 				.removeC(removeC)
 				.build();
 		return board;
 	}
 
-	@Builder
-	public BoardDto(Integer no, String author, String password, String title, String content, LocalDateTime writeDate,
-			List<Comment> cList, Integer orNo, Integer grOr, Integer grDepth, List<FilePack> filePacks,
-			Integer parentNo, Integer childNo, Boolean removeC) {
-		super();
-		this.no = no;
-		this.author = author;
-		this.password = password;
-		this.title = title;
-		this.content = content;
-		this.writeDate = writeDate;
-		this.cList = cList;
-		this.orNo = orNo;
-		this.grOr = grOr;
-		this.grDepth = grDepth;
-		this.filePacks= filePacks;
-		this.parentNo = parentNo;
-		this.childNo = childNo;
-		this.removeC= removeC;
-	}
 	
 	public void boardUpdate(String author, String password, String title, String content, LocalDateTime writeDate) {
 		this.author = author;
@@ -83,14 +69,4 @@ public class BoardDto {
 		this.writeDate = writeDate;	
 	}
 	
-	/*
-	 * public String getBoardOrNo() {
-	 * 
-	 * String orderNo = "";
-	 * 
-	 * if(this.grDepth > 1) { // 답변일 경우 StringBuilder sb = new StringBuilder();
-	 * for(int i = 1; i < this.grDepth; i++) { sb.append("&nbsp;&nbsp;"); }
-	 * sb.append(this.orNo); orderNo = sb.toString(); } else { // 답변이 아닐 경우 orderNo
-	 * = "-"; } return orderNo; }
-	 */
 }

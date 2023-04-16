@@ -1,11 +1,15 @@
 package ssj.board.main.service;
 
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,8 +35,6 @@ public class BoardService {
 	private final BoardRepository boardRepository;
 	private final FileRepository fileRepository;
 	
-
-
 	public BoardDto create(BoardDto boardDto){ // 등록
 		return this.boardRepository.save(boardDto.toEntity()).toDto();
 	}
@@ -97,55 +99,100 @@ public class BoardService {
 		this.boardRepository.updateGr(no,orNo, grOr);
 	}
 
-	public void orGrCheck(BoardDto result,BoardDto check){
+	public void orGrCheck(BoardDto result,BoardDto check){	// 원글 답글 체크
 		
 		if(check == null) {	// 새글
-			result.setOrNo(result.getNo());	// 게시글 고유 번호로 그룹 번호를 초기화
+			result.setOrNo(result.getNo());		// 게시글 고유 번호로 그룹 번호를 초기화
+			result.setChildNo(result.getNo());	// 자신의 일련번호를 추가
 			create(result);		// 원글 등록
 			
 		}else {				// 답글
 			result.setOrNo(check.getOrNo());		// 원글의 그룹 번호로 초기화
 			result.setGrOr(check.getGrOr());		// 원글의 그룹 순서로 초기화
 			result.setGrDepth(check.getGrDepth()+1);// 깊이 증가
+			result.setParentNo(check.getChildNo());	// 부모글의 일련번호로 초기화
+			result.setChildNo(result.getNo());		// 자신의 일련번호 추가
+			
+			int number = this.boardRepository.parentNoCount(result.getParentNo());	// 부모글에 달린 답글의 수
+			result.setParentOr(number+1);	// 수로 번호를 매김
+			
 			create(result);				// 답글 등록
 			updateGr(result.getNo(), result.getOrNo(), result.getGrOr());
 		}
 	}
 	
-	public void saveCsv(HttpServletResponse response) throws Exception {    // 엑셀 파일로 저장
+	public void saveCsv(HttpServletResponse response,String or) throws Exception {    // 엑셀 파일로 저장
 
-        List<Board> list = this.boardRepository.findAll();
+		Sort sort = or.equals("desc") ? Sort.by("orNo").descending() : Sort.by("orNo").ascending();	// 원글 정렬 기준
+		
+		sort = sort.and(Sort.by("grOr").ascending());
+		
+		List<Board> list = this.boardRepository.findAll(sort);
 
-        String[] menu = {"번호", "제목", "작성자", "내용", "작성일" ,
-        		"그룹 번호","그룹 순서","답변의 깊이"};   // Header로 사용할 column들
-        String fileName = "download.xlsx";
-	    Workbook workbook = new XSSFWorkbook();	// 엑셀 파일을 생성하기 위한 Workbook 객체 생성
+        String[] menu = {"번호","제목", "작성자", "내용", "작성일"};   // Header로 사용할 column들
+        String fileName = "writing_"+or+".xlsx";
+	    Workbook workbook = new XSSFWorkbook();	     // 엑셀 파일을 생성하기 위한 Workbook 객체 생성
 	    Sheet sheet = workbook.createSheet("게시판"); // 엑셀 파일을 생성하기 위한 Workbook 객체 생성
-	    sheet.setColumnWidth(0, 2000);
-	    sheet.setColumnWidth(1, 20000);
-	    sheet.setColumnWidth(2, 20000);
-	    sheet.setColumnWidth(3, 50000);
+	    
+	    CellStyle headerStyle = workbook.createCellStyle();	// 엑셀의 헤더 스타일을 설정함.
+	    headerStyle.setAlignment(HorizontalAlignment.CENTER);
+	    
+	    sheet.setColumnWidth(0, 1200);
+	    sheet.setColumnWidth(1, 15000);
+	    sheet.setColumnWidth(2, 5000);
+	    sheet.setColumnWidth(3, 30000);
+	    sheet.setColumnWidth(4, 5000);
 	    
 	    // Header에 Menu들을 추가
 	    Row headerRow = sheet.createRow(0);
+	    
 	    for(int i=0;i<menu.length;i++) {	
-	    	headerRow.createCell(i).setCellValue(menu[i]);
+	    	Cell cell = headerRow.createCell(i);
+	    	cell.setCellValue(menu[i]);
+	    	cell.setCellStyle(headerStyle);	// header는 가운데 정렬
 	    }
 	    
+	    CellStyle dateCellStyle = workbook.createCellStyle();	// 엑셀의 날짜 스타일을 설정함.
+	    dateCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+	    
+	    int size = list.size();
 	    // Body에 데이터들을 추가
-	    for(int i=0;i<list.size();i++) {	
-	    	Row dataRow = sheet.createRow(i+1);	// 엑셀 행 생성
+	    for(int i=0;i<size;i++) {	
+	    	Row dataRow = sheet.createRow(i+1);			// 엑셀 행 생성
 	    	BoardDto boardDto = list.get(i).toDto();	// 엑셀 행 데이터 생성
-	    		dataRow.createCell(0).setCellValue(i+1);
-	    		dataRow.createCell(1).setCellValue(boardDto.getTitle());
-	    		dataRow.createCell(2).setCellValue(boardDto.getAuthor());
-	    		dataRow.createCell(3).setCellValue(boardDto.getContent());
-	    		dataRow.createCell(4).setCellValue(boardDto.getWriteDate());
-	    		dataRow.createCell(5).setCellValue(boardDto.getOrNo());
-	    		dataRow.createCell(6).setCellValue(boardDto.getGrOr());
-	    		dataRow.createCell(7).setCellValue(boardDto.getGrDepth());
+	    	String dateFormat = boardDto.getWriteDate().format(DateTimeFormatter.ofPattern("yyyy. M. d. hh:mm:ss"));	    	
+	    	dataRow.createCell(0).setCellValue(String.valueOf(size-i));
+	    	String re = "";
+	    	
+	    	for(int j=0;j<boardDto.getGrDepth();j++) {	// 답글의 깊이만큼 공백을 대입
+	    		re += "    ";
+	    	}
+	    	
+	    	if(re.equals("")) {
+	    		if(boardDto.getRemoveC() != null) 
+    				dataRow.createCell(1).setCellValue("삭제된 메시지입니다.");
+    			else {
+    				dataRow.createCell(1).setCellValue(boardDto.getTitle());
+    				dataRow.createCell(2).setCellValue(boardDto.getAuthor());
+    				dataRow.createCell(3).setCellValue(boardDto.getContent());    				
+    			}
+	    	}else {
+	    		re += "[RE] ";
+	    		if(boardDto.getRemoveC() != null) 
+    				dataRow.createCell(1).setCellValue(re+"삭제된 메시지입니다.");
+    			else {
+    				dataRow.createCell(1).setCellValue(re+boardDto.getTitle());
+    				dataRow.createCell(2).setCellValue(boardDto.getAuthor());
+    				dataRow.createCell(3).setCellValue(boardDto.getContent());
+    			}
+	    		
+	    	}
+			Cell cell = dataRow.createCell(4);
+			cell.setCellValue(dateFormat);
+			cell.setCellStyle(dateCellStyle);
+
 	    }
-	
+	    		
 	    // 엑셀 파일 다운로드를 위한 설정
 	    response.setContentType("application/vnd.ms-excel");
 	    response.setHeader("Content-Disposition", "attachment; filename=" + fileName);

@@ -93,7 +93,7 @@
 
 		<div class="create">
 			<!--  게시글 등록  -->
-			<a th:href="@{/downloadExcel}">게시글 다운로드</a>&emsp; <a th:href="@{/}">게시글 목록</a>&emsp; <a th:href="@{/board/createForm}">게시글
+			<a th:href="@{/board/downloadExcel(order=${or})}">게시글 다운로드</a>&emsp; <a th:href="@{/}">게시글 목록</a>&emsp; <a th:href="@{/board/createForm}">게시글
 				작성</a>
 		</div>
 
@@ -107,19 +107,17 @@
 			<tr>
 				<th width="40px;">번호</th>
 				<th width="500px;">제목</th>
-				<th style="text-align: left;" width="120px;">작성자</th>
+				<th width="120px;">작성자</th>
 				<th width="90px;">작성일</th>
 			</tr>
 
 			<tr th:each="board, loop : ${list}">
-
-
 				<td style="color: gray;"
 					th:text="${list.totalElements - loop.index} - ( ${list.number}* ${view} )"></td>
 
 				<td style="text-align: left;" th:if="${board.removeC != true}"><span
-					th:if="${board.grDepth > 1}"> <!--  답글부터 공백 추가 --> <span
-						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span>
+					th:if="${board.grDepth > 0}"><span
+						th:each="depth : ${#numbers.sequence(1,board.grDepth)}">&emsp;</span>
 						<img style="width: 20px; height: 15px;"
 						th:src="@{/image/reply.png}"> [<a
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}">RE</a>]
@@ -134,13 +132,12 @@
 						style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 						th:text="|(${board.filePacks.size()})|"></a>
-
 				</span></td>
 
 				<td style="color: skyblue; text-align: left;"
 					th:unless="${board.removeC != true}"><span
-					th:if="${board.grDepth > 1}"> <!--  답글부터 공백 추가 --> <span
-						th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span>
+					th:if="${board.grDepth > 0}">&nbsp;<span
+						th:each="depth : ${#numbers.sequence(1,board.grDepth)}">&emsp;</span>  <!--  답글부터 공백 추가 --> 
 						<img style="width: 20px; height: 15px;"
 						th:src="@{/image/reply.png}"> [RE]
 				</span> 삭제된 게시글입니다.</td>
