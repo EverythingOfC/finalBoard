@@ -39,13 +39,15 @@ public class BoardDto {
 	
 	private List<FilePack> filePacks;	// 파일 정보
 
-	private Integer parentNo;	// 부모 답글의 일련번호
+	private Integer parentNo;	// 부모 글의 일련번호
 	
-	private Integer childNo;	// 자신의 일련번호
+	private Integer childNo;	// 현재 글의 일련번호
 	
-	private Integer parentOr;	// 부모 답글의 순서
+	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서
 	
 	private Boolean removeC;	// 삭제 여부
+	
+	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
 	
 	public Board toEntity() {
 		Board board = Board.builder().no(no).author(author).password(password).title(title).cList(cList)
@@ -56,6 +58,7 @@ public class BoardDto {
 				.parentOr(parentOr)
 				.filePacks(filePacks)
 				.removeC(removeC)
+				.relation(relation)
 				.build();
 		return board;
 	}

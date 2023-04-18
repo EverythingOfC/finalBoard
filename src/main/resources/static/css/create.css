@@ -17,19 +17,25 @@ form *{
 	font-size:15px;
 }
 form input, textarea{
-	padding: 5px 6px;
+	padding: 5px;
 }
-form input[type="button"]{
+form input[type="button"],form input[type="reset"]{
 	padding: 5px 15px;
 }
 
 td,th{
 	text-align:left;
-	padding:0px;
 }
 #count{
   background:rgba(255,0,0,0.9);
   border-radius: 0.5em;
   padding: 0.5em 0.9em;
   margin-left:0.2vw;
+  font-size:9px;
+}
+sub{
+	font-size:11px;
+}
+sub:hover{
+	text-decoration:none;
 }

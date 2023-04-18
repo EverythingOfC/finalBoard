@@ -52,7 +52,7 @@ public class BoardController {
 			view = 10;
 		
 		Page<BoardDto> boardList = this.boardService.boardList(page - 1, or , view, detail, search);
-		int dCount = this.boardService.removeCount();
+		Integer dCount = this.boardService.removeCount(detail, search);
 		
 		model.addAttribute("dCount", dCount);	 // 삭제 된 게시글 수
 		model.addAttribute("list", boardList);	 // 전체 요소
@@ -115,9 +115,7 @@ public class BoardController {
 		
 		BoardDto result = this.boardService.create(boardDto);	// 게시글 내용을 먼저 저장
 		
-		if(!files[0].isEmpty()) {	// 넘어온 파일이 있다면
-			this.fileService.upload(files,result);	// 파일업로드 처리
-		}
+		this.fileService.upload(files,result);	// 파일업로드 처리
 		
 		this.boardService.orGrCheck(result,check);	// 원글인지 답글인지 판별 후 저장
 		
@@ -137,6 +135,7 @@ public class BoardController {
 		else
 			model.addAttribute("countSize",countSize);
 			
+		
 		model.addAttribute("boardView", boardView);
 		model.addAttribute("listPage", page);
 		
@@ -164,11 +163,10 @@ public class BoardController {
 
 		BoardDto update = this.boardService.create(boardView);	// 저장
 		
-		if(!files[0].isEmpty()) {	// 넘어온 파일이 있다면
-			this.fileService.upload(files,update);	// 파일 수정 처리
-		}
+		this.fileService.upload(files,update);	// 파일 수정 처리
 
-		return "redirect:/board/list";	 // 수정 후 목록
+
+		return "redirect:/board/list?listPage="+page;	 // 수정 후 목록
 	}
 
 	@GetMapping("/board/delete") // 게시글 삭제
@@ -189,9 +187,9 @@ public class BoardController {
 	
 	
 	@GetMapping("/board/downloadExcel")
-	public void saveCsv(String order,HttpServletResponse response)throws Exception{
+	public void saveCsv(String order,String detail,String search,HttpServletResponse response)throws Exception{
 		
-		this.boardService.saveCsv(response,order);
+		this.boardService.saveCsv(response,order,detail,search);
 	}
 	
 	

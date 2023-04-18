@@ -42,7 +42,7 @@ form input[type="button"], form input[type="submit"]{
 .namePassword input,.textCreate textarea, .textView textarea{
 	padding:4px 3px;
 }
-.comment input[type='button'], .comment input[type='submit']{
+.comment input[type='button'], .comment input[type='submit'], form input[type="reset"]{
 	padding:1px 12px;
 	font-size:10px;
 }

@@ -20,10 +20,7 @@ function checkPw(pw) {
 	} else if (reg.test(pw)) {
 		alert('같은 문자를 4번 연속해서 넣을 수 없습니다.');
 		return false;
-	}/*else if(pw!=pwC){
-		alert('비밀번호가 일치하지 않습니다.');
-		return false;
-	}*/else {
+	} else {
 		return true;
 	}
 }
@@ -174,7 +171,6 @@ function cJoinBoard() {	// 게시글 생성
 		content.focus();
 		return false;
 	}
-
 	document.create.submit();
 }
 

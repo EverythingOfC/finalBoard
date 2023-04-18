@@ -23,70 +23,184 @@ function check(obj, max) {
 }
 
 function checkSize(obj) {	// 파일 용량 제한(등록 시)
-	var fileSizeLimit = 30 * 1024 * 1024; // 30MB
-	var files = obj.files;
-	var fileSize = 0;	// 합
 
-	for (var i = 0; i < files.length; i++) {
-		fileSize += files[i].size;
-		if (fileSize > fileSizeLimit) {
-			alert("최대 30MB까지 업로드 가능합니다.");
-			obj.value = '';
-			return false;
+	const fileSizeLimit = 30 * 1024 * 1024; // 30MB
+	const fileInputs = document.querySelectorAll('input[type="file"]');
+	const parent = obj.parentNode;	// 현재 파일 필드의 부모를 선택
+	const oSize = document.getElementById('oSize');	// 기존 업로드된 파일의 크기를 가진 요소를 얻어옴.
+	const size = document.getElementById('size');	// 업로드할 파일의 총 용량
+
+	let fileSize = 0;	 // 현재 파일 필드의 크기
+	let totalSize = 0;	 // 전체 파일 필드의 크기
+	
+	if(oSize)
+		totalSize = parseInt(oSize.value);
+
+	const ps = parent.querySelectorAll('p');
+	ps.forEach(p => {
+		parent.removeChild(p);
+	});
+
+
+	for (let i = 0; i < fileInputs.length; i++) {// 파일 필드 순회
+
+		const files = fileInputs[i].files;	     // 사이즈 체크를 위해, 각 파일필드의 모든 파일들을 저장
+		const prefileList = fileInputs[i].parentNode;
+		
+
+		for (let j = 0; j < files.length; j++) { // 파일 필드의 파일들을 순회
+			totalSize += files[j].size;	// 파일의 크기 누적
+
+			if (totalSize > fileSizeLimit) {
+				alert('최대 30MB까지 업로드 가능합니다.');
+				obj.value = '';
+				
+				const fileList = obj.parentNode;	// 해당 파일 필드의 부모 요소
+				const ps = fileList.querySelectorAll('p');	// 해당 파일 필드의 p태그를 가져옴.
+
+				ps.forEach(p => {
+					fileList.removeChild(p);
+				});
+				return false;
+			}
+			else if (parent.id == prefileList.id) {	// 해당 파일 필드인 경우에만 표시
+			
+				const p = document.createElement('p');
+				p.innerText = `파일명: ${files[j].name}`;
+				prefileList.appendChild(p); // 해당 파일 필드에, 파일명들을 표시
+				if(j==files.length-1){	// 마지막일 때 br태그 추가
+					const br = document.createElement('br');
+					prefileList.appendChild(br);
+				}
+			}
 		}
+		
 	}
+		const f = obj.files;
+		for(let i=0;i<f.length;i++){
+			fileSize += f[i].size;
+			console.log(fileSize);	
+		}
+		
+		size.innerText = (parseFloat(size.innerText)+ fileSize/(1024*1024)).toFixed(2);
+		
 	return true;
 }
 
-function updateSize(obj) {	// 파일 용량 제한(수정 시)
-	var fileSizeLimit = 30 * 1024 * 1024; // 30MB
-	const oSize = document.getElementById('oSize').value;	// 기존 업로드된 파일의 크기를 얻어옴.
-	
-	var files = obj.files;
-	var fileSize = parseInt(oSize);		// 기존 업로드된 파일의 크기를 저장
+function insertField(obj) {
+	// +버튼 클릭 시 파일 필드와 -버튼 추가
+	const ff = document.createElement('input');
+	const plus = document.createElement('input');
+	const minus = document.createElement('input');
+	const space = document.createTextNode(' ');
+	const i = document.querySelectorAll('input[type="file"]').length;	// 파일필드의 길이만큼 얻어옴.(처음엔 1)
 
-	for (var i = 0; i < files.length; i++) {
-		fileSize += files[i].size;
-		if (fileSize > fileSizeLimit) {
-			alert("최대 30MB까지 업로드 가능합니다.");
-			obj.value = '';
-			return false;
-		}
-	}
-	return true;
+	ff.type = 'file';	// input type file 추가
+	ff.name = 'files';
+	ff.id = `files-${i}`;
+	ff.multiple = 'multiple';
+	ff.addEventListener('change', function() {	// change이벤트가 발생했을 때, 실행되는 함수
+		checkSize(ff);	
+	});
+
+	plus.type = "button";	// +버튼 추가
+	plus.style.padding = "0 8px 2px 8px";
+	plus.value = "+";
+	plus.addEventListener('click', function() {
+		insertField(plus);
+	});
+
+	minus.type = "button";	// -버튼 추가
+	minus.style.padding = "0 9px 2px 9px";
+	minus.value = "-";
+	minus.addEventListener('click', function() {
+		deleteField(minus);
+	});
+
+	// 파일 리스트를 표시할 div태그 생성
+	const fileListDiv = document.createElement('div');
+	fileListDiv.id = `file-list-${i}`;
+ 	const newTd = document.getElementById('fileField');	// 파일리스트의 부모객체
+	const parent = obj.parentNode;
+	const nextSibling = parent.nextElementSibling;
+
+	if (nextSibling) {  // 다음 요소가 있다면
+		newTd.insertBefore(fileListDiv, nextSibling);  // 해당 요소 바로 다음에 추가
+	} else {  // 다음 요소가 없다면
+		newTd.appendChild(fileListDiv); // 해당 파일 필드와 연결된 파일 리스트를 표시할 div태그 추가
+	}	
+		fileListDiv.appendChild(plus);
+		fileListDiv.appendChild(space);
+		fileListDiv.appendChild(minus);
+		fileListDiv.appendChild(ff);	// 파일리스트 div 자식에 input type file 생성
+
 }
 
-function dFile(obj,fId,fSize) {	// 확인을 누르면 해당 파일을 감춤. 용량도 감소해야함.
+function deleteField(obj) {	// 필드 삭제 시, 용량도 그만큼 삭제
+	const parent = obj.parentNode;	// 파일 필드의 부모인 파일 필드를 감싸는 div를 불러옴.
+	
+	let child = parent.childNodes;	// 자식노드들을 반환
+	let files = child[3].files;		// 자식노드중 4번째
+	let total = 0;
+	
+	for(let i=0;i<files.length;i++){
+		total += files[i].size;
+	}	
+	
+	let size = document.getElementById("size");
+	size.innerText = (parseFloat(size.innerText) - total/(1024*1024)).toFixed(2);
+	if(size.innerText=='-0.00')
+		size.innerText = '0';
+	
+	parent.parentNode.removeChild(parent);	// 불러온 div의 부모에서 파일필드를 감싸는 div자식을 삭제
 
-	if (confirm('삭제하시겠습니까?')) {
-		const d = document.getElementById(obj);	// 고유 번호로 span태그를 얻어옴
-		d.style.display = 'none';	// 해당 파일 이름을 감춤.
-
-		const dFile = document.getElementById("dFile");	// input type hidden의 속성을 받아옴. 
-		dFile.value += fId + " ";	// 파일명 추가
-		
-		const oSize = document.getElementById("oSize");	// 기존의 파일 사이즈가 저장된 필드
-		
-		oSize.value -= parseInt(fSize);	// 용량 감소
-
-		return true;
-	}
-
-	return false;
 }
 
-function init(size) {	// 초기화버튼 클릭시 숨겨진 태그와 hidden태그, 파일 용량을 원상 복구
-	
+
+function dFile(obj, fId, fSize) {	// 확인을 누르면 해당 파일을 감춤. 용량도 감소해야함.
+
+	const d = document.getElementById(obj);	// 고유 번호로 span태그를 얻어옴
+	d.style.display = 'none';	    // 해당 파일 이름을 감춤.
+
+	const dFile = document.getElementById("dFile");	// input type hidden의 속성을 받아옴. 
+	const oSize = document.getElementById("oSize");	// 기존의 파일 사이즈가 저장된 필드
+
+	dFile.value += fId + " ";	    // 파일 ID 추가
+	oSize.value -= parseInt(fSize);	// 용량 감소
+}
+
+function init(size) {	// 수정 페이지에서 재입력 클릭시 숨겨진 태그와 hidden태그, 파일 용량을 원상 복구
+
 	const td = document.querySelectorAll("#fList span");
 	const dFile = document.getElementById("dFile");	// input type hidden의 속성을 받아옴. 
 	const oSize = document.getElementById("oSize");	// 기존의 파일 사이즈가 저장된 필드
-	
-	for (var i=0;i<td.length;i++) {
+
+	for (var i = 0; i < td.length; i++) {
 		td[i].style.display = 'inline';
 	}
+
+	const field = document.getElementById("fileField");
+	const ps = field.querySelectorAll("p");
+
+	ps.forEach(p => {
+		field.removeChild(p);	// 이전에 표시된 파일목록들을 제거
+	});
+
 
 	dFile.value = "";	// 삭제할 fID를 모두 없앰.	
 	oSize.value = size;	// 서버에서 가져온 기존의 용량으로 할당
 }
 
 
+function initC() {	// 등록 페이지에서 div태그와 파일 용량을 원상 복구
+	const field = document.getElementById("fileField");
+	const div = field.querySelectorAll("div");	// div태그들을 불러옴.
+	const size = document.getElementById("size");	// 전체 용량을 담은 태그
+
+	for(let d=1;d<div.length;d++){	// 두 번째 필드부터 제거
+		div[d].remove();	
+	}
+
+	size.innerText = '0';	// 파일 용량 표시 0으로 초기화
+
+}

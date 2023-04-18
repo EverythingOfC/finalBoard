@@ -28,27 +28,32 @@ public class FileService {
 	public void upload(MultipartFile[] files,BoardDto result) {
 		
 		for(MultipartFile m : files) {
-			String fName = m.getOriginalFilename();		// 원본 파일 이름
-			String sName = UUID.randomUUID() + "_" + fName;	// 저장되는 파일 이름
-			String contentType = m.getContentType();	// 응답 형태
-			long size = m.getSize();	// 파일 크기
-			String savePath = System.getProperty("user.dir") + "/files/" + sName;
 			
-			try {
-				m.transferTo(new File(savePath));	// 서버 로컬 파일에 파일을 저장
+			String fName = m.getOriginalFilename();		// 원본 파일 이름
+			if(!fName.equals("")) {	// 비어있지 않으면
+				String sName = UUID.randomUUID() + "_" + fName;	// 저장되는 파일 이름
+				String contentType = m.getContentType();	// 파일의 MIME 타입
+				long size = m.getSize();	// 파일 크기
+				String savePath = System.getProperty("user.dir") + "/files/" + sName;
 				
-				FilePack filePack = new FilePack();
-				filePack.setOriginalName(fName);
-				filePack.setSavedName(sName);
-				filePack.setType(contentType);
-				filePack.setSavedPath(savePath);
-				filePack.setSize(size);
-				filePack.setBoard(result.toEntity());
-				filePack.setCreatedDate(LocalDateTime.now());
-				
-				this.fileRepository.save(filePack);
-			}catch(IOException e) {
-				e.printStackTrace();
+				try {
+					// 지정된 경로에 해당하는 파일 객체를 생성한다.
+					// 서버로 넘어온 파일의 내용을 지정된 파일 객체에 전송(복사)한다.
+					m.transferTo(new File(savePath));
+					
+					FilePack filePack = new FilePack();
+					filePack.setOriginalName(fName);
+					filePack.setSavedName(sName);
+					filePack.setType(contentType);
+					filePack.setSavedPath(savePath);
+					filePack.setSize(size);
+					filePack.setBoard(result.toEntity());
+					filePack.setCreatedDate(LocalDateTime.now());
+					
+					this.fileRepository.save(filePack);
+				}catch(IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -65,19 +70,21 @@ public class FileService {
 		         OutputStream outputStream = response.getOutputStream()) {
 		        // 파일 다운로드를 위한 Response Header 설정
 		        response.setContentType("application/octet-stream"); // 응답데이터가 binary데이터
-		        response.setHeader("Content-Disposition", "attachment; filename=\"" + 	// 데이터의 배치를 첨부파일의 형태로
+		        
+		        // 서버에서 전송한 데이터가 브라우저에서 어떻게 처리될 지 나타냄, attchment: 해당 데이터를 파일로 다운로드하도록 함.
+		        response.setHeader("Content-Disposition", "attachment; filename=\"" + 
 		        new String(savedPath.getBytes("UTF-8"),"ISO-8859-1") + "\"");	// 다운받는 이름 지정
 
 		        // 1024byte씩 끊어서 읽거나 씀.
 		        byte[] buffer = new byte[1024];
 		        int length;
-		        while ((length = inputStream.read(buffer)) > 0) {	// 데이터가 없을때까지 읽어들임
-		            outputStream.write(buffer, 0, length);	// 버퍼에 읽어들인 내용을 출력스트림에 쓴다.
+		        while ((length = inputStream.read(buffer)) > 0) {	// 파일 데이터를 1024byte씩 읽어서 버퍼에 저장
+		            outputStream.write(buffer, 0, length);		// 버퍼에 읽어들인 내용을 출력스트림에 쓴다.
 		        }
 		        outputStream.flush();
 		    } catch (IOException e) {
 		        e.printStackTrace();
-		    }			// 한글 인코딩을 위한 처리
+		    }
 	}
 
 	public void deleteFile(Integer fId)throws Exception {
@@ -87,9 +94,8 @@ public class FileService {
 			File file = new File(savedPath);
 			if(file.exists())
 				file.delete();	// 파일 경로에서 삭제
-		}
-		
-		this.fileRepository.deleteById(fId);	// 파일 엔티티에서도 삭제
+			this.fileRepository.deleteById(fId);	// 파일 엔티티에서도 삭제
+		}		
 	}
 	
 	public Integer countSize(Integer no) {

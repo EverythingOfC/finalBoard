@@ -27,6 +27,24 @@ td, th{
   border-radius: 0.5em;
   padding: 0.5em 0.9em;
 }
+
+p{
+	margin-left:15px;
+}
 .footer p{
 	text-align:center;
+	margin: 0 auto;
+}
+sub{
+	font-size:11px;
+}
+sub:hover{
+	text-decoration:none;
+}
+#fileField div input{
+	margin:0;
+	font-size:14px;
+}
+#fileField input[type="file"]{
+	padding-bottom:10px;
 }

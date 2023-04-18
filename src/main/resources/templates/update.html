@@ -12,8 +12,7 @@
 <script th:inline="javascript">
 	$(function() { // 글자 수 제한
 
-		$("#content").on(
-				"input",
+		$("#content").on("input",
 				function(e) {
 
 					var content = $(this).val();
@@ -27,8 +26,6 @@
 					}
 
 				});
-		$("#content").input();
-
 	});
 	function dCheck() {
 		if (confirm('삭제하시겠습니까?')) {
@@ -95,24 +92,32 @@
 						readonly disabled></td>
 				</tr>
 				<tr style="line-height:15px;" th:each="boardFile, loop : ${boardView.filePacks}">
-					<th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">파일 목록</th>
+					<th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">첨부파일<a id="update0"></a></th>
 					<td id="fList"><span th:id="${loop.index}" ><a style="display:inline-block; margin-left:16px;"
 					th:href="@{/download(savedPath=${boardFile.savedPath})}" th:text="|${boardFile.originalName}|"></a>
 					<a th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub style="font-size: 0.8em; color:blue;">[다운로드]</sub></a>
-					<a href="#" th:attr="onclick='dFile(\''+ ${loop.index}+ '\' , \'' + ${boardFile.fId} + '\' , \'' + ${boardFile.size} + '\')'"><sub style="font-size: 0.8em; color:red;">[삭제]</sub></a>
+					<a href="#update0" th:attr="onclick='dFile(\''+ ${loop.index}+ '\' , \'' + ${boardFile.fId} + '\' , \'' + ${boardFile.size} + '\')'"><sub style="font-size: 0.8em; color:red;">[삭제]</sub></a>
+					&emsp;<span style="font-size:0.7em" th:text="|(${#numbers.formatInteger(boardFile.size/1024.0 , 3, 'COMMA')} MB)|"></span>
 					</span></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="line-height:20px; padding-top:10px;" id="fileField">
+					<div id="file-list-0">
+					<input style="padding:0 8px 2px 8px;" type="button" name="insert" value="+" onclick="insertField(this);">&emsp;
+					<span style="color:green;">☞&nbsp; 최대 30MB까지 파일 업로드 가능<sub>(개수 제한 X)</sub></span>
+					</div><br/>
+					</td>
 				</tr>		
 				<tr>
-					<td style="text-align:right; margin-left:20px; line-height:50px;" colspan="2">
-					<input type="file" name="files" multiple onchange="updateSize(this);">
-					<span style="color:green;">&emsp;&emsp;☞&nbsp; 최대 30MB까지 업로드 가능합니다.</span>
+					<td style="margin-left:20px; line-height:50px;" colspan="2">
+					
 					</td>
 				</tr>
 			</table>			
 			<div style="text-align:center;" class="control">
 			  <input type="button" value="수정" onclick="updateBoard();">
 			  <input type="button" value="삭제" onclick="dCheck();"> 
-			  <input type="reset" value="초기화" th:onclick="'init(\'' + ${countSize} + '\')'">
+			  <input type="reset" value="재입력" th:onclick="'init(\'' + ${countSize} + '\')'">
 			  <input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${boardView.no} )}'|"> 
 			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
 			  <input type="hidden" name="dFile" id="dFile"><!-- 삭제할 파일의 ID를 담고 있음. -->

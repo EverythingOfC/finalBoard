@@ -58,16 +58,19 @@ public class Board {
 	private List<Comment> cList;		// 댓글 목록
 	
 	@Builder.Default	// 초기화 표현식을 기본값으로 하기 위함
-	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FilePack> filePacks = new ArrayList<FilePack>(); 	
 	
-	private Integer parentNo;	// 부모 답글의 일련번호
+	private Integer parentNo;	// 부모 글의 일련번호
 	
-	private Integer parentOr;	// 부모 답글의 순서
+	private Integer childNo;	// 현재 글의 일련번호
 	
-	private Integer childNo;	// 자신의 일련번호
+	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서	
 	
 	private Boolean removeC;	// 삭제 여부
+	
+	@Column(length=1000)
+	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
 	
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
@@ -83,6 +86,7 @@ public class Board {
 						.parentOr(parentOr)
 						.filePacks(filePacks)
 						.removeC(removeC)
+						.relation(relation)
 						.build();
 		return boardDto;
 	}

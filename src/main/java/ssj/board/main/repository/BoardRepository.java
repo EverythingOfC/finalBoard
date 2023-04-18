@@ -19,8 +19,13 @@ import ssj.board.main.entity.Board;
 public interface BoardRepository extends JpaRepository<Board, Integer>{
 			
 	
-	Page<Board> findAllByTitleContaining(Pageable pageable,String title);	// 제목으로 조회, 인기순이나 최신순으로 오름차순
+	Page<Board> findAllByTitleContaining(Pageable pageable,@Param(value="title")String title);	// 제목으로 조회, 인기순이나 최신순으로 오름차순
+	
 	Page<Board> findAllByAuthorContaining(Pageable pageable,String author);	// 작성자로 조회, 인기순이나 최신순으로 오름차순
+	
+	List<Board> findAllByTitleContaining(Sort sort,@Param(value="title")String title);
+	
+	List<Board> findAllByAuthorContaining(Sort sort,@Param(value="author")String author);
 	
 	Optional<Board> findByNo(Integer no);	// 상세 조회
 	
@@ -31,11 +36,17 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	void updateGr(@Param("no")Integer no, @Param("orNo")Integer orNo,@Param("grOr")Integer grOr);	// 그룹내의 순서 증가
 
 	
-	@Query("select count(b) from Board b where b.removeC = true")
-	int removeCount();		// 삭제된 게시글 개수
+	@Query("select count(b) from Board b where b.removeC = true and b.title like %:title%")
+	Integer removeCountT(@Param(value="title")String title);		// 삭제된 게시글 개수(제목 검색)
+	
+	@Query("select count(b) from Board b where b.removeC = true and b.author like %:author%")
+	Integer removeCountA(@Param(value="author")String author);		// 삭제된 게시글 개수(작성자 검색)
 	
 	List<Board> findAll(Sort sort);
 	
-	@Query("select count(*) from Board b where b.parentNo = :parentNo")	// 부모글의 달린 답글 수 카운트
-	int parentNoCount(@Param("parentNo")Integer parentNo);
+	@Query("select count(b) from Board b where b.parentNo = :parentNo")	// 부모글에 달린 답글 수 카운트
+	Integer parentNoCount(@Param("parentNo")Integer parentNo);
+	
+	@Query("select count(b) from Board b where b.grDepth = 0")	// 원글의 수
+	Integer oCount();
 }

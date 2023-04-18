@@ -175,7 +175,7 @@
 
 				<div class="namePassword">
 					<input style="text-align: left;" type="text" name="author"
-						size="18" id="cAuthor" maxlength="11" oninput="check(this,11);"
+						size="18" id="cAuthor" maxlength="11" oninput="check(this,11);" autofocus
 						placeholder="이름 (최대 10자)"> <input
 						style="text-align: left;" type="password" name="password"
 						size="18" maxlength="21" id="cPassword" oninput="check(this,21)"
@@ -188,8 +188,8 @@
 				</div>
 				<div class="wordAndCreate">
 					<span style="display: inline-block; width: 39px;" id="count">0/150</span>
-					<input style="margin-left: 469px;" type="button" value="작성"
-						onclick="cJoinBoard();">
+					<input style="margin-left: 415px;" type="button" value="작성" onclick="cJoinBoard();">
+					<input type="reset" value="재입력">
 					<div class="clear"></div>
 				</div>
 			</form>
