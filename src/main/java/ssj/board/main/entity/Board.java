@@ -47,7 +47,6 @@ public class Board {
 	@Column(columnDefinition = "DATETIME")  // 8바이트(날짜와 시간을 같이 나타냄)
 	private LocalDateTime writeDate;	// 작성일자
 	
-	
 	private Integer orNo;	// 원글의 그룹 번호
 	
 	private Integer grOr;	// (원글과 답글)그룹 순서
@@ -63,7 +62,7 @@ public class Board {
 	
 	private Integer parentNo;	// 부모 글의 일련번호
 	
-	private Integer childNo;	// 현재 글의 일련번호
+	private Integer childNo;	// 현재 글의 일련번호	
 	
 	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서	
 	

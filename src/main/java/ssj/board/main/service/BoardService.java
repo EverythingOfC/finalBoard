@@ -142,7 +142,7 @@ public class BoardService {
         String[] menu = {"번호","제목","작성자","작성일"};   // Header로 사용할 column들
         String fileName = "writing_"+or+".xlsx";
 	    Workbook workbook = new XSSFWorkbook();	     // 엑셀 파일을 생성하기 위한 Workbook 객체 생성
-	    Sheet sheet = workbook.createSheet("게시판"); // 엑셀 파일을 생성하기 위한 Workbook 객체 생성
+	    Sheet sheet = workbook.createSheet("게시판"); 
 	    
 	    CellStyle headerStyle = workbook.createCellStyle();	// 엑셀의 헤더 스타일을 설정함.
 	    headerStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -208,11 +208,13 @@ public class BoardService {
 	    // 엑셀 파일에 데이터를 기록
 	    workbook.write(response.getOutputStream());
 	    
-	    // Workbook 객체와 스트림 닫기
-	    workbook.close();
-	    
-	    // HTTP응답을 보내기 전, 출력 버퍼에 저장된 데이터를 클라이언트에게 전송, 전송 완료시 버퍼를 비움.
+	    // 출력 스트림에 남은 데이터를 모두 출력
 	    response.getOutputStream().flush();
+	    
+	    
+	    // Workbook 객체와 스트림 닫기
+	    workbook.close();	    
+	    // HTTP응답을 보내기 전, 출력 버퍼에 저장된 데이터를 클라이언트에게 전송, 전송 완료시 버퍼를 비움.
 	    response.getOutputStream().close();
       
     }

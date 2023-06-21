@@ -153,7 +153,13 @@
 						th:href="@{/download(savedPath=${boardFile.savedPath})}"
 						th:text="|${boardFile.originalName}|"></a><a
 						th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub
-							style="font-size: 0.8em; color: blue;"> [다운로드]</sub></a></td>
+							style="font-size: 0.8em; color: blue;"> [다운로드]</sub></a>&emsp;
+						<span style="font-size:0.7em;" th:text="${boardFile.size > 0 ? #numbers.formatInteger(boardFile.size/(1024*1024.0)*1024, 4, 'COMMA') + ' MB' : '0MB'}"></span>
+					</td>
+				</tr>
+				<tr th:if="${total>0}">
+					<th>총 크기</th>
+					<td style="text-align:center;" th:text="|총 ${total > 0 ? #numbers.formatInteger(total/(1024*1024.0)*1024, 3, 'COMMA') + ' MB' : '0MB'}|"></td>
 				</tr>
 			</table>
 		</form>
@@ -173,10 +179,10 @@
 				<input type="hidden" name="no" th:value="${no}"> <input
 					type="hidden" name="listPage" th:value="${listPage}">
 
-				<div class="namePassword">
+				<div class="namePassword"><label for="cAuthor"></label>
 					<input style="text-align: left;" type="text" name="author"
-						size="18" id="cAuthor" maxlength="11" oninput="check(this,11);" autofocus
-						placeholder="이름 (최대 10자)"> <input
+						size="18" id="cAuthor" maxlength="11" oninput="check(this,11);"
+						placeholder="이름 (최대 10자)"> <label for="cPassword"></label><input
 						style="text-align: left;" type="password" name="password"
 						size="18" maxlength="21" id="cPassword" oninput="check(this,21)"
 						placeholder="비밀번호 (최대 20자)">
@@ -226,7 +232,7 @@
 			<a th:id="|comment${comment.coNo}|"></a>
 			<!--  수정하면 지정한 위치로 이동 -->
 			<div class="profile">
-				<img width="35" th:src="@{/image/person.png}">&nbsp; <span
+				<img width="35" th:src="@{/image/person.png}" alt="사람">&nbsp; <span
 					style="display: inline-block; padding-bottom: 7px;"
 					th:text="${comment.author}"></span> <span
 					style="color: #999; float: right; margin-right: 10px;"

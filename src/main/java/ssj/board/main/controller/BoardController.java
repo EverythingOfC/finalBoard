@@ -1,6 +1,7 @@
 package ssj.board.main.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import ssj.board.main.dto.BoardDto;
 import ssj.board.main.dto.CommentDto;
+import ssj.board.main.entity.FilePack;
 import ssj.board.main.service.BoardService;
 import ssj.board.main.service.CommentService;
 import ssj.board.main.service.FileService;
@@ -75,8 +77,15 @@ public class BoardController {
 			
 		Page<CommentDto> commentList = this.commentService.commentList(cPage-1, or,no);
 		
+		List<FilePack> filePacks = boardDto.getFilePacks();
+		long total = 0;
+		for(FilePack f : filePacks) {
+			total += f.getSize();
+		}
+		
 		model.addAttribute("list", commentList);
 		model.addAttribute("boardView", boardDto);
+		model.addAttribute("total",total);
 		model.addAttribute("listPage", listPage);
 		model.addAttribute("cPage", cPage);
 		model.addAttribute("no", no);
@@ -104,7 +113,7 @@ public class BoardController {
 			@RequestParam(value = "content") String content,	// 내용
 			@RequestParam(value = "no",defaultValue = "0") int no,	// 원글인지 답글인지 판별 
 			@RequestParam(value = "listPage") int page,	// 페이지
-			@RequestParam(value = "files")MultipartFile[] files	// 넘어가는 파일들
+			@RequestParam(value = "files",required=false)MultipartFile[] files	// 넘어가는 파일들
 			)throws Exception {	
 		
 		
@@ -146,7 +155,7 @@ public class BoardController {
 	public String update(@RequestParam(value = "no") Integer no,@RequestParam(value = "password") String password, 
 			@RequestParam(value = "title") String title,@RequestParam(value = "content") String content,
 			@RequestParam(value = "author") String author,@RequestParam(value = "listPage") int page,
-			@RequestParam(value = "files") MultipartFile[] files,	// 수정할 파일
+			@RequestParam(value = "files",required = false) MultipartFile[] files,	// 수정할 파일
 			@RequestParam(value = "dFile") String dFile	// 삭제 클릭된 파일
 			)throws Exception{
 

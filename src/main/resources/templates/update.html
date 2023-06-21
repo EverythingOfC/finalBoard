@@ -1,149 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>게시판 홈페이지</title>
-<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
-<link rel="stylesheet" type="text/css" th:href="@{/css/update.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/update.css}"/>
 
 <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
 <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
-	$(function() { // 글자 수 제한
+   $(function() { // 글자 수 제한
 
-		$("#content").on("input",
-				function(e) {
+      $("#content").on("input",
+            function(e) {
 
-					var content = $(this).val();
-					$(this).height(
-							(22.8 + (content.split('\n').length + 1) * 1.2)
-									+ 'em'); // 줄 높이 지정
-					$('#count').html(content.length + '/375');
-					if (content.length > 375) {
-						$(this).val(content.substring(0, 375));
-						$('#count').html("375/375");
-					}
+               var content = $(this).val();
+               $(this).height(
+                     (22.8 + (content.split('\n').length + 1) * 1.2)
+                           + 'em'); // 줄 높이 지정
+               $('#count').html(content.length + '/375');
+               if (content.length > 375) {
+                  $(this).val(content.substring(0, 375));
+                  $('#count').html("375/375");
+               }
 
-				});
-	});
-	function dCheck() {
-		if (confirm('삭제하시겠습니까?')) {
-			const no = "[[${boardView.no}]]";
-			location.href = '/board/delete?no=' + no;
-		}
-	}
+            });
+   });
+   function dCheck() {
+      if (confirm('삭제하시겠습니까?')) {
+         const no = "[[${boardView.no}]]";
+         location.href = '/board/delete?no=' + no;
+      }
+   }
 </script>
 </head>
 <body>
 
-	<div class="title">
-		<!--  제목  -->
-		<h2>
-			<a
-				th:href="@{/board/updateForm(no=${boardView.no},listPage=${listPage})}">This
-				is Writing<sub style="font-size: 0.6em;"> (update) </sub>
-			</a>
-		</h2>
-		<h2 th:if="${boardView.grDepth} == 1">게시글 수정</h2>
-		<h2 th:unless="${boardView.grDepth} == 1">답글 수정</h2>
-	</div>
+   <div class="title">
+      <!--  제목  -->
+      <h2>
+         <a
+            th:href="@{/board/updateForm(no=${boardView.no},listPage=${listPage})}">This
+            is Writing<sub style="font-size: 0.6em;"> (update) </sub>
+         </a>
+      </h2>
+      <h2 th:if="${boardView.grDepth} == 1">게시글 수정</h2>
+      <h2 th:unless="${boardView.grDepth} == 1">답글 수정</h2>
+   </div>
 
-	<div class="boardUpdate">
-		<!--  게시글 수정  -->
-		<form th:action="@{/board/update}" id="update" method="post" name="update" enctype="multipart/form-data">
-			<input type="hidden" name="no" th:value="${boardView.no}"> <input
-				type="hidden" name="listPage" th:value="${listPage}">
-			<table>
-				<tr>
-					<th><label for="author">작성자</label></th>
-					<td><input type="text" name="author" id="author"
-						placeholder="이름 (최대 10자)" maxlength="11"
-						th:value="${boardView.author}" size="26" required
-						oninput="check(this,11);"></td>
-				</tr>
-				<tr>
-					<th><label for="password">비밀번호</label></th>
-					<td><input type="text" name="password" id="password"
-						maxlength="21" size="26" th:value="${boardView.password}" required
-						placeholder="비밀번호 (최대 20자)" oninput="check(this,21);"></td>
-				</tr>
-				<tr>
-					<th><label for="title">제목</label></th>
-					<td><input type="text" name="title" id="title" size="65"
-						placeholder="글 제목 (최대 40자)" maxlength="41"
-						th:value="${boardView.title}" required oninput="check(this,41);"></td>
-				</tr>
-				<tr>
-					<th><label for="content">내용</label></th>
+   <div class="boardUpdate">
+      <!--  게시글 수정  -->
+      <form th:action="@{/board/update}" id="update" method="post" name="update" enctype="multipart/form-data">
+         <input type="hidden" name="no" th:value="${boardView.no}"> <input
+            type="hidden" name="listPage" th:value="${listPage}">
+         <table>
+            <tr>
+               <th><label for="author">작성자</label></th>
+               <td><input type="text" name="author" id="author"
+                  placeholder="이름 (최대 10자)" maxlength="11"
+                  th:value="${boardView.author}" size="26" required
+                  oninput="check(this,11);"></td>
+            </tr>
+            <tr>
+               <th><label for="password">비밀번호</label></th>
+               <td><input type="text" name="password" id="password"
+                  maxlength="21" size="26" th:value="${boardView.password}" required
+                  placeholder="비밀번호 (최대 20자)" oninput="check(this,21);"></td>
+            </tr>
+            <tr>
+               <th><label for="title">제목</label></th>
+               <td><input type="text" name="title" id="title" size="65"
+                  placeholder="글 제목 (최대 40자)" maxlength="41"
+                  th:value="${boardView.title}" required oninput="check(this,41);"></td>
+            </tr>
+            <tr>
+               <th><label for="content">내용</label></th>
 
-					<td><textarea name="content" id="content" rows="18" cols="65"
-							placeholder="글 내용 (최대 375자)" maxlength="376"
-							oninput="check(this,376);" th:text="${boardView.content}"
-							required>
-					</textarea> <span id="count">0/375</span></td>
-				</tr>
+               <td><textarea name="content" id="content" rows="18" cols="65"
+                     placeholder="글 내용 (최대 375자)" maxlength="376"
+                     oninput="check(this,376);" th:text="${boardView.content}"
+                     required>
+               </textarea> <span id="count">0/375</span></td>
+            </tr>
 
-				<tr>
-					<th style="padding-bottom:10px;"><label for="writeDate"> 게시일 </label></th>
-					<td style="padding-bottom:10px;"><input type="text" id="writeDate" name="writeDate"
-						size="26"
-						th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH시 m분 s초')}"
-						readonly disabled></td>
-				</tr>
-				<tr style="line-height:15px;" th:each="boardFile, loop : ${boardView.filePacks}">
-					<th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">첨부파일<a id="update0"></a></th>
-					<td id="fList"><span th:id="${loop.index}" ><a style="display:inline-block; margin-left:16px;"
-					th:href="@{/download(savedPath=${boardFile.savedPath})}" th:text="|${boardFile.originalName}|"></a>
-					<a th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub style="font-size: 0.8em; color:blue;">[다운로드]</sub></a>
-					<a href="#update0" th:attr="onclick='dFile(\''+ ${loop.index}+ '\' , \'' + ${boardFile.fId} + '\' , \'' + ${boardFile.size} + '\')'"><sub style="font-size: 0.8em; color:red;">[삭제]</sub></a>
-					&emsp;<span style="font-size:0.7em" th:text="|(${#numbers.formatInteger(boardFile.size/1024.0 , 3, 'COMMA')} MB)|"></span>
-					</span></td>
-				</tr>
-				<tr>
-					<td colspan="2" style="line-height:20px; padding-top:10px;" id="fileField">
-					<div id="file-list-0">
-					<input style="padding:0 8px 2px 8px;" type="button" name="insert" value="+" onclick="insertField(this);">&emsp;
-					<span style="color:green;">☞&nbsp; 최대 30MB까지 파일 업로드 가능<sub>(개수 제한 X)</sub></span>
-					</div><br/>
-					</td>
-				</tr>		
-				<tr>
-					<td style="margin-left:20px; line-height:50px;" colspan="2">
-					
-					</td>
-				</tr>
-			</table>			
-			<div style="text-align:center;" class="control">
-			  <input type="button" value="수정" onclick="updateBoard();">
-			  <input type="button" value="삭제" onclick="dCheck();"> 
-			  <input type="reset" value="재입력" th:onclick="'init(\'' + ${countSize} + '\')'">
-			  <input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${boardView.no} )}'|"> 
-			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
-			  <input type="hidden" name="dFile" id="dFile"><!-- 삭제할 파일의 ID를 담고 있음. -->
-			  <input type="hidden" name="oSize" id="oSize" th:value="${countSize}"><!-- 기존 파일의 용량을 담고 있음. -->
-			  </div>
-		</form>
-		<script>
-			var search = document.querySelector('#author'); // 검색 필드의 값을 받아오고
-			search.focus(); // 초점을 맞춤.
-			search.setSelectionRange(search.value.length, search.value.length); // 해당 범위의 길이까지 선택
-		</script>
-	</div>
-	<br><br><br>
-	
+            <tr>
+               <th style="padding-bottom:10px;"><label for="writeDate"> 게시일 </label></th>
+               <td style="padding-bottom:10px;"><input type="text" id="writeDate" name="writeDate"
+                  size="26"
+                  th:value="${#temporals.format(boardView.writeDate,'yyyy-MM-dd  HH시 m분 s초')}"
+                  readonly disabled></td>
+            </tr>
+            <tr style="line-height:15px;" th:each="boardFile, loop : ${boardView.filePacks}">
+               <th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">첨부파일<a id="update0"></a></th>
+               <td id="fList"><span th:id="${loop.index}" ><a style="display:inline-block; margin-left:16px;"
+               th:href="@{/download(savedPath=${boardFile.savedPath})}" th:text="|${boardFile.originalName}|"></a>
+               <a th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub style="font-size: 0.8em; color:blue;">[다운로드]</sub></a>
+               <a href="#update0" th:attr="onclick='dFile(\''+ ${loop.index}+ '\' , \'' + ${boardFile.fId} + '\' , \'' + ${boardFile.size} + '\')'"><sub style="font-size: 0.8em; color:red;">[삭제]</sub></a>
+               &emsp;<span style="font-size:0.7em" th:text="${boardFile.size > 0 ? #numbers.formatInteger(boardFile.size/(1024.0*1024.0)*1024, 4, 'COMMA') + ' MB' : '0MB'}"></span>
+               </span></td>
+            </tr>
+            <tr>
+               <td colspan="2" style="line-height:20px; padding-top:10px;" id="fileField">
+               <div id="file-list-0">
+               <input style="padding:0 8px 2px 8px;" type="button" name="insert" value="+" onclick="insertField(this);">&emsp;
+               <span style="color:green;">☞&nbsp; 최대 30MB까지 파일 업로드 가능<sub>(개수 제한 X)</sub></span>&emsp;&nbsp;
+<!--                <span>현재 <span style="color:blue;" id="size" th:text="${countSize > 0 ? #numbers.formatInteger(countSize/(1024.0*1024.0)*1024, 3, 'COMMA') : '0'}"></span> MB</span> -->
+               </div><br/>
+               </td>
+            </tr>      
+            <tr>
+               <td style="margin-left:20px; line-height:50px;" colspan="2">
+               
+               </td>
+            </tr>
+         </table>         
+         <div style="text-align:center;" class="control">
+           <input type="button" value="수정" onclick="updateBoard();">
+           <input type="button" value="삭제" onclick="dCheck();"> 
+           <input type="reset" value="재입력" th:onclick="'init(\'' + ${countSize} + '\')'">
+           <input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${boardView.no} )}'|"> 
+           <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
+           <input type="hidden" name="dFile" id="dFile"><!-- 삭제할 파일의 ID를 담고 있음. -->
+           <input type="hidden" name="oSize" id="oSize" th:value="${countSize}"><!-- 기존 파일의 용량을 담고 있음. -->
+           </div>
+      </form>
+      <script>
+         var search = document.querySelector('#author'); // 검색 필드의 값을 받아오고
+         search.focus(); // 초점을 맞춤.
+         search.setSelectionRange(search.value.length, search.value.length); // 해당 범위의 길이까지 선택
+      </script>
+   </div>
+   <br/><br/><br/>
+   
 
-	<div class="footer">
-		<br />
-		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
-			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
-		<br>
-		<div class="callCopy">
-			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
-			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
-			<p>Copyright ⓒ This is Writing</p>
-			<br>
-		</div>
-	</div>
+   <div class="footer">
+      <br />
+      <p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
+         인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
+      <br/>
+      <div class="callCopy">
+         <p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
+         <p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
+         <p>Copyright ⓒ This is Writing</p>
+         <br/>
+      </div>
+   </div>
 </body>
 </html>

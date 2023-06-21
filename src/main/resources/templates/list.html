@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>게시판 홈페이지</title>
-<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
-<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <script th:src="@{/js/inputConstraint.js}"></script>
-
 </head>
 <body>
 	<div class="title">
@@ -44,15 +43,15 @@
 				onchange="this.form.submit();">
 				<option value="title">제목</option>
 				<option value="author" selected>작성자</option>
-			</select><input type="text" id="s" maxlength="20" name="search" size="40"
+			</select><label for="s"></label><input type="text" id="s" maxlength="20" name="search" size="40"
 				placeholder="20자 이내 (욕설, 선정적 단어 검색 금지)" th:value="${search}" /><input
 				type="submit" value="검색">
+				<script>
+					var search = document.querySelector('#s'); // 검색 필드의 값을 받아오고
+					search.focus(); // 초점을 맞춤.
+					search.setSelectionRange(search.value.length, search.value.length); // 해당 범위의 길이까지 선택
+				</script>
 		</form>
-<script>
-	var search = document.querySelector('#s'); // 검색 필드의 값을 받아오고
-	search.focus(); // 초점을 맞춤.
-	search.setSelectionRange(search.value.length, search.value.length); // 해당 범위의 길이까지 선택
-</script>
 	</div>
 
 	<div class="nav">
@@ -63,7 +62,7 @@
 			<p style="display: inline-block;">
 				총 <span style="color: red; font-size: 1.2em;"
 					th:text="${list.totalElements}"></span>건 <span
-					th:if="${list.totalPages == 0}" th:text="|[0 / 0 쪽]|"></span> <span
+					th:if="${list.totalPages == 0} " th:text="|[0 / 0 쪽]|"></span> <span
 					th:unless="${list.totalPages == 0}"
 					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>&nbsp;
 				삭제 <span style="color: skyblue; font-size: 1.2em;"
@@ -121,7 +120,7 @@
 				<td style="text-align: left;" th:if="${board.removeC != true}">
 				<span th:if="${board.grDepth == 1}"><span style="color: gray;" th:text="${board.relation}"></span></span>
 				<span th:if="${board.grDepth > 1}"><span th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span><span style="color: gray;" th:text="${board.relation}"></span></span>
-				<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;"
+				<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;" alt="답글"
 						th:src="@{/image/reply.png}"> [<a style="color: red;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}">RE</a>]
 				</span><a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
@@ -131,7 +130,7 @@
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
 					<span style="float: right;" th:if="${board.filePacks.size() > 0}">
-						<img style="width: 10px" th:src="@{/image/save.png}"><a
+						<img style="width: 10px" th:src="@{/image/save.png}" alt="답글"><a
 						style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 						th:text="|(${board.filePacks.size()})|"></a>
@@ -142,10 +141,10 @@
 					<span th:if="${board.grDepth == 1}"><span style="color: gray;" th:text="${board.relation}"></span></span>
 					<span th:if="${board.grDepth > 1}"><span th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span><span style="color: gray;" th:text="${board.relation}"></span></span>
 					<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;"
-						th:src="@{/image/reply.png}"> [<span style="color:red">RE</span>]</span>
+						th:src="@{/image/reply.png}" alt="답글"> [<span style="color:red">RE</span>]</span>
 				&nbsp;삭제된 게시글입니다.</td>
 
-				<td style="text-align: left;" th:text="${board.author}"></td>
+				<td th:text="${board.author}"></td>
 				<td th:text="${#temporals.format(board.writeDate,'yyyy. M. d. ')}"></td>
 			</tr>
 		</table>

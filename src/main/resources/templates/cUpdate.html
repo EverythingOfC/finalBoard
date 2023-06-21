@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"/>
 <title>게시판 홈페이지</title>
-<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
-<link rel="stylesheet" type="text/css" th:href="@{/css/update.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/update.css}"/>
 
 <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
 <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 	
 </script>
 
@@ -60,9 +59,9 @@
 	<div class="boardUpdate">
 		<!--  게시글 수정  -->
 		<form th:action="@{/board/cUpdate}" method="post" name="update">
-			<input type="hidden" name="no" th:value="${no}"> 
-				<input type="hidden" name="coNo" th:value="${commentView.coNo}">
-				<input type="hidden" name="listPage" th:value="${listPage}">
+			<input type="hidden" name="no" th:value="${no}"/> 
+				<input type="hidden" name="coNo" th:value="${commentView.coNo}"/>
+				<input type="hidden" name="listPage" th:value="${listPage}"/>
 				
 			<table>
 				<tr>
@@ -70,13 +69,13 @@
 					<td><input type="text" name="author" id="author" autofocus
 						placeholder="이름 (최대 10자)" maxlength="11"
 						th:value="${commentView.author}" size="30" required
-						oninput="check(this,11);"></td>
+						oninput="check(this,11);"/></td>
 				</tr>
 				<tr>
 					<th><label for="password">비밀번호</label></th>
 					<td><input type="text" name="password" id="password"
 						maxlength="21" size="30" th:value="${commentView.password}" required
-						placeholder="비밀번호 (최대 20자)" oninput="check(this,21);"></td>
+						placeholder="비밀번호 (최대 20자)" oninput="check(this,21);"/></td>
 				</tr>
 				<tr>
 					<th><label for="content">내용</label></th>
@@ -91,35 +90,34 @@
 				<tr>
 					<th><label for="writeDate"> 게시일 </label></th>
 					<td><input type="text" id="writeDate" name="writeDate"
-						size="30"
-						th:value="${#temporals.format(commentView.writeDate,'yyyy-MM-dd HH:mm:ss')}"
-						readonly disabled></td>
+						size="30" th:value="${#temporals.format(commentView.writeDate,'yyyy-MM-dd HH:mm:ss')}"
+						readonly disabled/></td>
 				</tr>
 
 			</table>
 			<div style="text-align:center;" class="control">
-			  <input type="button" value="수정" onclick="cUpdateBoard();">
-			  <input type="button" value="삭제" onclick="dCheck();"> 
-			  <input type="reset" value="재입력">
-			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}#comment0'|"> 
-			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
+			  <input type="button" value="수정" onclick="cUpdateBoard();"/>
+			  <input type="button" value="삭제" onclick="dCheck();"/> 
+			  <input type="reset" value="재입력"/>
+			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}#comment0'|"/> 
+			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|"/>
 			  </div>
 		</form>
 	</div>
-	<br>
-	<br>
-	<br>
+	<br/>
+	<br/>
+	<br/>
 
 	<div class="footer">
 		<br />
 		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
 			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
-		<br>
+		<br/>
 		<div class="callCopy">
 			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
 			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
 			<p>Copyright ⓒ This is Writing</p>
-			<br>
+			<br/>
 		</div>
 	</div>
 </body>
