@@ -43,7 +43,7 @@ form input[type="button"], form input[type="submit"]{
 	padding:4px 3px;
 }
 .comment input[type='button'], .comment input[type='submit'], form input[type="reset"]{
-	padding:1px 12px;
+	padding:1px 8px;
 	font-size:10px;
 }
 .unit input[type='text'],.unit input[type='password']{

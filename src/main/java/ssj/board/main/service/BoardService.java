@@ -67,6 +67,10 @@ public class BoardService {
 		return badWord.test(word) ? true : false; // 정상 단어이면 true, 비속어 or 선정적인 언어면 false
 	}
 
+	public void increaseRecommend(Integer no){
+		this.boardRepository.increaseRecommend(no);
+	}
+
     @Transactional
     public void deleteBoard(Integer no) throws Exception {	// 게시글 삭제 시, 해당 게시글의 파일을 삭제
      
@@ -106,7 +110,6 @@ public class BoardService {
 		
 		if(check == null) {	// 새글
 			result.setOrNo(result.getNo());		// 게시글 고유 번호로 그룹 번호를 초기화
-			result.setChildNo(result.getNo());	// 자신의 일련번호를 추가
 			Integer oCount = this.boardRepository.oCount();	// 원글의 개수
 			result.setRelation(String.valueOf(oCount));	// 원글의 개수만큼 번호를 매김
 			create(result);	// 원글 등록
@@ -115,8 +118,7 @@ public class BoardService {
 			result.setOrNo(check.getOrNo());		// 원글의 그룹 번호로 초기화
 			result.setGrOr(check.getGrOr());		// 원글의 그룹 순서로 초기화
 			result.setGrDepth(check.getGrDepth()+1);// 깊이 증가
-			result.setParentNo(check.getChildNo());	// 부모글의 일련번호로 초기화
-			result.setChildNo(result.getNo());		// 자신의 일련번호 추가
+			result.setParentNo(check.getNo());	// 부모글의 일련번호로 초기화
 			
 			Integer number = this.boardRepository.parentNoCount(result.getParentNo());	// 부모글에 있는 답글의 수
 			result.setParentOr(number+1);	// 답글의 수로 번호를 매김

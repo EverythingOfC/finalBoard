@@ -28,9 +28,6 @@ public class FilePack {
     private String originalName; // 원본 파일
 
     @Column(length = 500)
-    private String savedName;	 // UUID로 바뀌어서 저장된 파일
-
-    @Column(length = 500)
     private String savedPath;	 // 저장 경로
 
     private String type;		// 유형
@@ -43,12 +40,11 @@ public class FilePack {
     @JoinColumn(name="board_id")
     private Board board;
 
-	public FilePack(Integer fId, String originalName, String savedName, String savedPath, 
+	public FilePack(Integer fId, String originalName, String savedPath,
 			String type,long size,LocalDateTime createdDate, Board board) {
 		super();
 		this.fId = fId;
 		this.originalName = originalName;
-		this.savedName = savedName;
 		this.savedPath = savedPath;
 		this.type = type;
 		this.size = size;

@@ -7,6 +7,11 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <script th:src="@{/js/inputConstraint.js}"></script>
 </head>
+<th:block th:if="${validate!=null}">
+	<script th:inline="javascript">
+		alert('욕설, 선정적 단어는 검색할 수 없습니다.');
+	</script>
+</th:block>
 <body>
 	<div class="title">
 		<!--  제목  -->
@@ -108,7 +113,7 @@
 			<tr>
 				<th width="35px;">번호</th>
 				<th width="495px;">제목</th>
-				<th width="125px;">작성자</th>
+				<th width="110px;">작성자</th>
 				<th width="95px;">작성일</th>
 			</tr>
 
@@ -130,11 +135,14 @@
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
 					<span style="float: right;" th:if="${board.filePacks.size() > 0}">
-						<img style="width: 10px" th:src="@{/image/save.png}" alt="답글"><a
-						style="font-size: 0.7em; color: green;"
+						<img style="width: 10px" th:src="@{/image/save.png}" alt="파일">
+						<a style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
-						th:text="|(${board.filePacks.size()})|"></a>
-				</span></td>
+						th:text="|(${board.filePacks.size()})|">
+
+					</a>&emsp;<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
+						<span th:text="|(${board.recommand})|" style="font-size: 0.7em; color:blue"></span>
+					</span></td>
 				<td style="color: skyblue; text-align: left;"
 					th:unless="${board.removeC != true}">
 					
@@ -193,12 +201,8 @@
 
 	</div>
 	<div class="addition"></div>
-	<br>
-	<br>
-	<br>
-	<br>
-	<div class="footer">
-		<br />
+	<br/><br/><br/><br/><br/><br/>
+	<div class="footer" id="fixedElement" style="position:absolute; bottom:0; left:0; width:100%">
 		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
 			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
 		<br>
@@ -206,7 +210,6 @@
 			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
 			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
 			<p>Copyright ⓒ This is Writing</p>
-			<br>
 		</div>
 	</div>
 </body>

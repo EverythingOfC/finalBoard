@@ -31,9 +31,6 @@ public class Comment {	// 댓글
 	@Column(nullable=false)
 	private String password;// 비밀번호
 	
-	@Column(nullable=false)
-	private String title;	// 제목
-	
 	@Column(nullable=false,length = 751)	// 내용은 751
 	private String content;	// 내용
 	
@@ -45,13 +42,12 @@ public class Comment {	// 댓글
 	private Board board;	// 해당 게시글의 댓글
 
 	@Builder
-	public Comment(Integer coNo, String author, String password, String title, String content, LocalDateTime writeDate,
+	public Comment(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
 			Board board) {
 		super();
 		this.coNo = coNo;
 		this.author = author;
 		this.password = password;
-		this.title = title;
 		this.content = content;
 		this.writeDate = writeDate;
 		this.board = board;
@@ -61,7 +57,6 @@ public class Comment {	// 댓글
 		CommentDto commentDto = CommentDto.builder().coNo(coNo)
 						.author(author)
 						.password(password)
-						.title(title)
 						.content(content)
 						.writeDate(writeDate)
 						.board(board).build();

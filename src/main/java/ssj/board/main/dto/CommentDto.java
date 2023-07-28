@@ -19,8 +19,6 @@ public class CommentDto {
 	
 	private String password;// 비밀번호
 	
-	private String title;	// 제목
-	
 	private String content;	// 내용
 	
 	private LocalDateTime writeDate;	// 작성일자
@@ -28,13 +26,12 @@ public class CommentDto {
 	private Board board;	// 해당 게시글의 댓글
 
 	@Builder
-	public CommentDto(Integer coNo, String author, String password, String title, String content, LocalDateTime writeDate,
+	public CommentDto(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
 			Board board) {
 		super();
 		this.coNo = coNo;
 		this.author = author;
 		this.password = password;
-		this.title = title;
 		this.content = content;
 		this.writeDate = writeDate;
 		this.board = board;
@@ -44,17 +41,15 @@ public class CommentDto {
 		Comment comment = Comment.builder().coNo(coNo)
 						.author(author)
 						.password(password)
-						.title(title)
 						.content(content)
 						.writeDate(writeDate)
 						.board(board).build();
 		return comment;
 	}
 	
-	public void commentUpdate(String author, String password, String title, String content, LocalDateTime writeDate, Board board) {
+	public void commentUpdate(String author, String password, String content, LocalDateTime writeDate, Board board) {
 		this.author = author;
 		this.password = password;
-		this.title = title;
 		this.content = content;
 		this.writeDate = writeDate;
 		this.board = board;

@@ -62,15 +62,16 @@ public class Board {
 	
 	private Integer parentNo;	// 부모 글의 일련번호
 	
-	private Integer childNo;	// 현재 글의 일련번호	
-	
-	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서	
+	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서
 	
 	private Boolean removeC;	// 삭제 여부
 	
 	@Column(length=1000)
 	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
-	
+
+
+	private int recommand;	// 추천 수
+
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
 						.author(author)
@@ -81,11 +82,11 @@ public class Board {
 						.cList(cList)
 						.orNo(orNo).grOr(grOr).grDepth(grDepth)
 						.parentNo(parentNo)
-						.childNo(childNo)
 						.parentOr(parentOr)
 						.filePacks(filePacks)
 						.removeC(removeC)
 						.relation(relation)
+				.recommand(recommand)
 						.build();
 		return boardDto;
 	}

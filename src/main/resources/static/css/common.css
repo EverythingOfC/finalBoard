@@ -41,10 +41,10 @@ li{
 	text-align:left;
 }
 .footer{
-	width:100%;
-	text-align:center;
-	position:relative;
-	border-top:0.5px solid gray;
+	padding: 20px 0;
+	text-align: center;
+	font-size: 18px;
+	border-top:2px solid gray;
 }
 .footer p{
 	font-size:12px;
@@ -57,19 +57,15 @@ li{
 body{
  -ms-overflow-style: none;
  }
- 
-::-webkit-scrollbar {
-  display: none;
-}
+
+
 
 /*특정 부분 스크롤바 없애기*/
 
 #content{
    -ms-overflow-style: none;
 }
-.box::-webkit-scrollbar{
-  display:none;
-}
+
 .clear{
 	clear:both;
 }

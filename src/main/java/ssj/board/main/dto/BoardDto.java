@@ -41,24 +41,24 @@ public class BoardDto {
 
 	private Integer parentNo;	// 부모 글의 일련번호
 	
-	private Integer childNo;	// 현재 글의 일련번호
-	
 	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서
-	
+
 	private Boolean removeC;	// 삭제 여부
 	
-	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
+	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수
+
+	private int recommand;	// 추천 수
 	
 	public Board toEntity() {
 		Board board = Board.builder().no(no).author(author).password(password).title(title).cList(cList)
 				.content(content).writeDate(writeDate).orNo(orNo).grOr(grOr).grDepth(grDepth)
 				.filePacks(filePacks)
 				.parentNo(parentNo)
-				.childNo(childNo)
 				.parentOr(parentOr)
 				.filePacks(filePacks)
 				.removeC(removeC)
 				.relation(relation)
+				.recommand(recommand)
 				.build();
 		return board;
 	}

@@ -44,7 +44,6 @@ public class FileService {
 						m.transferTo(new File(savePath));
 						FilePack filePack = new FilePack();
 						filePack.setOriginalName(fName);
-						filePack.setSavedName(sName);
 						filePack.setType(contentType);
 						filePack.setSavedPath(savePath);
 						filePack.setSize(size);

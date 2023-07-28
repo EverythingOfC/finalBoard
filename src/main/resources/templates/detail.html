@@ -10,6 +10,7 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+
 <script th:inline="javascript">
 	$(function() { // 글자 수 제한
 		$("#cContent")
@@ -28,7 +29,6 @@
 								$('#count').html("150/150");
 							}
 						});
-		$("#cContent").input();
 	});
 
 	function pwCheck(obj) {
@@ -57,7 +57,23 @@
 				alert("비밀번호가 일치하지 않습니다.");
 			}
 		}
+	}
+	function handleRecommend(){	// localStorage를 통한 브라우저에 key-value 값 저장 ( 추천 체크 )
 
+		if(confirm('추천하시겠습니까?')){
+			let currentTime = new Date().getTime();
+			let lastRecommend = localStorage.getItem('lastRecommend');
+			let no = document.getElementById('no').value;
+			let listPage = document.getElementById('listPage').value;
+
+			if(lastRecommend==null || currentTime-lastRecommend > 10000){
+				localStorage.setItem('lastRecommend',currentTime);
+				location.href= "/board/recommend?no="+no + "&listPage"+listPage;
+				alert('추천되었습니다.');
+			}else{	// 마지막 추천을 누르고 10초 전에는 추천 불가능
+				alert('일정 시간 내에 다시 추천할 수 없습니다.')
+			}
+		}
 	}
 
 	function pwCheckC(obj) { // 댓글 수정 삭제
@@ -93,6 +109,7 @@
 	}
 </script>
 </head>
+
 <body>
 	<div class="title">
 		<!--  제목  -->
@@ -142,9 +159,12 @@
 						value="삭제" onclick="pwCheck('delete');"> <input
 						type="button" value="게시글 목록"
 						th:onclick="|location.href='@{/board/list(no=${boardView.no},listPage=${listPage})}'|">
-						<input style="margin-left: 10px;" class="answer" type="button"
-						value="답글 작성"
-						th:onclick="|location.href='@{/board/createForm(no=${boardView.no})}'|"></td>
+						<input
+								type="button" value="추천"
+								onclick="handleRecommend();">
+						<input type="hidden" id="no" th:value="${boardView.no}">
+						<input type="hidden" id="listPage" th:value="${listPage}">
+					</td>
 				</tr>
 				<tr style="line-height: 20px;"
 					th:each="boardFile, loop: ${boardView.filePacks}">
@@ -159,7 +179,12 @@
 				</tr>
 				<tr th:if="${total>0}">
 					<th>총 크기</th>
-					<td style="text-align:center;" th:text="|총 ${total > 0 ? #numbers.formatInteger(total/(1024*1024.0)*1024, 3, 'COMMA') + ' MB' : '0MB'}|"></td>
+					<td style="text-align:center;"> <span style="display:inline-block; width:50%; text-align:center;"
+						th:text="|총 ${total > 0 ? #numbers.formatInteger(total/(1024*1024.0)*1024, 3, 'COMMA') + ' MB' : '0MB'}|"/>
+						<input style="margin-left: 15px; font-size: 110%;" class="answer" type="button"
+							   value="답글 작성"
+							   th:onclick="|location.href='@{/board/createForm(no=${boardView.no})}'|"></td>
+					</td>
 				</tr>
 			</table>
 		</form>
@@ -235,7 +260,7 @@
 				<img width="35" th:src="@{/image/person.png}" alt="사람">&nbsp; <span
 					style="display: inline-block; padding-bottom: 7px;"
 					th:text="${comment.author}"></span> <span
-					style="color: #999; float: right; margin-right: 10px;"
+					style="color: #999; float: right; margin-right: 10px; margin-top: 5px"
 					th:text="${#temporals.format(comment.writeDate,' yyyy-MM-dd &nbsp; HH:mm:ss')}"></span>
 			</div>
 
@@ -281,10 +306,10 @@
 		</ul>
 
 	</div>
-	<br />
-	<br />
-	<div class="footer">
-		<br />
+	<br/>
+	<br/>
+	<br/>
+	<div class="footer" id="fixedElement">
 		<p>회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp;
 			인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p>
 		<br>
@@ -292,7 +317,6 @@
 			<p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
 			<p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
 			<p>Copyright ⓒ This is Writing</p>
-			<br>
 		</div>
 	</div>
 </body>
