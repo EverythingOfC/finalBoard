@@ -34,10 +34,16 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	@Query("update Board b set b.grOr = b.grOr + 1 "
 			+ "where b.no = :no or b.orNo = :orNo and b.grOr > :grOr")  // 현재 답글에 답글을 추가하면, 추가한 답글과 현재 답글의 순서보다 높은 답글의 순서를 모두 1씩 증가시킴.
 	void updateGr(@Param("no")Integer no, @Param("orNo")Integer orNo,@Param("grOr")Integer grOr);	// 그룹내의 순서 증가
+
 	@Transactional
 	@Modifying
 	@Query("update Board b set b.recommand = b.recommand + 1 where b.no = :no")	// 추천 수 증가
 	Integer increaseRecommend(@Param(value="no")Integer no);
+
+	@Transactional
+	@Modifying
+	@Query("update Board b set b.views = b.views + 1 where b.no = :no")	// 조회 수 증가
+	Integer increaseViews(@Param(value="no")Integer no);
 
 
 	@Query("select count(b) from Board b where b.removeC = true and b.title like %:title%")

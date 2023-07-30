@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/detail.css}">
 <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
 <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
-<script type="text/javascript" th:src="@{/js/updateDeleteRecommend.js}"></script>
+<script type="text/javascript" th:src="@{/js/updateDeleteRecommendViews.js}"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -110,9 +110,7 @@
 						value="삭제" onclick="pwCheck('delete');"> <input
 						type="button" value="게시글 목록"
 						th:onclick="|location.href='@{/board/list(no=${boardView.no},listPage=${listPage})}'|">
-						<input
-								type="button" value="추천"
-								onclick="handleRecommend();">
+						<input type="button" value="추천" onclick="handleRecommend()">
 						<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
 						<span th:text="|(${boardView.recommand})|" style="font-size: 0.7em; color:blue"></span>
 						<input type="hidden" id="no" th:value="${boardView.no}">

@@ -47,7 +47,9 @@ public class BoardDto {
 	
 	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수
 
-	private int recommand;	// 추천 수
+	private Integer recommand;	// 추천 수
+
+	private Integer views;		// 조회 수
 	
 	public Board toEntity() {
 		Board board = Board.builder().no(no).author(author).password(password).title(title).cList(cList)
@@ -59,6 +61,7 @@ public class BoardDto {
 				.removeC(removeC)
 				.relation(relation)
 				.recommand(recommand)
+				.views(views)
 				.build();
 		return board;
 	}

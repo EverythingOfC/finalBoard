@@ -8,10 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
@@ -105,6 +102,15 @@ public class BoardController {
 		return "redirect:/board/view?no="+no +"&listPage="+page;
 	}
 
+	@GetMapping("/board/views")	// 조회 수 증가
+	public String views(Model model,@RequestParam(value="no")int no,
+							@RequestParam(value = "listPage",defaultValue="1") int page){
+
+		this.boardService.increaseViews(no);	// 조회 수 증가
+
+		return "redirect:/board/view?no="+no +"&listPage="+page;
+	}
+
 
 	@GetMapping("/board/createForm") // 새 글 및 답글 등록 폼
 	public String createForm(Model model,@RequestParam(value="no",defaultValue = "0") int no	// 새 글이면 0, 답글이면 원글의 고유 번호
@@ -126,7 +132,7 @@ public class BoardController {
 		BoardDto check = this.boardService.boardView(board.getNo());	// 없으면 null, 있으면 원글
 
 		BoardDto boardDto = BoardDto.builder().author(board.getAuthor()).password(board.getPassword()).title(board.getTitle()).content(board.getContent())
-				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).recommand(0).build();		// 얻어온 값으로 초기화
+				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).recommand(0).views(0).build();		// 얻어온 값으로 초기화
 
 		BoardDto result = this.boardService.create(boardDto);	// 게시글 내용을 먼저 저장
 

@@ -69,8 +69,10 @@ public class Board {
 	@Column(length=1000)
 	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
 
+	private Integer views;		// 조회 수
 
-	private int recommand;	// 추천 수
+	private Integer recommand;	// 추천 수
+
 
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
@@ -86,6 +88,7 @@ public class Board {
 						.filePacks(filePacks)
 						.removeC(removeC)
 						.relation(relation)
+				.views(views)
 				.recommand(recommand)
 						.build();
 		return boardDto;

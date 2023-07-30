@@ -71,6 +71,10 @@ public class BoardService {
 		this.boardRepository.increaseRecommend(no);
 	}
 
+	public void increaseViews(Integer no){
+		this.boardRepository.increaseViews(no);
+	}
+
     @Transactional
     public void deleteBoard(Integer no) throws Exception {	// 게시글 삭제 시, 해당 게시글의 파일을 삭제
      

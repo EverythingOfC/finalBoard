@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <script th:src="@{/js/inputConstraint.js}"></script>
+	<script type="text/javascript" th:src="@{/js/updateDeleteRecommendViews.js}"></script>
 </head>
 <th:block th:if="${validate!=null}">
 	<script th:inline="javascript">
@@ -111,13 +112,15 @@
 		<!--  게시글 리스트  -->
 		<table>
 			<tr>
-				<th width="35px;">번호</th>
-				<th width="495px;">제목</th>
-				<th width="110px;">작성자</th>
-				<th width="95px;">작성일</th>
+				<th width="60px;">번호</th>
+				<th width="645px;">제목</th>
+				<th width="130px;">작성자</th>
+				<th width="100px;">작성일</th>
 			</tr>
 
+			<input type="hidden" id="listPage" th:value="${listPage}">
 			<tr th:each="board, loop : ${list}">
+
 
 				<td style="color: gray;" th:if="${board.grDepth == 0}"
 					th:text="${board.relation}"></td> <!--  원글 -->
@@ -128,20 +131,23 @@
 				<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;" alt="답글"
 						th:src="@{/image/reply.png}"> [<a style="color: red;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}">RE</a>]
-				</span><a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
-					th:text="${board.title}"></a> <a
-					th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
+				</span><a style="cursor:pointer" th:text="${board.title}"  th:no="${board.no}" th:onclick="handleViews(this.getAttribute('no'))"></a>
+		<a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 					th:if="${board.cList.size() > 0}">(<span style="color: blue;"
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
-					<span style="float: right;" th:if="${board.filePacks.size() > 0}">
+					<span style="float: right;">
+						<img style="width: 10px" th:src="@{/image/views.png}" alt="조회">
+						<span th:text="|(${board.views})|" style="font-size: 0.7em; color:red"></span>&emsp;
+
+						<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
+						<span th:text="|(${board.recommand})|" style="font-size: 0.7em; color:blue"></span>&emsp;
+
+						<span th:if="${board.filePacks.size() > 0}">
 						<img style="width: 10px" th:src="@{/image/save.png}" alt="파일">
 						<a style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
-						th:text="|(${board.filePacks.size()})|">
-
-					</a>&emsp;<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
-						<span th:text="|(${board.recommand})|" style="font-size: 0.7em; color:blue"></span>
+						th:text="|(${board.filePacks.size()})|"></a></span>
 					</span></td>
 				<td style="color: skyblue; text-align: left;"
 					th:unless="${board.removeC != true}">
