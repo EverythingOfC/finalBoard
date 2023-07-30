@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/detail.css}">
 <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
 <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
+<script type="text/javascript" th:src="@{/js/updateDeleteRecommend.js}"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -14,10 +15,8 @@
 <script th:inline="javascript">
 	$(function() { // 글자 수 제한
 		$("#cContent")
-				.on(
-						"input",
-						function(e) {
-							var content = $(this).val();
+				.on("input", function(e) {
+							const content = $(this).val();
 							$(this)
 									.height(
 											(2 + (content.split('\n').length + 1) * 1.2)
@@ -58,55 +57,7 @@
 			}
 		}
 	}
-	function handleRecommend(){	// localStorage를 통한 브라우저에 key-value 값 저장 ( 추천 체크 )
 
-		if(confirm('추천하시겠습니까?')){
-			let currentTime = new Date().getTime();
-			let lastRecommend = localStorage.getItem('lastRecommend');
-			let no = document.getElementById('no').value;
-			let listPage = document.getElementById('listPage').value;
-
-			if(lastRecommend==null || currentTime-lastRecommend > 10000){
-				localStorage.setItem('lastRecommend',currentTime);
-				location.href= "/board/recommend?no="+no + "&listPage"+listPage;
-				alert('추천되었습니다.');
-			}else{	// 마지막 추천을 누르고 10초 전에는 추천 불가능
-				alert('일정 시간 내에 다시 추천할 수 없습니다.')
-			}
-		}
-	}
-
-	function pwCheckC(obj) { // 댓글 수정 삭제
-
-		const no = "[[${no}]]";
-		const coNo = document.getElementById('coNo').value;	// 댓글 번호 값
-		const page = "[[${listPage}]]";
-
-		const passwd = document.getElementById('cPass').value; // 비밀번호 값
-
-		while (true) {
-			const inp = prompt('비밀번호 확인.');
-
-			if (inp === passwd) { // 일치하면
-				if (obj == 'updateC'){					
-					location.href = '/board/cUpdateForm?no=' + no
-							+ '&listPage=' + page + "&coNo=" + coNo;
-				}
-				else {
-					if (confirm('삭제하시겠습니까?')) {
-						alert('삭제되었습니다.');
-						location.href = '/board/cDelete?no=' + no + '&coNo='
-								+ coNo + '&listPage=' + page; // 삭제 후 view로
-					}
-				}
-				break;
-			} else if (inp == null) { // 사용자가 취소를 눌렀을 때
-				break;
-			} else {
-				alert("비밀번호가 일치하지 않습니다.");
-			}
-		}
-	}
 </script>
 </head>
 
@@ -162,6 +113,8 @@
 						<input
 								type="button" value="추천"
 								onclick="handleRecommend();">
+						<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
+						<span th:text="|(${boardView.recommand})|" style="font-size: 0.7em; color:blue"></span>
 						<input type="hidden" id="no" th:value="${boardView.no}">
 						<input type="hidden" id="listPage" th:value="${listPage}">
 					</td>

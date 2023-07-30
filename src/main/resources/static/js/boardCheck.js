@@ -1,5 +1,8 @@
 
 
+
+
+
 function checkPw(pw) {
 
 	let number = pw.search(/[0-9]/g);	// 숫자검사
