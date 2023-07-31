@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/detail.css}">
 <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
 <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
-<script type="text/javascript" th:src="@{/js/updateDeleteRecommendViews.js}"></script>
+<script type="text/javascript" th:src="@{/js/updateDeleteRecommendFile.js}"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -77,11 +77,15 @@
 		<!--  게시글 상세  -->
 		<form name="detail">
 			<input type="hidden" id="pass" th:value="${boardView.password}">
+			<input type="hidden" id="lastRecommend" th:value="${session.get('lastRecommend'+no)}">
+			<input type="hidden" id="time" th:value="${session.get('lastViews'+no)}">
 			<table>
 				<tr>
 					<th><label for="author">작성자</label></th>
 					<td><input type="text" name="author" id="author" disabled
-						th:value="${boardView.author}" readonly size="26"></td>
+						th:value="${boardView.author}" readonly size="26">&emsp;&emsp;&emsp;
+						<a style="text-decoration:underline; margin-left: 150px; font-size:160%; color:green;" th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="password">비밀번호</label></th>
@@ -132,9 +136,6 @@
 					<th>총 크기</th>
 					<td style="text-align:center;"> <span style="display:inline-block; width:50%; text-align:center;"
 						th:text="|총 ${total > 0 ? #numbers.formatInteger(total/(1024*1024.0)*1024, 3, 'COMMA') + ' MB' : '0MB'}|"/>
-						<input style="margin-left: 15px; font-size: 110%;" class="answer" type="button"
-							   value="답글 작성"
-							   th:onclick="|location.href='@{/board/createForm(no=${boardView.no})}'|"></td>
 					</td>
 				</tr>
 			</table>

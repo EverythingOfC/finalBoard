@@ -13,7 +13,7 @@ form{
 form *{
 	box-sizing:border-box;
 }
-form option,form input[type="submit"]{	
+form option,form input[type="submit"]{
 	cursor:pointer;
 	border:0.3px solid;
 	border-color:-internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));

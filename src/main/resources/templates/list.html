@@ -6,13 +6,9 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
 <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
 <script th:src="@{/js/inputConstraint.js}"></script>
-	<script type="text/javascript" th:src="@{/js/updateDeleteRecommendViews.js}"></script>
+	<script type="text/javascript" th:src="@{/js/updateDeleteRecommendFile.js}"></script>
+	<script th:src="@{/js/yokCheck.js}"></script>
 </head>
-<th:block th:if="${validate!=null}">
-	<script th:inline="javascript">
-		alert('욕설, 선정적 단어는 검색할 수 없습니다.');
-	</script>
-</th:block>
 <body>
 	<div class="title">
 		<!--  제목  -->
@@ -24,7 +20,7 @@
 	<div class="clear"></div>
 	<div class="search">
 		<!--  검색 창 -->
-		<form id="seek" name="seek" th:action="@{/board/list}" method="get">
+		<form id="seek" name="seek" th:action="@{/board/list}" method="get" onsubmit="return yokCheck();">	<!-- 유효성 검증 후 전송 -->
 
 			<select th:if="${view}==10" name="view"
 				onchange="this.form.submit();">
@@ -70,7 +66,7 @@
 					th:text="${list.totalElements}"></span>건 <span
 					th:if="${list.totalPages == 0} " th:text="|[0 / 0 쪽]|"></span> <span
 					th:unless="${list.totalPages == 0}"
-					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>&nbsp;
+					th:text="|[${listPage} / ${list.totalPages} 쪽]|"></span>&emsp;
 				삭제 <span style="color: skyblue; font-size: 1.2em;"
 					th:text="${dCount}"></span>건
 			</p>
@@ -121,7 +117,6 @@
 			<input type="hidden" id="listPage" th:value="${listPage}">
 			<tr th:each="board, loop : ${list}">
 
-
 				<td style="color: gray;" th:if="${board.grDepth == 0}"
 					th:text="${board.relation}"></td> <!--  원글 -->
 				<td style="color: gray;" th:unless="${board.grDepth == 0}"></td> <!-- 답글 -->
@@ -130,33 +125,41 @@
 				<span th:if="${board.grDepth > 1}"><span th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span><span style="color: gray;" th:text="${board.relation}"></span></span>
 				<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;" alt="답글"
 						th:src="@{/image/reply.png}"> [<a style="color: red;"
-						th:href="@{/board/view(listPage=${listPage},no=${board.no})}">RE</a>]
-				</span><a style="cursor:pointer" th:text="${board.title}"  th:no="${board.no}" th:onclick="handleViews(this.getAttribute('no'))"></a>
-		<a th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
+						th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}">RE</a>]
+				</span><a th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}" style="cursor:pointer" th:text="${board.title}"></a>
+		<a th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}"
 					th:if="${board.cList.size() > 0}">(<span style="color: blue;"
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
-					<span style="float: right;">
+					<span style="float: right; position:relative" th:id="|dropBlock${board.no}|">
 						<img style="width: 10px" th:src="@{/image/views.png}" alt="조회">
 						<span th:text="|(${board.views})|" style="font-size: 0.7em; color:red"></span>&emsp;
 
 						<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
 						<span th:text="|(${board.recommand})|" style="font-size: 0.7em; color:blue"></span>&emsp;
 
-						<span th:if="${board.filePacks.size() > 0}">
+
+						<span th:each="file, loop: ${board.filePacks}">
+							<input type="hidden" th:id="|fileName${loop.index}|" th:value="${file.originalName}">
+							<input type="hidden" th:id="|filePath${loop.index}|" th:value="${file.savedPath}">
+						</span>
+
+						<span th:id="|fileList${board.no}|" style="cursor:pointer;" th:if="${board.filePacks.size() > 0}"
+							  onclick="filesView(this.getAttribute('size'),this.getAttribute('no'))" th:size="${board.filePacks.size()}" th:no="${board.no}">
 						<img style="width: 10px" th:src="@{/image/save.png}" alt="파일">
-						<a style="font-size: 0.7em; color: green;"
+						<span style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
-						th:text="|(${board.filePacks.size()})|"></a></span>
+						th:text="|(${board.filePacks.size()})|"></span>
+					</span>
 					</span></td>
+
 				<td style="color: skyblue; text-align: left;"
 					th:unless="${board.removeC != true}">
 					
 					<span th:if="${board.grDepth == 1}"><span style="color: gray;" th:text="${board.relation}"></span></span>
 					<span th:if="${board.grDepth > 1}"><span th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span><span style="color: gray;" th:text="${board.relation}"></span></span>
 					<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;"
-						th:src="@{/image/reply.png}" alt="답글"> [<span style="color:red">RE</span>]</span>
-				&nbsp;삭제된 게시글입니다.</td>
+						th:src="@{/image/reply.png}" alt="답글"> [<span style="color:red">RE</span>] &nbsp;</span>삭제된 게시글입니다.</td>
 
 				<td th:text="${board.author}"></td>
 				<td th:text="${#temporals.format(board.writeDate,'yyyy. M. d. ')}"></td>

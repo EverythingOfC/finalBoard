@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class FileService {
 		}
 	}
 
-	public void download(String savedPath, HttpServletResponse response) throws Exception { // 파일 다운로드
+	public void download(@RequestParam(value = "savedPath") String savedPath, HttpServletResponse response) throws Exception { // 파일 다운로드
 
 		File file = new File(savedPath);
 		savedPath = savedPath.substring(savedPath.indexOf("_") + 1); // _와 _앞의 랜덤문자를 모두 자르고 나머지 파일명만 남김

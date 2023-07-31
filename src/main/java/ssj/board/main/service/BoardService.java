@@ -2,6 +2,7 @@ package ssj.board.main.service;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,18 +62,18 @@ public class BoardService {
 		return board.isPresent() ? board.get().toDto() : null;
 	}
 
-	public boolean badWordFilter(String word) {
-		BadWord badWord = new BadWordImpl();
-
-		return badWord.test(word) ? true : false; // 정상 단어이면 true, 비속어 or 선정적인 언어면 false
-	}
-
 	public void increaseRecommend(Integer no){
 		this.boardRepository.increaseRecommend(no);
 	}
 
-	public void increaseViews(Integer no){
-		this.boardRepository.increaseViews(no);
+	public boolean increaseViews(Integer no,Long time){
+		if(time == null || new Date().getTime() - time > 3600000)	// 마지막 조회 후에 1시간이 지나면 조회 수 증가
+		{
+			this.boardRepository.increaseViews(no);
+			return true;
+		}
+
+		return false;
 	}
 
     @Transactional

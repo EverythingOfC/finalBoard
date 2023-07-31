@@ -1,9 +1,13 @@
 package ssj.board.main.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -26,7 +30,6 @@ public class BoardController {
 	private final BoardService boardService;
 	private final CommentService commentService;
 	private final FileService fileService;
-
 	@GetMapping(value = { "/", "/board", "/index" })
 	public String index() {
 		return "redirect:/board/list";
@@ -34,18 +37,15 @@ public class BoardController {
 
 	@GetMapping("/board/list") // 전체 조회
 	public String board(Model model,
-						@RequestParam(value = "or",defaultValue="desc")String or,	// 원글 최신 or 오래된 정렬
-						@RequestParam(value = "view",defaultValue="10") int view,	// 한 페이지에 조회될 게시글 수
-						@RequestParam(value = "listPage", defaultValue = "1") int page,	// 현재 페이지
-						@RequestParam(value = "detail", defaultValue = "title") String detail,	// 검색 유형
-						@RequestParam(value = "search", defaultValue = "") String search,	// 검색 글자
-						@RequestParam(value = "result",defaultValue="")String result	// 수정, 삭제 후의 alert 내용 값
+						@RequestParam(value = "or",defaultValue="desc")String or,    // 원글 최신 or 오래된 정렬
+						@RequestParam(value = "view",defaultValue="10") int view,    // 한 페이지에 조회될 게시글 수
+						@RequestParam(value = "listPage", defaultValue = "1") int page,    // 현재 페이지
+						@RequestParam(value = "detail", defaultValue = "title") String detail,    // 검색 유형
+						@RequestParam(value = "search", defaultValue = "") String search,    // 검색 글자
+						@RequestParam(value = "result",defaultValue="")String result    // 수정, 삭제 후의 alert 내용 값
 	){
 
-		if (!this.boardService.badWordFilter(search)) { // 욕설, 선정적 단어이면
-			search = "";
-			model.addAttribute("validate",false);
-		}
+
 		if(page < 1) page = 1;
 		if(view < 10) view = 10;
 		else if(view>20) view = 20;
@@ -54,6 +54,7 @@ public class BoardController {
 
 		Page<BoardDto> boardList = this.boardService.boardList(page - 1, or , view, detail, search);
 		Integer dCount = this.boardService.removeCount(detail, search);
+
 
 		model.addAttribute("dCount", dCount);	 // 삭제 된 게시글 수
 		model.addAttribute("list", boardList);	 // 전체 요소
@@ -67,19 +68,23 @@ public class BoardController {
 	}
 
 	@GetMapping("/board/view")
-	public String view(Model model, int listPage, Integer no,
+	public String view(Model model, int listPage, Integer no,HttpServletRequest request,
 					   @RequestParam(value="or",defaultValue="desc")String or,
+					   @RequestParam(value="time",required = false)Long time,
 					   @RequestParam(value="cPage",defaultValue="1")int cPage
 	) {
 
 		BoardDto boardDto = this.boardService.boardView(no);
-
 		Page<CommentDto> commentList = this.commentService.commentList(cPage-1, or,no);
-
 		List<FilePack> filePacks = boardDto.getFilePacks();
+		HttpSession session = request.getSession();	// 서버에서 클라이언트 식별을 위해 고유한 세션 ID를 쿠키로 저장
 		long total = 0;
 		for(FilePack f : filePacks) {
 			total += f.getSize();
+		}
+
+		if(this.boardService.increaseViews(no,time)){	// 조회 수가 증가할 차례이면
+			session.setAttribute("lastViews"+no, new Date().getTime());	// 마지막으로 조회한 시간을 저장
 		}
 
 		model.addAttribute("list", commentList);
@@ -90,27 +95,27 @@ public class BoardController {
 		model.addAttribute("no", no);
 		model.addAttribute("or",or);
 
+
 		return "detail";
 	}
 
 	@GetMapping("/board/recommend")
-	public String recommend(Model model,@RequestParam(value="no")int no,
+	public String recommend(Model model,
+							@RequestParam(value="no")int no,HttpServletRequest request,
+	@RequestParam(value="timeR",required = false)Long timeR,
 	@RequestParam(value = "listPage",defaultValue="1") int page){
 
-		this.boardService.increaseRecommend(no);	// 추천 수 증가
+		HttpSession session = request.getSession();	// 서버에서는 클라이언트를 구분하기 위해 고유한 세션 ID를 부여함.
 
-		return "redirect:/board/view?no="+no +"&listPage="+page;
+		this.boardService.increaseRecommend(no);
+		if(timeR==null)
+			session.setAttribute("lastRecommend"+no, new Date().getTime());	// 마지막으로 조회한 시간을 저장
+		else
+			session.setAttribute("lastRecommend"+no, timeR);	// 마지막으로 조회한 시간을 저장
+
+
+		return "redirect:/board/view?no="+no +"&listPage="+page +"&time=" + Long.parseLong(session.getAttribute("lastViews"+no).toString());
 	}
-
-	@GetMapping("/board/views")	// 조회 수 증가
-	public String views(Model model,@RequestParam(value="no")int no,
-							@RequestParam(value = "listPage",defaultValue="1") int page){
-
-		this.boardService.increaseViews(no);	// 조회 수 증가
-
-		return "redirect:/board/view?no="+no +"&listPage="+page;
-	}
-
 
 	@GetMapping("/board/createForm") // 새 글 및 답글 등록 폼
 	public String createForm(Model model,@RequestParam(value="no",defaultValue = "0") int no	// 새 글이면 0, 답글이면 원글의 고유 번호

@@ -73,7 +73,6 @@ public class Board {
 
 	private Integer recommand;	// 추천 수
 
-
 	public BoardDto toDto() {
 		BoardDto boardDto = BoardDto.builder().no(no)
 						.author(author)
