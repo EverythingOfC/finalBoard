@@ -30,6 +30,7 @@ public class BoardController {
 	private final BoardService boardService;
 	private final CommentService commentService;
 	private final FileService fileService;
+
 	@GetMapping(value = { "/", "/board", "/index" })
 	public String index() {
 		return "redirect:/board/list";

@@ -70,7 +70,7 @@ body{
 	clear:both;
 }
 pre{
-	width: 97.5%;
+	width: 99%;
     white-space: pre-wrap; /* 공백과 줄바꿈을 유지, 자동 줄바꿈 O */
     word-wrap: break-word; /* 긴 텍스트를 끊어서 강제로 줄바꿈 */
     margin-bottom:0.3vw;

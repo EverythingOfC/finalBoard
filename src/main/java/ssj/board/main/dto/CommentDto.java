@@ -1,6 +1,7 @@
 package ssj.board.main.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ssj.board.main.entity.Board;
 import ssj.board.main.entity.Comment;
+import ssj.board.main.entity.Report;
 
 @Data
 @NoArgsConstructor
@@ -25,9 +27,11 @@ public class CommentDto {
 	
 	private Board board;	// 해당 게시글의 댓글
 
+	private List<Report> reports;	// 신고 내역들
+
 	@Builder
 	public CommentDto(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
-			Board board) {
+			Board board,List<Report> reports) {
 		super();
 		this.coNo = coNo;
 		this.author = author;
@@ -35,6 +39,7 @@ public class CommentDto {
 		this.content = content;
 		this.writeDate = writeDate;
 		this.board = board;
+		this.reports = reports;
 	}
 	
 	public Comment toEntity() {
@@ -43,7 +48,9 @@ public class CommentDto {
 						.password(password)
 						.content(content)
 						.writeDate(writeDate)
-						.board(board).build();
+						.board(board)
+					.reports(reports)
+				.build();
 		return comment;
 	}
 	

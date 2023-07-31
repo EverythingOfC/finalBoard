@@ -17,8 +17,7 @@ import ssj.board.main.entity.Board;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer>{
-			
-	
+
 	Page<Board> findAllByTitleContaining(Pageable pageable,@Param(value="title")String title);	// 제목으로 조회, 인기순이나 최신순으로 오름차순
 	
 	Page<Board> findAllByAuthorContaining(Pageable pageable,String author);	// 작성자로 조회, 인기순이나 최신순으로 오름차순
@@ -56,8 +55,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 	List<Board> findAll(Sort sort);
 	
 	@Query("select count(b) from Board b where b.parentNo = :parentNo")	// 부모글에 달린 답글 수 카운트
-	Integer parentNoCount(@Param("parentNo")Integer parentNo);
-	
+	Integer parentNoCount(@Param(value = "parentNo")Integer parentNo);
+
 	@Query("select count(b) from Board b where b.grDepth = 0")	// 원글의 수
 	Integer oCount();
 }

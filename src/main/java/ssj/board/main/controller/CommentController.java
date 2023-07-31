@@ -23,6 +23,15 @@ public class CommentController {
 	private final BoardService boardService;
 
 
+	@GetMapping("/board/reportForm")
+	public String cReportForm(Model model, @RequestParam(value = "coNo")Integer coNo,
+							  @RequestParam(value = "listPage") int page){
+		model.addAttribute("coNo",coNo);
+		model.addAttribute("listPage",page);
+
+		return "cReport";
+	}
+
 	@GetMapping("/board/commentCreateForm") // 등록 폼
 	public String cCreateForm(Model model, @RequestParam(value = "no") int no,
 							  @RequestParam(value = "listPage") int page) {

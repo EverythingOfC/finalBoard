@@ -27,24 +27,26 @@ form input[type="button"], form input[type="submit"]{
 .cTitle h2, .cTitle span{
 	font-size:16px;
 }
-.namePassword *, .textCreate *{
+.namePassword *, .textCreate *, .wordAndCreate{
 	margin-top:5px;
 }
-.wordAndCreate, .textView input{
-	margin-top:2px;
+
+.textView input{
+	margin-top:13px;
 }
+
 .namePassword, .cTitle, .textCreate, .wordAndCreate, .profile, .textView{
 	margin-left:10px;	
 }
 .cTitle{
 	padding-top:5px;
 }
-.namePassword input,.textCreate textarea, .textView textarea{
-	padding:4px 3px;
+.namePassword input,.textCreate textarea{
+	padding:4px 2px;
 }
 .comment input[type='button'], .comment input[type='submit'], form input[type="reset"]{
-	padding:1px 8px;
-	font-size:10px;
+	padding:3px 12px;
+	font-size:11px;
 }
 .unit input[type='text'],.unit input[type='password']{
 	padding: 2px;

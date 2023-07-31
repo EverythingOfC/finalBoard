@@ -171,7 +171,7 @@
 				</div>
 				<div class="wordAndCreate">
 					<span style="display: inline-block; width: 39px;" id="count">0/150</span>
-					<input style="margin-left: 415px;" type="button" value="작성" onclick="cJoinBoard();">
+					<input style="margin-left: 400px;" type="button" value="작성" onclick="cJoinBoard();">
 					<input type="reset" value="재입력">
 					<div class="clear"></div>
 				</div>
@@ -209,9 +209,11 @@
 			<a th:id="|comment${comment.coNo}|"></a>
 			<!--  수정하면 지정한 위치로 이동 -->
 			<div class="profile">
-				<img width="35" th:src="@{/image/person.png}" alt="사람">&nbsp; <span
-					style="display: inline-block; padding-bottom: 7px;"
-					th:text="${comment.author}"></span> <span
+
+				<img width="35" th:src="@{/image/person.png}" alt="사람">&nbsp;&nbsp;
+				<span style="vertical-align: top; margin-top:14px; margin-bottom:17px; display:inline-block" th:text="${comment.author}"></span>
+					<!-- vertical-align: inline 요소의 수직 정렬 -->
+				<span
 					style="color: #999; float: right; margin-right: 10px; margin-top: 5px"
 					th:text="${#temporals.format(comment.writeDate,' yyyy-MM-dd &nbsp; HH:mm:ss')}"></span>
 			</div>
@@ -222,6 +224,8 @@
 				<pre th:text="${comment.content}"></pre>
 				<input type="button" value="수정" onclick="pwCheckC('updateC');">
 				<input type="button" value="삭제" onclick="pwCheckC('deleteC');">
+				<input style="float:right; margin-right:10px;"
+					   type="button" value="신고하기" th:onclick="|location.href='@{/board/reportForm(coNo=${comment.coNo},listPage=${listPage})}'|">
 			</div>
 			<hr />
 		</div>

@@ -14,8 +14,6 @@ import ssj.board.main.entity.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer>{
 
-	List<Comment> findAllByBoard_noOrderByCoNoDesc(Integer board_no);
-	List<Comment> findAllByBoard_noOrderByWriteDateDesc(Integer board_no);
 	Optional<Comment> findByPasswordAndCoNo(String password,Integer cNo);	// 비밀번호가 일치하면 해당 게시글 접근
 	Page<Comment> findAllByBoard_no(Pageable pageable,Integer board_no);	// 댓글 페이징
 }

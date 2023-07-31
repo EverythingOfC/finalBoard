@@ -1,15 +1,9 @@
 package ssj.board.main.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -39,11 +33,14 @@ public class Comment {	// 댓글
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="board_id")
-	private Board board;	// 해당 게시글의 댓글
+	private Board board;	// 댓글의 원본 글
+
+	@OneToMany(mappedBy = "comment",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private List<Report> reports;
 
 	@Builder
 	public Comment(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
-			Board board) {
+			Board board,List<Report> reports) {
 		super();
 		this.coNo = coNo;
 		this.author = author;
@@ -51,6 +48,7 @@ public class Comment {	// 댓글
 		this.content = content;
 		this.writeDate = writeDate;
 		this.board = board;
+		this.reports = reports;
 	}
 	
 	public CommentDto toDto() {
@@ -59,7 +57,9 @@ public class Comment {	// 댓글
 						.password(password)
 						.content(content)
 						.writeDate(writeDate)
-						.board(board).build();
+						.board(board)
+						.reports(reports)
+						.build();
 		return commentDto;
 	}
 	

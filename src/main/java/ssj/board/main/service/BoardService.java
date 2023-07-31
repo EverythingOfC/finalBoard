@@ -28,6 +28,7 @@ import ssj.board.main.entity.Board;
 import ssj.board.main.entity.FilePack;
 import ssj.board.main.repository.BoardRepository;
 import ssj.board.main.repository.FileRepository;
+import ssj.board.main.repository.ReportRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -140,7 +141,7 @@ public class BoardService {
 		
 		sort = sort.and(Sort.by("grOr").ascending());
 		
-		List<Board> list = null;
+		List<Board> list;
 		if(detail.equals("title"))
 			list = this.boardRepository.findAllByTitleContaining(sort,search);
 		else
@@ -225,8 +226,5 @@ public class BoardService {
 	    response.getOutputStream().close();
       
     }
-	
-	public Integer oCount() {	// 원글의 수
-		return this.boardRepository.oCount();
-	}
+
 }

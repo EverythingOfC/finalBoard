@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import ssj.board.main.dto.CommentDto;
 import ssj.board.main.entity.Comment;
 import ssj.board.main.repository.CommentRepository;
+import ssj.board.main.repository.ReportRepository;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
 	private final CommentRepository commentRepository;
+	private final ReportRepository reportRepository;
 
 	public void create(CommentDto commentDto) {
 		this.commentRepository.save(commentDto.toEntity()).toDto();
@@ -57,8 +59,7 @@ public class CommentService {
 
 	}
 
-	public String changeS(String result, Integer no, Integer coNo, int page) { // 클릭한 값에 따라 수정 or 삭제를 행함.
-		return result.equals("update") ? ("redirect:/board/cUpdateForm?coNo=" + coNo + "&listPage=" + page +"&no="+no)
-				: "redirect:/board/cDelete?coNo=" + coNo +"&no="+no +"&listPage="+page;
+	public int reportCommentCount(Integer commentId){	// 댓글 신고 횟수
+		return this.reportRepository.reportCommentCount(commentId);
 	}
 }

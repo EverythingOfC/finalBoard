@@ -14,7 +14,6 @@
 
 <script th:inline="javascript">
 	$(function() { // 글자 수 제한
-
 		$("#content").on("input",function(e) {
 
 					var content = $(this).val();
@@ -26,8 +25,6 @@
 					}
 
 				});
-		$("#content").input();
-
 	});
 
 	function dCheck() {
@@ -49,8 +46,7 @@
 	<div class="title">
 		<!--  제목  -->
 		<h2>
-			<a href="#">This
-				is Writing<sub style="font-size: 0.6em;"> (update) </sub>
+			<a href="#">This is Writing<sub style="font-size: 0.6em;"> (cUpdate) </sub>
 			</a>
 		</h2>
 		<h2>댓글 수정</h2>
@@ -99,7 +95,7 @@
 			  <input type="button" value="수정" onclick="cUpdateBoard();"/>
 			  <input type="button" value="삭제" onclick="dCheck();"/> 
 			  <input type="reset" value="재입력"/>
-			  <input type="button" value="댓글 목록" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}#comment0'|"/> 
+			  <input type="button" value="상세" th:onclick="|location.href='@{/board/view(listPage=${listPage},no=${no})}#comment0'|"/>
 			  <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|"/>
 			  </div>
 		</form>

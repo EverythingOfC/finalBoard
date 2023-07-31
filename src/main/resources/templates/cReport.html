@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>게시판 홈페이지</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/create.css}"/>
+    <script type="text/javascript" th:src="@{/js/boardCheck.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/inputConstraint.js}" ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+
+        $(function(){	// 글자 수 제한
+
+            $("#content").on("input",function(e){
+
+                var content = $(this).val();
+                $(this).height(( 7 + (content.split('\n').length + 1) * 1.2) + 'em');	// 줄 높이 지정
+                $('#count').html(content.length + '/375');
+                if (content.length > 375) {
+                    alert("최대 375자까지 입력 가능합니다. \n 이후의 글자는 삭제됩니다.");
+                    $(this).val(content.substring(0, 375));
+                    $('#count').html("375/375");
+                }
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+
+<div class="title">
+    <h2><a th:href="@{/board/reportForm(coNo=${coNo},listpage=${listPage})}">This is Writing<sub style="font-size:0.6em;"> (report) </sub></a></h2>
+    <h2>댓글 신고</h2>
+</div>
+
+<div class="boardCreate">
+    <!--  게시글 등록  -->
+    <form th:action="@{/board/create}" enctype="multipart/form-data" method="post" name="create"> <!--  각 파트별로 분리하여 파일의 개별 정보를 얻게 된다. -->
+        <input type="hidden" name="no" th:value="${no}"/>
+        <input type="hidden" name="listPage" th:value="${listPage}"/>
+        <table>
+            <tr>
+                <td><label for="author"></label><input type="text" name="author" id="author" size="21" required maxlength="11" autofocus
+                                                       placeholder="신고자 (최대 10자)" oninput="check(this,11);"/>
+                    <label for="password"></label>
+                    <input type="password" name="password" required id="password" size="23" oninput="check(this,21);"
+                           placeholder="비밀번호 (최대 20자)" maxlength="21"/><br/><br/>
+                    <span style="color:red">※ 비밀번호 규칙</span><br/>
+                    <span>1. &nbsp;6 ~ 20자 이내</span><br/>
+                    <span>2. 공백 X</span><br/>
+                    <span>3. 영문, 특수문자, 숫자가 적어도 1개이상 포함</span><br/>
+                    <span>4. 같은 문자는 3번까지 반복 가능</span><br/>
+                </td>
+            </tr>
+            <tr>
+                <td><br/><br/><label for="title"></label>
+                    <input type="text" name="title" id="title" size="68" maxlength="41" required placeholder="신고 주제 (최대 40자)"
+                           oninput="check(this,41);"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+						<textarea style="margin-top:17px;" maxlength="376" name="content" id="content"
+                                  oninput="check(this,376);" cols="69" rows="7" required placeholder="신고 내용 (최대 375자)"
+                        ></textarea><span id="count">0/375</span>
+                </td>
+            </tr>
+            <tr>
+                <td id="fileField">
+                    <div style="padding-bottom:3px;" id="file-list">
+                        <input style="padding:0 8px 2px 8px;" type="button" name="insert" value="+" onclick="insertField(this);"/>&emsp;
+                        <span style="color:green;">☞&nbsp; 최대 30MB까지 파일 업로드 가능<sub>(개수 제한 X)</sub></span>&emsp;&nbsp;
+                        <!-- 					<span>현재 <span style="color:blue;" id="size">0</span> MB</span> -->
+                    </div><br/>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <input type="button" value="신고" onclick="joinBoard();"/><!--  게시물 값 및 비밀번호 유효성 검사 -->
+        <input type="reset" value="재입력" onclick="initC();"/>
+        <input th:if="${no} != 0" type="button" value="상세" onclick="history.go(-1);"/><!--  답 글인 경우 -->
+        <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|"/>
+
+
+    </form>
+</div><br/><br/><br/>
+
+<div class="footer">
+    <p>
+        회사소개 &emsp;|&emsp; 개인정보 처리방침 &emsp;|&emsp; 이용약관 &emsp;|&emsp; 인재채용 &emsp;|&emsp; 제휴문의 &emsp;|&emsp; 고객센터</p><br/>
+    <div class="callCopy">
+        <p>06708 서울특별시 서초구 효령로 208 메타빌드 연구소</p>
+        <p>대표전화: 010-2583-3226(월~금 09:00 ~ 18:00, 공휴일 제외) 팩스: 02-813-3226</p>
+        <p>Copyright ⓒ This is Writing</p>
+    </div>
+</div>
+
+</body>
+
+</html>
