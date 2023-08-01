@@ -96,8 +96,7 @@
 			<!--  게시글 등록  -->
 			<a th:href="@{|/board/list?view=${view}&or=${or}|}">게시글 목록</a>&emsp; 
 			<a th:href="@{/board/downloadExcel(order=${or},detail=${detail},search=${search})}">게시글 Excel 다운로드</a>&emsp; 
-			<a th:href="@{/board/createForm}">게시글
-				작성</a>
+			<a th:href="@{/board/createForm}">게시글 작성</a>
 		</div>
 
 		<div class="clear"></div>
@@ -125,28 +124,31 @@
 				<span th:if="${board.grDepth > 1}"><span th:each="depth : ${#numbers.sequence(2,board.grDepth)}">&emsp;</span><span style="color: gray;" th:text="${board.relation}"></span></span>
 				<span th:if="${board.grDepth > 0}"><img style="width: 13px; height: 13px;" alt="답글"
 						th:src="@{/image/reply.png}"> [<a style="color: red;"
-						th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}">RE</a>]
-				</span><a th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}" style="cursor:pointer" th:text="${board.title}"></a>
-		<a th:href="@{/board/view(listPage=${listPage},no=${board.no},time=${session.get('lastViews' + board.no)})}"
-					th:if="${board.cList.size() > 0}">(<span style="color: blue;"
+						th:href="@{/board/view(no=${board.no},listPage=${listPage}, time=${session.get('lastViews' + board.no)})}">RE</a>]
+				</span><a th:href="@{/board/view(no=${board.no},listPage=${listPage}, time=${session.get('lastViews' + board.no)})}" style="cursor:pointer" th:text="${board.title}"></a>
+
+		<a th:href="@{/board/view(no=${board.no},listPage=${listPage}, time=${session.get('lastViews' + board.no)})}"
+					th:if="${board.cList.size() > 0}">&nbsp;<img style="width: 12px" th:src="@{/image/comment.png}" alt="댓글">
+			(<span style="color: blue;"
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
 					<span style="float: right; position:relative" th:id="|dropBlock${board.no}|">
-						<img style="width: 10px" th:src="@{/image/views.png}" alt="조회">
+						<img style="width: 12px" th:src="@{/image/views.png}" alt="조회">
 						<span th:text="|(${board.views})|" style="font-size: 0.7em; color:red"></span>&emsp;
 
-						<img style="width: 10px" th:src="@{/image/recommend.png}" alt="추천">
+						<img style="width: 12px" th:src="@{/image/recommend.png}" alt="추천">
 						<span th:text="|(${board.recommand})|" style="font-size: 0.7em; color:blue"></span>&emsp;
 
 
 						<span th:each="file, loop: ${board.filePacks}">
 							<input type="hidden" th:id="|fileName${loop.index}|" th:value="${file.originalName}">
 							<input type="hidden" th:id="|filePath${loop.index}|" th:value="${file.savedPath}">
+							<input type="hidden" th:id="|fileSize${loop.index}|" th:value="${file.size}">
 						</span>
 
 						<span th:id="|fileList${board.no}|" style="cursor:pointer;" th:if="${board.filePacks.size() > 0}"
 							  onclick="filesView(this.getAttribute('size'),this.getAttribute('no'))" th:size="${board.filePacks.size()}" th:no="${board.no}">
-						<img style="width: 10px" th:src="@{/image/save.png}" alt="파일">
+						<img style="width: 12px" th:src="@{/image/save.png}" alt="파일">
 						<span style="font-size: 0.7em; color: green;"
 						th:href="@{/board/view(listPage=${listPage},no=${board.no})}"
 						th:text="|(${board.filePacks.size()})|"></span>

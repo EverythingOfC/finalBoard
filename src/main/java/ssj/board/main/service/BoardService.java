@@ -1,6 +1,8 @@
 package ssj.board.main.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +40,14 @@ public class BoardService {
 	private final FileRepository fileRepository;
 	
 	public BoardDto create(BoardDto boardDto){ // 등록
+
+		BoardDto bDto = BoardDto.builder().author(boardDto.getAuthor()).password(boardDto.getPassword()).title(boardDto.getTitle()).content(boardDto.getContent())
+				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).recommand(0).views(0).build();	// 얻어온 값으로 초기화
+
+		return this.boardRepository.save(bDto.toEntity()).toDto();
+	}
+
+	public BoardDto update(BoardDto boardDto){	// 수정
 		return this.boardRepository.save(boardDto.toEntity()).toDto();
 	}
 	
@@ -67,18 +77,17 @@ public class BoardService {
 		this.boardRepository.increaseRecommend(no);
 	}
 
-	public boolean increaseViews(Integer no,Long time){
-		if(time == null || new Date().getTime() - time > 3600000)	// 마지막 조회 후에 1시간이 지나면 조회 수 증가
+	public boolean increaseViews(Integer no,Long time,Long currentTime){
+		if(time == null || currentTime - time > 3600000)	// 마지막 조회 후에 1시간이 지나면 조회 수 증가
 		{
 			this.boardRepository.increaseViews(no);
 			return true;
 		}
-
 		return false;
 	}
 
     @Transactional
-    public void deleteBoard(Integer no) throws Exception {	// 게시글 삭제 시, 해당 게시글의 파일을 삭제
+    public void deleteBoard(Integer no) {	// 게시글 삭제 시, 해당 게시글의 파일을 삭제
      
         List<FilePack> files = this.fileRepository.findByBoardId(no);	// 게시글의 고유 번호로 파일을 찾음.
 
@@ -118,7 +127,7 @@ public class BoardService {
 			result.setOrNo(result.getNo());		// 게시글 고유 번호로 그룹 번호를 초기화
 			Integer oCount = this.boardRepository.oCount();	// 원글의 개수
 			result.setRelation(String.valueOf(oCount));	// 원글의 개수만큼 번호를 매김
-			create(result);	// 원글 등록
+			this.boardRepository.save(result.toEntity());	// 원글 등록
 			
 		}else {				// 답글
 			result.setOrNo(check.getOrNo());		// 원글의 그룹 번호로 초기화
@@ -130,12 +139,12 @@ public class BoardService {
 			result.setParentOr(number+1);	// 답글의 수로 번호를 매김
 			String relation = check.getRelation() + "-" + result.getParentOr();	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
 			result.setRelation(relation);
-			create(result);				// 답글 등록
+			this.boardRepository.save(result.toEntity());	// 답글 등록
 			updateGr(result.getNo(), result.getOrNo(), result.getGrOr());
 		}
 	}
 	
-	public void saveCsv(HttpServletResponse response,String or,String detail,String search) throws Exception {    // 엑셀 파일로 저장
+	public void saveCsv(HttpServletResponse response,String or,String detail,String search) throws IOException, IllegalStateException {    // 엑셀 파일로 저장
 
 		Sort sort = or.equals("desc") ? Sort.by("orNo").descending() : Sort.by("orNo").ascending();	// 원글 정렬 기준
 		
@@ -159,7 +168,7 @@ public class BoardService {
 	    sheet.setColumnWidth(1, 18000);
 	    sheet.setColumnWidth(2, 5500);
 	    sheet.setColumnWidth(3, 5500);
-	    
+
 	    // Header에 Menu들을 추가
 	    Row headerRow = sheet.createRow(0);
 	    

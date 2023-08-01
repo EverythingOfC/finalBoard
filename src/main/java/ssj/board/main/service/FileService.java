@@ -1,11 +1,8 @@
 package ssj.board.main.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,13 +57,13 @@ public class FileService {
 		}
 	}
 
-	public void download(@RequestParam(value = "savedPath") String savedPath, HttpServletResponse response) throws Exception { // 파일 다운로드
+	public void download(@RequestParam(value = "savedPath") String savedPath, HttpServletResponse response) throws IOException { // 파일 다운로드
 
 		File file = new File(savedPath);
 		savedPath = savedPath.substring(savedPath.indexOf("_") + 1); // _와 _앞의 랜덤문자를 모두 자르고 나머지 파일명만 남김
 
-		try (InputStream inputStream = new FileInputStream(file);
-				OutputStream outputStream = response.getOutputStream()) {
+		InputStream inputStream = new FileInputStream(file);
+				OutputStream outputStream = response.getOutputStream();
 			// 파일 다운로드를 위한 Response Header 설정
 			response.setContentType("application/octet-stream"); // 응답데이터가 binary데이터
 
@@ -82,23 +79,34 @@ public class FileService {
 				outputStream.write(buffer, 0, length); // 버퍼에 읽어들인 내용을 출력스트림에 쓴다.
 			}
 			outputStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			outputStream.close();
+			inputStream.close();
 	}
 
-	public void deleteFile(Integer fId) throws Exception {
-		Optional<FilePack> f = this.fileRepository.findById(fId);
-		if (f.isPresent()) {
-			String savedPath = f.get().getSavedPath();
-			File file = new File(savedPath);
-			if (file.exists())
-				file.delete(); // 파일 경로에서 삭제
-			this.fileRepository.deleteById(fId); // 파일 엔티티에서도 삭제
+	public void deleteFile(String dFile) {
+
+		if (dFile.trim().length() > 0) {    // 삭제버튼이 클릭된 파일이 있으면
+			String[] dFiles = dFile.trim().split(" ");    // fId들을 불러옴.
+
+			for (String d : dFiles) {
+				int fId = Integer.parseInt(d);
+				Optional<FilePack> f = this.fileRepository.findById(fId);
+				if (f.isPresent()) {
+					String savedPath = f.get().getSavedPath();
+					File file = new File(savedPath);
+					if (file.exists())
+						file.delete(); // 파일 경로에서 삭제
+					this.fileRepository.deleteById(fId); // 파일 엔티티에서도 삭제
+				}
+			}
 		}
 	}
 
 	public Integer countSize(Integer no) {
 		return this.fileRepository.countSize(no);
+	}
+
+	public List<FilePack> viewFile(Integer no){
+		return this.fileRepository.findByBoardId(no);
 	}
 }

@@ -38,7 +38,6 @@ function updateBoard() {	// 게시글 수정
 	var title = document.getElementById("title");
 	var content = document.getElementById("content");
 	var pwV = pw.value.trim();
-	// var pwC = document.getElementById("passwordC").value.trim();
 
 	if (author.value.trim() == "") {
 		alert("작성자를 입력해주세요.");
@@ -82,7 +81,6 @@ function cUpdateBoard() {	// 게시글 수정
 	var pw = document.getElementById("password");
 	var content = document.getElementById("content");
 	var pwV = pw.value.trim();
-	// var pwC = document.getElementById("passwordC").value.trim();
 
 	if (author.value.trim() == "") {
 		alert("작성자를 입력해주세요.");
@@ -117,7 +115,6 @@ function joinBoard() {	// 게시글 생성
 	var title = document.getElementById("title");
 	var content = document.getElementById("content");
 	var pwV = pw.value.trim();
-	// var pwC = document.getElementById("passwordC").value.trim();
 
 	if (author.value.trim() == "") {
 		alert("작성자를 입력해주세요.");
@@ -149,6 +146,46 @@ function joinBoard() {	// 게시글 생성
 	}
 
 	document.create.submit();
+}
+
+function reportComment() {	// 댓글 신고
+	const author = document.getElementById("author");
+	const pw = document.getElementById("password");
+	const title = document.getElementById("title");
+	const content = document.getElementById("content");
+	const pwV = pw.value.trim();
+
+	if (author.value.trim() == "") {
+		alert("신고자를 입력해주세요.");
+		author.focus();
+		return false;
+	}
+
+	if (pwV == "") {
+		alert("비밀번호를 입력해주세요.");
+		pw.focus();
+		return false;
+	}
+
+	if (!checkPw(pwV)) {	// 비밀번호 유효성 검사
+		pw.focus();
+		return false;
+	}
+
+	if (title.value.trim() == "") {
+		alert("제목을 입력하세요.");
+		title.focus();
+		return false;
+	}
+
+	if (content.value.trim() == "") {
+		alert("내용을 입력하세요.");
+		content.focus();
+		return false;
+	}
+
+	document.report.submit();
+	alert('신고가 접수되었습니다.');
 }
 
 function cJoinBoard() {	// 게시글 생성

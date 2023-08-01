@@ -19,12 +19,19 @@ function filesView(size,no){   // 파일 이미지, 갯수 클릭 시 동작
         li.style.display='block';
         li.style.textAlign = 'left';
         const a = document.createElement('a');
+        const span = document.createElement('span');
         const fileName = document.getElementById('fileName'+i).value;
         const savedPath = document.getElementById('filePath'+i).value;
+        const fileSize = document.getElementById('fileSize'+i).value;
         a.style.fontSize = '10px';
-        a.text = fileName;
+        a.text = `${i+1}. ` + fileName;
         a.href = "/download?savedPath="+savedPath;
+        span.style.fontSize = '10px';
+        span.style.display = 'inline-block';
+        span.style.float = 'right';
+        span.textContent = (parseInt(fileSize)/(1024)).toFixed(2) + ' KB';
         li.appendChild(a);
+        li.appendChild(span);
         ul.appendChild(li);
     }
 
@@ -51,10 +58,10 @@ function handleRecommend(){	// 추천 확인
         if(lastRecommend==null || currentTime-lastRecommend > 600000){   // 10분이 지난 후에는 추천 가능한 상태
 
             if(confirm('추천하시겠습니까?')){
-                const no = parseInt(document.getElementById('no').value);
-                const listPage = parseInt(document.getElementById('listPage').value);
+                const no = document.getElementById('no').value;
+                const listPage = document.getElementById('listPage').value;
 
-                location.href= "/board/recommend?no="+no + "&listPage="+listPage +"&timeR="+lastRecommend;
+                location.href= "/board/recommend?no="+no + "&listPage="+listPage +"&timeR="+currentTime;
                 alert('추천되었습니다.');
             }
         }else	// 마지막 추천을 누르고 1분 전에는 추천 불가능

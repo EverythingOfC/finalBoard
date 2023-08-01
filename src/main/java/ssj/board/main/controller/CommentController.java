@@ -19,80 +19,60 @@ import ssj.board.main.service.CommentService;
 @RequiredArgsConstructor
 public class CommentController {
 
-	private final CommentService commentService;
-	private final BoardService boardService;
+    private final CommentService commentService;
+    private final BoardService boardService;
 
 
-	@GetMapping("/board/reportForm")
-	public String cReportForm(Model model, @RequestParam(value = "coNo")Integer coNo,
-							  @RequestParam(value = "listPage") int page){
-		model.addAttribute("coNo",coNo);
-		model.addAttribute("listPage",page);
+    @GetMapping("/board/commentCreateForm") // 등록 폼
+    public String cCreateForm(Model model, @RequestParam(value = "no") int no,
+                              @RequestParam(value = "listPage") int page) {
 
-		return "cReport";
-	}
+        model.addAttribute("no", no);
+        model.addAttribute("listPage", page);
+        return "cCreate"; // 댓글 이용
+    }
 
-	@GetMapping("/board/commentCreateForm") // 등록 폼
-	public String cCreateForm(Model model, @RequestParam(value = "no") int no,
-							  @RequestParam(value = "listPage") int page) {
+    @PostMapping("/board/commentCreate") // 등록
+    public String cCreate(@ModelAttribute CommentDto commentDto, @RequestParam(value = "no") Integer no, @RequestParam(value = "listPage") int page) {
 
-		model.addAttribute("no", no);
-		model.addAttribute("listPage", page);
-		return "cCreate"; // 댓글 이용
-	}
+        BoardDto boardDto = this.boardService.boardView(no);
+        this.commentService.create(commentDto, boardDto);
 
-	@PostMapping("/board/commentCreate") // 등록
-	public String cCreate(@ModelAttribute CommentDto comment, @RequestParam(value = "no") Integer no, @RequestParam(value = "listPage") int page) {
+        return "redirect:/board/view?listPage=" + page + "&no=" + no + "#comment0";
+    }
 
-		BoardDto boardDto = this.boardService.boardView(no);
+    @GetMapping("/board/cUpdateForm") // 수정 폼
+    public String updateForm(Model model, @RequestParam(value = "no") Integer no,
+                             @RequestParam(value = "coNo") Integer coNo,
+                             @RequestParam(value = "listPage") int page) {
 
-		CommentDto commentDto = CommentDto.builder().author(comment.getAuthor()).password(comment.getPassword()).
-				content(comment.getContent())
-				.writeDate(LocalDateTime.now()).board(boardDto.toEntity()).build();
+        CommentDto commentDto = this.commentService.commentView(coNo);
 
-		this.commentService.create(commentDto);
+        model.addAttribute("commentView", commentDto); // 댓글 view
+        model.addAttribute("listPage", page); // 게시글 리스트 페이지
+        model.addAttribute("no", no);    // 게시글 번호
 
-		return "redirect:/board/view?listPage=" + page + "&no=" + no + "#comment0";
-	}
+        return "cUpdate";
+    }
 
-	@GetMapping("/board/cUpdateForm") // 수정 폼
-	public String updateForm(Model model, @RequestParam(value = "no") Integer no,
-							 @RequestParam(value = "coNo")Integer coNo,
-							 @RequestParam(value = "listPage") int page) {
+    @PostMapping("/board/cUpdate") // 수정
+    public String update(@ModelAttribute CommentDto commentDto,
+                         @RequestParam(value = "no") Integer no,
+                         @RequestParam(value = "listPage") int page) {
+        BoardDto boardView = this.boardService.boardView(no);
+        this.commentService.update(commentDto, boardView);
 
-		CommentDto commentDto = this.commentService.commentView(coNo);
+        return "redirect:/board/view?listPage=" + page + "&no=" + no + "&or=desc#comment" + commentDto.getCoNo();
+    }
 
-		model.addAttribute("commentView", commentDto); // 댓글 view
-		model.addAttribute("listPage", page); // 게시글 리스트 페이지
-		model.addAttribute("no", no); 	// 게시글 번호
+    @GetMapping("/board/cDelete") // 삭제
+    public String delete(@RequestParam(value = "no") Integer no,
+                         @RequestParam(value = "listPage") int page,
+                         @RequestParam(value = "coNo") Integer coNo) {
 
-		return "cUpdate";
-	}
+        this.commentService.delete(coNo);
 
-	@PostMapping("/board/cUpdate") // 수정
-	public String update(@ModelAttribute CommentDto comment,
-						 @RequestParam(value = "no") Integer no,
-						 @RequestParam(value = "listPage") int page
-	){
-
-		BoardDto boardView = this.boardService.boardView(no);
-		CommentDto commentDto = this.commentService.commentView(comment.getCoNo());
-
-		commentDto.commentUpdate(comment.getAuthor(), comment.getPassword(), comment.getContent(), LocalDateTime.now(),boardView.toEntity());
-
-		this.commentService.update(commentDto);
-
-		return "redirect:/board/view?listPage="+page + "&no="+no +"&or=desc#comment"+comment.getCoNo();
-	}
-
-	@GetMapping("/board/cDelete") // 삭제
-	public String delete(@RequestParam(value = "no") Integer no,
-						 @RequestParam(value = "listPage") int page,
-						 @RequestParam(value = "coNo") Integer coNo) {
-
-		this.commentService.delete(coNo);
-
-		return "redirect:/board/view?listPage="+page+"&no="+no +"&or=desc#comment0";
-	}
+        return "redirect:/board/view?listPage=" + page + "&no=" + no + "&or=desc#comment0";
+    }
 
 }

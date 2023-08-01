@@ -1,5 +1,6 @@
 package ssj.board.main.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -9,8 +10,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import ssj.board.main.dto.BoardDto;
 import ssj.board.main.dto.CommentDto;
 import ssj.board.main.entity.Comment;
+import ssj.board.main.repository.BoardRepository;
 import ssj.board.main.repository.CommentRepository;
 import ssj.board.main.repository.ReportRepository;
 
@@ -19,14 +22,22 @@ import ssj.board.main.repository.ReportRepository;
 public class CommentService {
 
 	private final CommentRepository commentRepository;
-	private final ReportRepository reportRepository;
 
-	public void create(CommentDto commentDto) {
-		this.commentRepository.save(commentDto.toEntity()).toDto();
+
+	public void create(CommentDto commentDto,BoardDto boardDto) {
+
+		Comment comment = CommentDto.builder().author(commentDto.getAuthor()).password(commentDto.getPassword()).
+				content(commentDto.getContent())
+				.writeDate(LocalDateTime.now()).board(boardDto.toEntity()).build().toEntity();
+
+		this.commentRepository.save(comment);
 	}
 
-	public void update(CommentDto commentDto) {
-		this.commentRepository.save(commentDto.toEntity()).toDto();
+	public void update(CommentDto commentDto,BoardDto boardDto) {
+		CommentDto cDto = commentView(commentDto.getCoNo());
+		cDto.commentUpdate(commentDto.getAuthor(), commentDto.getPassword(), commentDto.getContent(), LocalDateTime.now(),boardDto.toEntity());
+
+		this.commentRepository.save(commentDto.toEntity());
 	}
 
 	public void delete(Integer no) {
@@ -44,7 +55,7 @@ public class CommentService {
 		else
 			pageable = PageRequest.of(cPage, 5, Sort.by("writeDate").ascending());	// 오래된 순
 		
-		return this.commentRepository.findAllByBoard_no(pageable,no).map(Comment::toDto);
+		return this.commentRepository.findAllByBoard_No(pageable,no).map(Comment::toDto);
 	}
 	
 
@@ -53,13 +64,4 @@ public class CommentService {
 		return comment.isPresent() ? comment.get().toDto() : null;
 	}
 
-	public boolean pwdCheck(String password, Integer coNo) { // 비밀번호가 일치하면 해당 게시글을 수정하거나 삭제
-		Optional<Comment> comment = this.commentRepository.findByPasswordAndCoNo(password, coNo);
-		return comment.isPresent()? true : false;
-
-	}
-
-	public int reportCommentCount(Integer commentId){	// 댓글 신고 횟수
-		return this.reportRepository.reportCommentCount(commentId);
-	}
 }
