@@ -184,8 +184,10 @@ function reportComment() {	// 댓글 신고
 		return false;
 	}
 
-	document.report.submit();
-	alert('신고가 접수되었습니다.');
+	if(confirm('신고를 접수하시겠습니까?')){
+		document.report.submit();
+		alert('신고가 접수되었습니다.');
+	}
 }
 
 function cJoinBoard() {	// 게시글 생성

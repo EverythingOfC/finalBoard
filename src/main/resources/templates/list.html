@@ -132,7 +132,7 @@
 			(<span style="color: blue;"
 						th:text="${board.cList.size()}"></span>)
 				</a> <!-- 댓글 클릭 시 이동 -->
-					<span style="float: right; position:relative" th:id="|dropBlock${board.no}|">
+					<span style="float: right; position:relative" th:id="|dropBlock${board.no}|" th>
 						<img style="width: 12px" th:src="@{/image/views.png}" alt="조회">
 						<span th:text="|(${board.views})|" style="font-size: 0.7em; color:red"></span>&emsp;
 

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import ssj.board.main.entity.Report;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CommentDto {
 
 	private Integer coNo;	// 댓글
@@ -29,19 +32,6 @@ public class CommentDto {
 
 	private List<Report> reports;	// 신고 내역들
 
-	@Builder
-	public CommentDto(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
-			Board board,List<Report> reports) {
-		super();
-		this.coNo = coNo;
-		this.author = author;
-		this.password = password;
-		this.content = content;
-		this.writeDate = writeDate;
-		this.board = board;
-		this.reports = reports;
-	}
-	
 	public Comment toEntity() {
 		Comment comment = Comment.builder().coNo(coNo)
 						.author(author)

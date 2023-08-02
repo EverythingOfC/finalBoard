@@ -8,6 +8,7 @@
     <script type="text/javascript" th:src="@{/js/boardCheck.js}"></script>
     <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
     <script type="text/javascript" th:src="@{/js/updateDeleteRecommendFile.js}"></script>
+    <script type="text/javascript" th:src="@{/js/share.js}"></script>
     <script
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -82,9 +83,13 @@
         <table>
             <tr>
                 <th><label for="author">작성자</label></th>
-                <td><input type="text" name="author" id="author" disabled
-                           th:value="${boardView.author}" readonly size="26">&emsp;&emsp;&emsp;
-                    <a style="text-decoration:underline; margin-left: 150px; font-size:160%; color:green;"
+                <td style="position:relative;" id="tdShare"><input type="text" name="author" id="author" disabled
+                                                                   th:value="${boardView.author}" readonly size="26">&emsp;&emsp;&emsp;&emsp;&emsp;
+                    <span style="border:2px solid darkgray; border-radius: 7px; cursor:pointer;
+                    padding:6px 15px 5px 15px; vertical-align: bottom" id="share" onclick="snsShare();">
+                        <img th:src="@{/image/share.png}" width="20" style="margin-right: 8px; vertical-align: sub;">공유하기
+                    </span>
+                    <a style="text-decoration:underline; margin-left: 51px; font-size:160%; color:green;"
                        th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
                 </td>
             </tr>
@@ -233,7 +238,10 @@
             <span style="float:right;">
 					<a th:if="${comment.getReports().size() > 0}" href="#">
 						<img width="15px" th:src="@{/image/report.png}" alt="신고">&nbsp;
-                        <span style="display:inline-block; vertical-align:middle; margin-bottom:2px;" th:text="${comment.getReports().size()}"></span>
+
+
+                        <span style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+                              th:text="${comment.getReports().size()}"></span>
 					</a>&emsp;
 				<input style="margin-right:10px;"
                        type="button" value="신고하기"

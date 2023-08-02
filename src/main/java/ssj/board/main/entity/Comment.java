@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import ssj.board.main.dto.CommentDto;
 @Entity
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Comment {	// 댓글
 
 	@Id
@@ -38,19 +41,8 @@ public class Comment {	// 댓글
 	@OneToMany(mappedBy = "comment",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	private List<Report> reports;
 
-	@Builder
-	public Comment(Integer coNo, String author, String password, String content, LocalDateTime writeDate,
-			Board board,List<Report> reports) {
-		super();
-		this.coNo = coNo;
-		this.author = author;
-		this.password = password;
-		this.content = content;
-		this.writeDate = writeDate;
-		this.board = board;
-		this.reports = reports;
-	}
-	
+
+
 	public CommentDto toDto() {
 		CommentDto commentDto = CommentDto.builder().coNo(coNo)
 						.author(author)

@@ -1,7 +1,5 @@
 
-function filesView(size,no){   // 파일 이미지, 갯수 클릭 시 동작
-
-
+function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
     const removeUl = document.querySelector('td span ul');
     if(removeUl != null){
         const rId = removeUl.id;
@@ -10,11 +8,21 @@ function filesView(size,no){   // 파일 이미지, 갯수 클릭 시 동작
             return;
     }
 
-    size = parseInt(size);
     const dropBlock = document.getElementById('dropBlock'+no);
-    let ul = document.createElement('ul');
+    const a = document.createElement('a');
+    a.textContent = "X"
+    a.style.cursor = "pointer";
+    a.style.fontSize = '12px';
+    a.style.color = 'grey';
+    a.onclick = function (){
+        document.querySelector('#dropBlock'+no + ' ul').remove();
+    }
 
-    for(let i=0;i<size;i++){
+    let ul = document.createElement('ul');
+    ul.appendChild(a);
+    ul.appendChild(document.createElement('p'));
+
+    for(let i=0;i<size;i++){    // size가 문자열이더라도 숫자로 파싱 가능한 형태이면 숫자로 간주
         const li = document.createElement('li');
         li.style.display='block';
         li.style.textAlign = 'left';
@@ -42,8 +50,9 @@ function filesView(size,no){   // 파일 이미지, 갯수 클릭 시 동작
     ul.style.zIndex = '10';
     ul.style.boxShadow = '0 1px 12px 0 rgba(0,0,0,.06)';
     ul.style.backgroundColor = '#fff';
-    ul.style.padding = '8px 10px';
+    ul.style.padding = '4px 10px 8px 10px';
     ul.style.width='300px';
+    ul.style.textAlign = 'left';
     ul.style.border = '1px solid rgba(0,0,0,.06)';
     ul.style.borderRadius = '6px';
 
