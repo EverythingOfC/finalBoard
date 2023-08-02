@@ -9,6 +9,7 @@
     <script type="text/javascript" th:src="@{/js/inputConstraint.js}"></script>
     <script type="text/javascript" th:src="@{/js/updateDeleteRecommendFile.js}"></script>
     <script type="text/javascript" th:src="@{/js/share.js}"></script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.3.0/kakao.min.js" integrity="sha384-70k0rrouSYPWJt7q9rSTKpiTfX6USlMYjZUtr1Du+9o4cGvhPAWxngdtVZDdErlh" crossorigin="anonymous"></script>
     <script
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -85,12 +86,12 @@
                 <th><label for="author">작성자</label></th>
                 <td style="position:relative;" id="tdShare"><input type="text" name="author" id="author" disabled
                                                                    th:value="${boardView.author}" readonly size="26">&emsp;&emsp;&emsp;&emsp;&emsp;
-                    <span style="border:2px solid darkgray; border-radius: 7px; cursor:pointer;
-                    padding:6px 15px 5px 15px; vertical-align: bottom" id="share" onclick="snsShare();">
-                        <img th:src="@{/image/share.png}" width="20" style="margin-right: 8px; vertical-align: sub;">공유하기
+                    <span id="share" onclick="snsShare();">
+                        <img th:src="@{/image/share.png}" width="25" style="margin-right: 8px; margin-top:-2px; vertical-align: middle;">
+                        <span style="font-size:12px;">공유하기</span>
                     </span>
-                    <a style="text-decoration:underline; margin-left: 51px; font-size:160%; color:green;"
-                       th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
+                    <a style="text-decoration:underline; margin-left: 128px; font-size:160%;
+                    color:green;position: absolute;bottom: -55%;" th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
                 </td>
             </tr>
             <tr>

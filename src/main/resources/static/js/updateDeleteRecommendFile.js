@@ -14,6 +14,8 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
     a.style.cursor = "pointer";
     a.style.fontSize = '12px';
     a.style.color = 'grey';
+    a.style.display = 'inline-block';
+    a.style.marginBottom = '10px';
     a.onclick = function (){
         document.querySelector('#dropBlock'+no + ' ul').remove();
     }
@@ -27,6 +29,7 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
         li.style.display='block';
         li.style.textAlign = 'left';
         const a = document.createElement('a');
+        const text = document.createTextNode('\u00a0\u00a0\u00a0\u00a0');
         const span = document.createElement('span');
         const fileName = document.getElementById('fileName'+i).value;
         const savedPath = document.getElementById('filePath'+i).value;
@@ -39,6 +42,7 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
         span.style.float = 'right';
         span.textContent = (parseInt(fileSize)/(1024)).toFixed(2) + ' KB';
         li.appendChild(a);
+        li.appendChild(text);
         li.appendChild(span);
         ul.appendChild(li);
     }
@@ -51,7 +55,7 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
     ul.style.boxShadow = '0 1px 12px 0 rgba(0,0,0,.06)';
     ul.style.backgroundColor = '#fff';
     ul.style.padding = '4px 10px 8px 10px';
-    ul.style.width='300px';
+    ul.style.width='320px';
     ul.style.textAlign = 'left';
     ul.style.border = '1px solid rgba(0,0,0,.06)';
     ul.style.borderRadius = '6px';

@@ -103,8 +103,35 @@ input[type='button']{
 .order label{
 	cursor:pointer;
 }
-
-.link-icon { position: relative; display: inline-block; width: auto;    font-size: 14px; font-weight: 500; color: #333; margin-right: 10px; padding-top: 50px; }
-.link-icon.twitter { background-image: url(../image/icon-twitter.png); background-repeat: no-repeat; }
-.link-icon.facebook { background-image: url(../image/icon-facebook.png); background-repeat: no-repeat; }
-.link-icon.kakao { background-image: url(../image/icon-kakao.png); background-repeat: no-repeat; }
+#shareP{
+	position : absolute;
+	top:91%;
+	left:51%;
+	box-shadow : 0 1px 12px 0 rgba(0,0,0,.06);
+	background-color : #fff;
+	padding : 5px 10px;
+	width:202px;
+	border : 2px solid rgba(0,0,0,.06);
+	border-radius : 8px;
+	line-height : 20px;
+}
+#shareP a{
+	cursor : pointer;
+	font-size : 14px;
+	color : grey;
+}
+#shareP img{
+	width: 40px;
+	margin-top: 15px;
+	vertical-align: inherit;
+	cursor: pointer;
+}
+#shareP img:nth-child(3){
+	margin-left:9px;
+}
+#share{
+	border:2px solid darkgray; border-radius: 7px; cursor:pointer;
+	padding:6px 18px 7px 15px; position: absolute;
+	top: 39%;
+	left: 51%;
+}

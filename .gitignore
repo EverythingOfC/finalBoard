@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+files/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -32,7 +33,7 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-/files
+
 
 ### VS Code ###
 .vscode/
