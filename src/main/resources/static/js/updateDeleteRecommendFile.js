@@ -10,18 +10,31 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
 
     const dropBlock = document.getElementById('dropBlock'+no);
     const a = document.createElement('a');
+    const compress = document.createElement('a');
+
     a.textContent = "X"
     a.style.cursor = "pointer";
     a.style.fontSize = '12px';
     a.style.color = 'grey';
     a.style.display = 'inline-block';
     a.style.marginBottom = '10px';
+
+    compress.text='압축 다운로드';
+    compress.style.color = 'blue';
+    compress.style.display = 'inline-block';
+    compress.style.fontSize = '11px';
+    compress.style.marginBottom = '10px';
+    compress.href="/downloadZip?no="+no;
+    compress.style.float='right';
+
+
     a.onclick = function (){
         document.querySelector('#dropBlock'+no + ' ul').remove();
     }
 
     let ul = document.createElement('ul');
     ul.appendChild(a);
+    ul.appendChild(compress);
     ul.appendChild(document.createElement('p'));
 
     for(let i=0;i<size;i++){    // size가 문자열이더라도 숫자로 파싱 가능한 형태이면 숫자로 간주
@@ -30,20 +43,25 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
         li.style.textAlign = 'left';
         const a = document.createElement('a');
         const text = document.createTextNode('\u00a0\u00a0\u00a0\u00a0');
-        const span = document.createElement('span');
+        const size = document.createElement('span');
+        const download = document.createElement('span');
         const fileName = document.getElementById('fileName'+i).value;
         const savedPath = document.getElementById('filePath'+i).value;
         const fileSize = document.getElementById('fileSize'+i).value;
         a.style.fontSize = '10px';
         a.text = `${i+1}. ` + fileName;
         a.href = "/download?savedPath="+savedPath;
-        span.style.fontSize = '10px';
-        span.style.display = 'inline-block';
-        span.style.float = 'right';
-        span.textContent = (parseInt(fileSize)/(1024)).toFixed(2) + ' KB';
+        download.style.color='red';
+        download.textContent = ' [다운로드]';
+        download.style.fontSize = '9px';
+        a.appendChild(download);
+        size.style.fontSize = '10px';
+        size.style.display = 'inline-block';
+        size.style.float = 'right';
+        size.textContent = (parseInt(fileSize)/(1024)).toFixed(2) + ' KB';
         li.appendChild(a);
         li.appendChild(text);
-        li.appendChild(span);
+        li.appendChild(size);
         ul.appendChild(li);
     }
 
@@ -59,7 +77,6 @@ function filesView(size,no){   // 파일 이미지나 개수 클릭 시 동작
     ul.style.textAlign = 'left';
     ul.style.border = '1px solid rgba(0,0,0,.06)';
     ul.style.borderRadius = '6px';
-
     dropBlock.appendChild(ul);
 }
 

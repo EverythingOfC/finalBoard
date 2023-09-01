@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletResponse;
+
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -30,17 +29,15 @@ import ssj.board.main.entity.Board;
 import ssj.board.main.entity.FilePack;
 import ssj.board.main.repository.BoardRepository;
 import ssj.board.main.repository.FileRepository;
-import ssj.board.main.repository.ReportRepository;
 
 @Service
 @RequiredArgsConstructor
-public class BoardService {
+public class BoardService {		// 기능을 확장할 가능성이 있다면 인터페이스를 도입해야 한다.
 
 	private final BoardRepository boardRepository;
 	private final FileRepository fileRepository;
 	
 	public BoardDto create(BoardDto boardDto){ // 등록
-
 		BoardDto bDto = BoardDto.builder().author(boardDto.getAuthor()).password(boardDto.getPassword()).title(boardDto.getTitle()).content(boardDto.getContent())
 				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).recommand(0).views(0).build();	// 얻어온 값으로 초기화
 

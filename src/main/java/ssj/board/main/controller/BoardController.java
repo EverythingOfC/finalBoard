@@ -61,7 +61,6 @@ public class BoardController {
 
         return "list";
     }
-
     @GetMapping("/board/view")
     public String view(Model model, Integer no, int listPage,  HttpServletRequest request,
                        @RequestParam(value = "or", defaultValue = "desc") String or,
@@ -179,12 +178,18 @@ public class BoardController {
         this.fileService.download(savedPath, response);
     }
 
+    @GetMapping("/downloadZip")
+    public void zipDownload(@RequestParam(value="no")Integer no,
+                            HttpServletResponse response) throws IOException{
+
+        this.fileService.zipDownload(no,response);
+    }
+
 
     @GetMapping("/board/downloadExcel")
     public void saveCsv(String order, String detail, String search, HttpServletResponse response) throws IOException {
 
         this.boardService.saveCsv(response, order, detail, search);
-
     }
 
 }

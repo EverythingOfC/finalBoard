@@ -5,11 +5,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
@@ -24,12 +27,9 @@ public class FileService {
 	private final FileRepository fileRepository;
 
 	public void upload(MultipartFile[] files, BoardDto result) {
-
 		if (files != null) { // 비어있지 않으면
 			for (MultipartFile m : files) {
-
 				if (!m.isEmpty()) {
-
 					String fName = m.getOriginalFilename(); // 원본 파일 이름
 					String sName = UUID.randomUUID() + "_" + fName; // 저장되는 파일 이름
 					String contentType = m.getContentType(); // 파일의 MIME 타입
@@ -57,7 +57,48 @@ public class FileService {
 		}
 	}
 
-	public void download(@RequestParam(value = "savedPath") String savedPath, HttpServletResponse response) throws IOException { // 파일 다운로드
+
+	public void zipDownload(Integer no, HttpServletResponse response) throws IOException{	// 파일 압축 다운로드
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/zip");	// 응답 데이터가 zip
+
+		// content-disposition: 응답 본문을 브라우저가 어떻게 표시해야 할 지 알려줌
+		// inline은 화면에 출력
+		// attachment은 다운로드
+		response.addHeader("Content-Disposition", "attachment; filename=\"download.zip\"");
+
+		FileInputStream fis = null;	// 파일을 바이트 단위로 읽어와 FileOutputStream을 통해 출력
+
+		// Zip파일을 생성하기 위한 스트림
+		try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());){
+
+			// DB에 저장되어 있는 게시글의 파일 목록을 읽어온다.
+			List<FilePack> atchmnFileInfoList = this.fileRepository.findByBoardId(no);
+
+
+			// File 객체를 생성하여 List에 담는다.
+			List<File> fileList = atchmnFileInfoList.stream().map(fileInfo -> {
+				String savedPath = fileInfo.getSavedPath();
+				return new File(savedPath);	// 해당 경로에서 파일 객체를 얻어옴.
+			}).collect(Collectors.toList());
+
+			// 루프를 돌며 ZipOutputStream에 파일들을 계속 주입해준다.
+			for(File file : fileList) {
+				// ZipEntry: 압축된 요소 하나,  해당 파일의 이름으로 ZipEntry객체를 생성
+				zipOut.putNextEntry(new ZipEntry(file.getName().split("_")[1]));
+				fis = new FileInputStream(file);
+
+				StreamUtils.copy(fis, zipOut);	// input스트림의 내용을 output스트림의 내용으로 복사한다.
+
+				fis.close();
+				zipOut.closeEntry();	// 다음 entry를 쓰기 위해 닫아줌.
+			}
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			try { if(fis != null)fis.close(); } catch (IOException e1) {System.out.println(e1.getMessage());/*ignore*/}
+		}
+	}
+	public void download(String savedPath, HttpServletResponse response) throws IOException { // 파일 다운로드
 
 		File file = new File(savedPath);
 		savedPath = savedPath.substring(savedPath.indexOf("_") + 1); // _와 _앞의 랜덤문자를 모두 자르고 나머지 파일명만 남김
@@ -71,7 +112,6 @@ public class FileService {
 			response.setHeader("Content-Disposition",
 					"attachment; filename=\"" + new String(savedPath.getBytes("UTF-8"), "ISO-8859-1") + "\""); // 다운받는
 																												// 이름 지정
-
 			// 1024byte씩 끊어서 읽거나 씀.
 			byte[] buffer = new byte[1024];
 			int length;

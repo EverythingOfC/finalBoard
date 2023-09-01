@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Log4j2
 public class RuntimeExceptionAdvice {
 
-
     @ExceptionHandler(NullPointerException.class)
     public String nullExcept(NullPointerException ex, Model model){
 
