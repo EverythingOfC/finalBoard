@@ -122,7 +122,7 @@ public class BoardController {
         BoardDto check = this.boardService.boardView(boardDto.getNo());    // 없으면 null, 있으면 원글
         BoardDto writeContent = this.boardService.create(boardDto);    // 게시글 내용을 먼저 저장
 
-        this.fileService.upload(files, writeContent);    // 파일업로드 처리
+        this.fileService.upload(files, writeContent);        // 파일업로드 처리
         this.boardService.orGrCheck(writeContent, check);    // 원글인지 답글인지 판별 후 저장
 
         return "redirect:/board/list";
