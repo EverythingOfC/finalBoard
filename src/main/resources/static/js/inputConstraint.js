@@ -28,9 +28,11 @@ function checkSize(obj) {   // 파일 용량 제한(등록 시)
    const fileInputs = document.querySelectorAll('input[type="file"]');
    const parent = obj.parentNode;   // 현재 파일 필드의 부모를 선택
    const oSize = document.getElementById('oSize');   // 기존 업로드된 파일의 크기를 가진 요소를 얻어옴.
+   const uSize = document.getElementById("uSize");   // 수정된 파일의 크기를 가진 요소를 얻어옴.
+   const uField = document.getElementById("updatedSize");   // 수정된 파일 크기 표시
 
    let totalSize = 0;    // 전체 파일 필드의 크기
-   
+
    if(oSize)
       totalSize = parseInt(oSize.value);
 
@@ -51,16 +53,14 @@ function checkSize(obj) {   // 파일 용량 제한(등록 시)
 
       for (let j = 0; j < files.length; j++) { // 파일 필드의 파일들을 순회
          totalSize += files[j].size;   // 파일의 크기 누적
-
          if (totalSize > fileSizeLimit) {
             alert('최대 30MB까지 업로드 가능합니다.');
             obj.value = '';
-            
+            uSize.value = oSize.value;
             const fileList = obj.parentNode;   // 해당 파일 필드의 부모 요소
             const ps = fileList.querySelectorAll('p');   // 해당 파일 필드의 p태그를 가져옴.
             const b = fileList.querySelectorAll('br');	 // 해당 파일 필드의 br태그를 가져옴.
 
-			console.log(b);
             ps.forEach(p => {
                fileList.removeChild(p);
             });
@@ -68,11 +68,10 @@ function checkSize(obj) {   // 파일 용량 제한(등록 시)
                fileList.removeChild(bb);
             });
             return false;
-         }
-         else if (parent.id == prefileList.id) {   // 해당 파일 필드인 경우에만 표시
-         
+         } else if (parent.id == prefileList.id) {   // 해당 파일 필드인 경우에만 표시
+
             const p = document.createElement('p');
-            p.innerText = `파일명: ${files[j].name}`;
+            p.innerHTML = `파일명: ${files[j].name}` + `&emsp;->&emsp;`  + (files[j].size/1024.0/1024.0).toFixed(3) + ' MB';
             prefileList.appendChild(p); // 해당 파일 필드에, 파일명들을 표시
             if(j==files.length-1){   // 마지막일 때 br태그 추가
                const br = document.createElement('br');
@@ -80,9 +79,11 @@ function checkSize(obj) {   // 파일 용량 제한(등록 시)
             }
          }
       }
-      
    }
-      
+
+   uSize.value = totalSize;
+   uField.textContent = (totalSize/1024.0/1024.0).toFixed(3);
+
    return true;
 }
 
@@ -98,7 +99,7 @@ function insertField(obj) {
    ff.name = 'files';
    ff.id = `files-${i}`;
    ff.multiple = 'multiple';
-   ff.addEventListener('change', function() {   // change이벤트가 발생했을 때, 실행되는 함수
+   ff.addEventListener('change', function() {   // change 이벤트가 발생했을 때, 실행되는 함수
       checkSize(ff);   
    });
 
@@ -119,7 +120,7 @@ function insertField(obj) {
    // 파일 리스트를 표시할 div태그 생성
    const fileListDiv = document.createElement('div');
    fileListDiv.id = `file-list-${i}`;
-    const newTd = document.getElementById('fileField');   // 파일리스트의 부모객체
+    const newTd = document.getElementById('fileField');   // 파일 리스트의 부모객체
    const parent = obj.parentNode;
    const nextSibling = parent.nextElementSibling;
 
@@ -135,9 +136,20 @@ function insertField(obj) {
 
 }
 
-function deleteField(obj) {   // 필드 삭제 시, 용량도 그만큼 삭제
+function deleteField(obj) {
    const parent = obj.parentNode;   // 파일 필드의 부모인 파일 필드를 감싸는 div를 불러옴.
-   
+   const files = obj.nextElementSibling.files;
+   const update = document.getElementById("uSize");
+   const uField = document.getElementById("updatedSize");
+   let size = 0;
+
+
+   for(let i=0;i<files.length;i++){
+      size += files[i].size;
+   }
+   update.value = Number(update.value) - size;  // 수정될 사이즈
+   uField.textContent = (update.value/1024.0/1024.0).toFixed(3);
+
    parent.parentNode.removeChild(parent);   // 불러온 div의 부모에서 파일필드를 감싸는 div자식을 삭제
 
 }
@@ -150,9 +162,14 @@ function dFile(obj, fId, fSize) {   // 첨부파일에서 삭제를 누르면 �
 
    const dFile = document.getElementById("dFile");   // input type hidden의 속성을 받아옴. 
    const oSize = document.getElementById("oSize");   // 기존의 파일 사이즈가 저장된 필드
+   const uSize = document.getElementById("uSize");   // 수정될 파일 사이즈가 저장된 필드
+   const uField = document.getElementById("updatedSize");   // 수정될 사이즈 표시 필드
+
    dFile.value += fId + " ";       // 파일 ID 추가
    oSize.value -= parseInt(fSize); // 용량 감소
-   
+   uSize.value -= parseInt(fSize);
+
+   uField.textContent = (uSize.value/1024.0/1024.0).toFixed(3);
 }
 
 function init(size) {   // 수정 페이지에서 재입력 클릭시 숨겨진 태그와 hidden태그, 파일 용량을 원상 복구
@@ -160,6 +177,8 @@ function init(size) {   // 수정 페이지에서 재입력 클릭시 숨겨진 
    const td = document.querySelectorAll("#fList span");   // 이전에 업로드된 파일들이 있는 태그
    const dFile = document.getElementById("dFile");   		// input type hidden의 속성을 받아옴. 
    const oSize = document.getElementById("oSize");   // 기존의 파일 사이즈가 저장된 필드
+   const uSize = document.getElementById("uSize");
+   const uField = document.getElementById("updatedSize");   // 수정될 사이즈 표시 필드
 
    for (var i = 0; i < td.length; i++) {	// 감춰져 있던 td의 요소들을 하나씩 보여지게 함.
       td[i].style.display = 'inline';
@@ -174,7 +193,9 @@ function init(size) {   // 수정 페이지에서 재입력 클릭시 숨겨진 
 
    dFile.value = "";   // 삭제할 fID를 모두 없앰.   
    oSize.value = size;   // 서버에서 가져온 기존의 용량으로 할당
+   uSize.value = size;
 
+   uField.textContent = (uSize.value/1024.0/1024.0).toFixed(3);
 }
 
 

@@ -93,19 +93,20 @@
             </tr>
             <tr style="line-height:15px;" th:each="boardFile, loop : ${boardView.filePacks}">
                <th th:if="${loop.index==0}" th:rowspan="${boardView.filePacks.size()}">첨부파일<a id="update0"></a></th>
-               <td id="fList"><span th:id="${loop.index}" ><a style="display:inline-block; margin-left:16px;"
+               <td style="word-break:break-all; " id="fList"><span th:id="${loop.index}" ><a style="display:inline-block; margin-left:16px;"
                th:href="@{/download(savedPath=${boardFile.savedPath})}" th:text="|${boardFile.originalName}|"></a>
                <a th:href="@{/download(savedPath=${boardFile.savedPath})}"><sub style="font-size: 0.8em; color:blue;">[다운로드]</sub></a>
                <a href="#update0" th:attr="onclick='dFile(\''+ ${loop.index}+ '\' , \'' + ${boardFile.fId} + '\' , \'' + ${boardFile.size} + '\')'"><sub style="font-size: 0.8em; color:red;">[삭제]</sub></a>
-               &emsp;<span style="font-size:0.7em" th:text="${boardFile.size > 0 ? #numbers.formatInteger(boardFile.size/(1024.0*1024.0)*1024, 4, 'COMMA') + ' MB' : '0MB'}"></span>
+               &emsp;<span style="font-size:0.7em" th:text="${boardFile.size > 0 ? #numbers.formatDecimal(boardFile.size/(1024.0)/1024, 1, 3) + ' MB' : '0MB'}"></span>
                </span></td>
             </tr>
             <tr>
-               <td colspan="2" style="line-height:20px; padding-top:10px;" id="fileField">
+               <td colspan="2" style="line-height:20px; padding-top:25px;" id="fileField">
                <div id="file-list-0">
                <input style="padding:0 8px 2px 8px;" type="button" name="insert" value="+" onclick="insertField(this);">&emsp;
                <span style="color:green;">☞&nbsp; 최대 30MB까지 파일 업로드 가능<sub>(개수 제한 X)</sub></span>&emsp;&nbsp;
-<!--                <span>현재 <span style="color:blue;" id="size" th:text="${countSize > 0 ? #numbers.formatInteger(countSize/(1024.0*1024.0)*1024, 3, 'COMMA') : '0'}"></span> MB</span> -->
+                  기존: <span id="size" th:text="${countSize > 0 ? #numbers.formatDecimal(countSize/(1024.0)/1024, 1,3) + ' MB' : '0MB'}"></span>&emsp;
+                  수정 후: <span id="updatedSize" th:text="${countSize > 0 ? #numbers.formatDecimal(countSize/(1024.0)/1024, 1, 3) : '0'}"></span> MB
                </div><br/>
                </td>
             </tr>      
@@ -123,6 +124,7 @@
            <input type="button" value="게시글 목록" th:onclick="|location.href='@{/board/list(listPage=${listPage})}'|">
            <input type="hidden" name="dFile" id="dFile"><!-- 삭제할 파일의 ID를 담고 있음. -->
            <input type="hidden" name="oSize" id="oSize" th:value="${countSize}"><!-- 기존 파일의 용량을 담고 있음. -->
+            <input type="hidden" id="uSize" th:value="${countSize}"> <!-- 수정할 파일의 용량까지 담고 있음. -->
            </div>
       </form>
       <script>

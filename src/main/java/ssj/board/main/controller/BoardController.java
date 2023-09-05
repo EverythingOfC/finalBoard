@@ -80,7 +80,7 @@ public class BoardController {
         Integer total = this.fileService.countSize(no);    // 파일 크기 합
 
         if(total!=null)
-            model.addAttribute("total", String.format("%.2f",total/(1024.0) ));
+            model.addAttribute("total", String.format("%.3f",total/(1024*1024.0) ));
         model.addAttribute("list", commentList);
         model.addAttribute("boardView", boardDto);
         model.addAttribute("listPage", listPage);
@@ -120,7 +120,7 @@ public class BoardController {
                          @ModelAttribute MultipartFile[] files) throws Exception {
 
         BoardDto check = this.boardService.boardView(boardDto.getNo());    // 없으면 null, 있으면 원글
-        BoardDto writeContent = this.boardService.create(boardDto);    // 게시글 내용을 먼저 저장
+        BoardDto writeContent = this.boardService.create(boardDto);        // 게시글 내용을 먼저 저장
 
         this.fileService.upload(files, writeContent);        // 파일업로드 처리
         this.boardService.orGrCheck(writeContent, check);    // 원글인지 답글인지 판별 후 저장
@@ -131,14 +131,9 @@ public class BoardController {
     @GetMapping("/board/updateForm") // 수정
     public String update(Model model, @RequestParam(value = "no") Integer no,
                          @RequestParam(value = "listPage") int page) {
-
         BoardDto boardView = this.boardService.boardView(no);
 
-        if(this.fileService.viewFile(no)==null) // 게시글에 파일이 없으면
-            model.addAttribute("countSize", 0);
-        else
-            model.addAttribute("countSize", this.fileService.countSize(no));
-
+        model.addAttribute("countSize", this.fileService.countSize(no));
         model.addAttribute("boardView", boardView);
         model.addAttribute("listPage", page);
 
@@ -156,7 +151,6 @@ public class BoardController {
         this.fileService.deleteFile(dFile);    // 해당 파일들을 삭제
 
         BoardDto boardView = this.boardService.boardView(boardDto.getNo());      // 파일이 삭제된 후, 해당 게시글을 다시 조회
-        boardView.boardUpdate(boardDto.getAuthor(), boardDto.getPassword(), boardDto.getTitle(), boardDto.getContent(), LocalDateTime.now());    // 게시글 업데이트
         BoardDto update = this.boardService.update(boardView);    // 게시글 수정
 
         this.fileService.upload(files, update);    // 파일 수정 처리

@@ -36,15 +36,17 @@ public class BoardService {		// 기능을 확장할 가능성이 있다면 인�
 
 	private final BoardRepository boardRepository;
 	private final FileRepository fileRepository;
-	
-	public BoardDto create(BoardDto boardDto){ // 등록
-		BoardDto bDto = BoardDto.builder().author(boardDto.getAuthor()).password(boardDto.getPassword()).title(boardDto.getTitle()).content(boardDto.getContent())
-				.writeDate(LocalDateTime.now()).orNo(0).grOr(0).grDepth(0).parentNo(0).parentOr(0).recommand(0).views(0).build();	// 얻어온 값으로 초기화
 
-		return this.boardRepository.save(bDto.toEntity()).toDto();
+	public BoardDto create(BoardDto boardDto){ // 등록
+
+		boardDto.setNo(null);
+		return this.boardRepository.save(boardDto.toEntity()).toDto();
 	}
 
 	public BoardDto update(BoardDto boardDto){	// 수정
+
+		boardDto.boardUpdate(boardDto.getAuthor(), boardDto.getPassword(), boardDto.getTitle(), boardDto.getContent(), LocalDateTime.now());    // 게시글 업데이트
+
 		return this.boardRepository.save(boardDto.toEntity()).toDto();
 	}
 	
@@ -123,13 +125,13 @@ public class BoardService {		// 기능을 확장할 가능성이 있다면 인�
 		if(check == null) {	// 새글
 			result.setOrNo(result.getNo());		// 게시글 고유 번호로 그룹 번호를 초기화
 			Integer oCount = this.boardRepository.oCount();	// 원글의 개수
-			result.setRelation(String.valueOf(oCount));	// 원글의 개수만큼 번호를 매김
+			result.setRelation(String.valueOf(oCount));	    // 원글의 개수만큼 번호를 매김
 			this.boardRepository.save(result.toEntity());	// 원글 등록
 			
 		}else {				// 답글
-			result.setOrNo(check.getOrNo());		// 원글의 그룹 번호로 초기화
-			result.setGrOr(check.getGrOr());		// 원글의 그룹 순서로 초기화
-			result.setGrDepth(check.getGrDepth()+1);// 깊이 증가
+			result.setOrNo(check.getOrNo());		  // 원글의 그룹 번호로 초기화
+			result.setGrOr(check.getGrOr());		  // 원글의 그룹 순서로 초기화
+			result.setGrDepth(check.getGrDepth()+1);  // 깊이 증가
 			result.setParentNo(check.getNo());	// 부모글의 일련번호로 초기화
 			
 			Integer number = this.boardRepository.parentNoCount(result.getParentNo());	// 부모글에 있는 답글의 수

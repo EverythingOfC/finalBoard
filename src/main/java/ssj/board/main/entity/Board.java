@@ -17,6 +17,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import ssj.board.main.dto.BoardDto;
 
 @Getter
@@ -24,6 +28,8 @@ import ssj.board.main.dto.BoardDto;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@DynamicInsert  // 구문 생성 시, null이 아닌 칼럼만 포함함.
+@DynamicUpdate
 public class Board {
 	
 	
@@ -44,13 +50,17 @@ public class Board {
 	@Column(nullable=false,length = 751)	// 내용은 751
 	private String content;	// 내용
 	
+
+	@CreationTimestamp	// insert쿼리 발생 시, 현재 시간 값 적용
 	@Column(columnDefinition = "DATETIME")  // 8바이트(날짜와 시간을 같이 나타냄)
 	private LocalDateTime writeDate;	// 작성일자
-	
+
 	private Integer orNo;	// 원글의 그룹 번호
-	
+
+	@ColumnDefault("0")
 	private Integer grOr;	// (원글과 답글)그룹 순서
-	
+
+	@ColumnDefault("0")
 	private Integer grDepth;// 답글의 깊이
 	
 	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY,cascade = CascadeType.ALL)	// 연관관계의 주인을 외래키 필드로 함
@@ -61,16 +71,19 @@ public class Board {
     private List<FilePack> filePacks = new ArrayList<FilePack>(); 	
 	
 	private Integer parentNo;	// 부모 글의 일련번호
-	
+
+	@ColumnDefault("0")
 	private Integer parentOr;	// 부모 글에서 파생된 답글의 순서
-	
+
 	private Boolean removeC;	// 삭제 여부
 	
 	@Column(length=1000)
 	private String relation;	// 부모글의 관계 - 부모글에서 파생된 답글의 수 
 
+	@ColumnDefault("0")
 	private Integer views;		// 조회 수
 
+	@ColumnDefault("0")
 	private Integer recommand;	// 추천 수
 
 	public BoardDto toDto() {

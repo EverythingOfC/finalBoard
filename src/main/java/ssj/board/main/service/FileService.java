@@ -25,6 +25,7 @@ public class FileService {
     private final FileRepository fileRepository;
 
     public void upload(MultipartFile[] files, BoardDto result) {
+
         if (files != null) { // 비어있지 않으면
             List<FilePack> fileList = new ArrayList<>();
             for (MultipartFile m : files) {
@@ -146,7 +147,4 @@ public class FileService {
         return this.fileRepository.countSize(no);
     }
 
-    public List<FilePack> viewFile(Integer no) {
-        return this.fileRepository.findByBoardId(no);
-    }
 }
