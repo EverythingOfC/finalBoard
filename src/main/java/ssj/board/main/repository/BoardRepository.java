@@ -54,7 +54,7 @@ public interface BoardRepository extends JpaRepository<Board, Integer>{
 
 	List<Board> findAll(Sort sort);
 	
-	@Query("select count(b) from Board b where b.parentNo = :parentNo")	// 부모글에 달린 답글 수 카운트
+	@Query("select count(b) from Board b where b.parentNo = :parentNo")	// 같은 부모 글을 가진 형제 답글의 개수
 	Integer parentNoCount(@Param(value = "parentNo")Integer parentNo);
 
 	@Query("select count(b) from Board b where b.grDepth = 0")	// 원글의 수

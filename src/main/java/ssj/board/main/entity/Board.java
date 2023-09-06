@@ -63,10 +63,12 @@ public class Board {
 	@ColumnDefault("0")
 	private Integer grDepth;// 답글의 깊이
 	
-	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY,cascade = CascadeType.ALL)	// 연관관계의 주인을 외래키 필드로 함
+	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY,orphanRemoval = true, cascade = CascadeType.ALL)	// 연관관계의 주인을 외래키 필드로 함
 	private List<Comment> cList;		// 댓글 목록
 	
-	@Builder.Default	// 초기화 표현식을 기본값으로 하기 위함
+	@Builder.Default	// orphanRemoval: 부모와 자식간의 연관관계가 끊어졌을 경우, 자식 엔티티를 모두 제거
+						// 부모 엔티티에서 자식 엔티티를 제거했을 때, 연결된 자식 엔티티를 제거해줌.
+						// Cascade만 쓰면, 논리적으로 참조를 변경시킬 뿐, 자식 엔티티에서 데이터는 그대로 남게된다.
 	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FilePack> filePacks = new ArrayList<FilePack>(); 	
 	

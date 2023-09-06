@@ -71,8 +71,8 @@
             is Writing<sub style="font-size: 0.6em;"> (detail) </sub>
         </a>
     </h2>
-    <h2 th:if="${boardView.grDepth} == 1">게시글 상세</h2>
-    <h2 th:unless="${boardView.grDepth} == 1">답글 상세</h2>
+    <h2 th:if="${boardView.grDepth} == 0">게시글 상세</h2>
+    <h2 th:unless="${boardView.grDepth} == 0">답글 상세</h2>
 </div>
 
 <div class="boardDetail">
@@ -94,7 +94,7 @@
     color: green;
     position: absolute;
     bottom: -55%;
-    left: 67%;" th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
+    left: 74%;" th:href="@{/board/createForm(no=${boardView.no})}" th:text="|답글 작성|"></a>
                 </td>
             </tr>
             <tr>

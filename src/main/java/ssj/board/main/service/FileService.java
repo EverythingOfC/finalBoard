@@ -24,6 +24,8 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
+    private final static String saveDir = System.getProperty("user.dir");
+
     public void upload(MultipartFile[] files, BoardDto result) {
 
         if (files != null) { // 비어있지 않으면
@@ -34,7 +36,7 @@ public class FileService {
                     String sName = UUID.randomUUID() + "_" + fName; // 저장되는 파일 이름
                     String contentType = m.getContentType(); // 파일의 MIME 타입
                     long size = m.getSize(); // 파일 크기
-                    String savePath = System.getProperty("user.dir") + "/files/" + sName;
+                    String savePath = saveDir + "/files/" + sName;
                     try {
                         // 지정된 경로에 해당하는 파일 객체를 생성한다.
                         // 서버로 넘어온 파일의 내용을 지정된 파일 객체에 전송(복사)한다.

@@ -81,6 +81,7 @@ public class BoardController {
 
         if(total!=null)
             model.addAttribute("total", String.format("%.3f",total/(1024*1024.0) ));
+
         model.addAttribute("list", commentList);
         model.addAttribute("boardView", boardDto);
         model.addAttribute("listPage", listPage);
@@ -132,8 +133,9 @@ public class BoardController {
     public String update(Model model, @RequestParam(value = "no") Integer no,
                          @RequestParam(value = "listPage") int page) {
         BoardDto boardView = this.boardService.boardView(no);
+        Integer count = this.fileService.countSize(no); // 파일 전체 크기
 
-        model.addAttribute("countSize", this.fileService.countSize(no));
+        model.addAttribute("countSize", count==null ? 0 : count );
         model.addAttribute("boardView", boardView);
         model.addAttribute("listPage", page);
 

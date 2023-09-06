@@ -15,6 +15,9 @@ import ssj.board.main.dto.CommentDto;
 import ssj.board.main.service.BoardService;
 import ssj.board.main.service.CommentService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequiredArgsConstructor
 public class CommentController {
@@ -33,12 +36,15 @@ public class CommentController {
     }
 
     @PostMapping("/board/commentCreate") // 등록
-    public String cCreate(@ModelAttribute CommentDto commentDto, @RequestParam(value = "no") Integer no, @RequestParam(value = "listPage") int page) {
+    public String cCreate(@ModelAttribute CommentDto commentDto, @RequestParam(value = "no") Integer no, @RequestParam(value = "listPage") int page,
+                          HttpServletRequest request) {
 
+        HttpSession session = request.getSession();
+        long currentTime = Long.parseLong(session.getAttribute("lastViews"+no).toString());
         BoardDto boardDto = this.boardService.boardView(no);
         this.commentService.create(commentDto, boardDto);
 
-        return "redirect:/board/view?listPage=" + page + "&no=" + no + "#comment0";
+        return "redirect:/board/view?listPage=" + page + "&time=" +currentTime + "&no=" + no + "#comment0";
     }
 
     @GetMapping("/board/cUpdateForm") // 수정 폼

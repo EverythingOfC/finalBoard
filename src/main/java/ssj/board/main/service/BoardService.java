@@ -105,7 +105,7 @@ public class BoardService {		// 기능을 확장할 가능성이 있다면 인�
         boardView.setPassword("");
         boardView.setRemoveC(true);
         boardView.getFilePacks().clear();	        
-        boardView.setCList(null);
+        boardView.getCList().clear();
         
         this.boardRepository.save(boardView.toEntity());
   } 
@@ -212,7 +212,6 @@ public class BoardService {		// 기능을 확장할 가능성이 있다면 인�
 			Cell cell = dataRow.createCell(3);
 			cell.setCellValue(dateFormat);
 			cell.setCellStyle(dateCellStyle);
-
 	    }
 	    		
 	    // 응답에 대한 MIME타입을 설정(해당 데이터가 Microsoft의 엑셀 문서임을 나타냄)
